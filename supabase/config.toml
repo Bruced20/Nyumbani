@@ -1,0 +1,39 @@
+# Supabase Local Development Configuration
+
+project_id = "nyumbani-local"
+
+[api]
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+
+[studio]
+port = 54323
+
+[auth]
+# Local Auth service settings
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/api/auth/callback"]
+jwt_expiry = 3600
+enable_signup = true
+enable_email_signup = true
+enable_email_autoconfirm = true # Autoconfirm locally to reduce mail catcher dependency
+
+[auth.external.google]
+enabled = true
+client_id = "GOOGLE_CLIENT_ID_PLACEHOLDER"
+secret = "GOOGLE_CLIENT_SECRET_PLACEHOLDER"
+redirect_uri = "http://localhost:54321/auth/v1/callback"
+
+[analytics]
+enabled = false
+
+[storage]
+enabled = true
+file_size_limit = "5MB"

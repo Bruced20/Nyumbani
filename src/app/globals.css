@@ -1,0 +1,90 @@
+@import 'tailwindcss';
+
+:root {
+  /* Brand Theme Tokens (Light Mode - Active by Default) */
+  --bg-primary: hsl(0, 0%, 100%);
+  --bg-secondary: hsl(210, 40%, 98%);
+  --text-primary: hsl(220, 20%, 10%);
+  --text-muted: hsl(215, 15%, 50%);
+  --border-subtle: hsl(214, 32%, 91%);
+
+  --accent-emerald: hsl(150, 60%, 35%);
+  --accent-amber: hsl(38, 92%, 50%);
+  --accent-coral: hsl(6, 78%, 57%);
+
+  --brand-indigo: hsl(250, 84%, 54%);
+
+  /* Base next/font typography config */
+  --font-sans: var(--font-geist-sans), sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+}
+
+/* Prepared Dark Mode Tokens (Inactive in V1 - Available for V2) */
+.dark {
+  --bg-primary: hsl(220, 20%, 8%);
+  --bg-secondary: hsl(220, 15%, 12%);
+  --text-primary: hsl(210, 40%, 98%);
+  --text-muted: hsl(215, 15%, 65%);
+  --border-subtle: hsl(217, 19%, 20%);
+
+  --accent-emerald: hsl(150, 65%, 45%);
+  --accent-amber: hsl(38, 95%, 48%);
+  --accent-coral: hsl(6, 85%, 60%);
+
+  --brand-indigo: hsl(250, 90%, 65%);
+}
+
+@theme {
+  /* Map CSS Custom Properties to Tailwind Utility Classes */
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-text-primary: var(--text-primary);
+  --color-text-muted: var(--text-muted);
+  --color-border-subtle: var(--border-subtle);
+
+  --color-accent-emerald: var(--accent-emerald);
+  --color-accent-amber: var(--accent-amber);
+  --color-accent-coral: var(--accent-coral);
+
+  --color-brand-indigo: var(--brand-indigo);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  /* Spacing Grid */
+  --spacing-xxs: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 16px;
+  --spacing-md: 24px;
+  --spacing-lg: 48px;
+  --spacing-xl: 80px;
+
+  /* Corner Radius */
+  --radius-sharp: 4px;
+  --radius-soft: 8px;
+  --radius-symmetric: 16px;
+  --radius-pill: 9999px;
+
+  /* Spring Animations */
+  --animate-spring-subtle: spring-subtle 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes spring-subtle {
+  0% {
+    transform: scale(0.97);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
