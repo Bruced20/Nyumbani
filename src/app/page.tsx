@@ -1,86 +1,132 @@
-import Link from 'next/link'
+import React from 'react'
+import { Navbar, Footer } from '@ui/navigation'
+import { Container, Section, Grid, Stack } from '@ui/layout'
+import { Display, H2, Body } from '@ui/typography'
+import { PropertyCard } from '@ui/card'
+import { SearchBar } from '@/features/properties/search-bar'
+import { MOCK_PROPERTIES } from '@/lib/mock-data'
+import { ShieldCheck, Eye, Sparkles } from 'lucide-react'
 
 /**
- * Nyumbani Homepage.
- * Focus: High-intent location search and user trust education.
+ * Public Discovery Homepage.
+ * Integrates layout frameworks, featured properties sliders, and explanation checklists.
  */
 export default function Home() {
+  // Only display verified or high-score properties as featured listings
+  const featuredProperties = MOCK_PROPERTIES.slice(0, 3)
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-bg-primary text-text-primary">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-border-subtle bg-bg-secondary pb-6 pt-8 backdrop-blur-2xl lg:static lg:w-auto lg:rounded-xl lg:border lg:p-4">
-          Nyumbani - Rental Intelligence Platform for Kenya
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-bg-primary via-bg-primary lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <Link href="/owners" className="hover:underline text-text-muted">
-            Landlord Portal &rarr;
-          </Link>
-        </div>
-      </div>
+    <div className="flex flex-col min-h-screen bg-bg-primary text-text-primary">
+      {/* Navbar Header */}
+      <Navbar />
 
-      <div className="flex flex-col items-center gap-xxs max-w-2xl text-center">
-        <h1 className="text-display font-bold tracking-tight mb-xs">
-          What is it actually like to live here?
-        </h1>
-        <p className="text-body text-text-muted mb-lg">
-          Nyumbani is Kenya’s community-driven rental transparency network. Discover verified
-          details about water reliability, security, noise, and internet before signing a lease.
-        </p>
+      {/* Main Homepage content */}
+      <main className="flex-1">
+        {/* 1. Hero Search Section */}
+        <Section className="bg-[#FAFBFD] border-b border-border-subtle py-20">
+          <Container className="flex flex-col items-center text-center max-w-3xl gap-sm">
+            <Display className="text-display max-w-2xl font-bold leading-tight">
+              What is it actually like to live here?
+            </Display>
+            <Body className="text-text-muted text-[16px] max-w-xl leading-relaxed mb-xs">
+              Nyumbani is Kenya’s community-driven rental intelligence network. Discover verified
+              details about water reliability, security, and deposit refunds before signing a lease.
+            </Body>
 
-        {/* TODO: Implement global search overlay component (Search Input) */}
-        <div className="w-full max-w-md p-sm bg-bg-secondary rounded-symmetric border border-border-subtle shadow-md cursor-pointer hover:border-brand-indigo transition-colors duration-200">
-          <span className="text-text-muted">
-            Search by neighborhood or apartment name (e.g. Westlands, Kilimani)...
-          </span>
-        </div>
-      </div>
+            {/* Embedded Search Bar Component */}
+            <SearchBar />
+          </Container>
+        </Section>
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-3 lg:text-left gap-md">
-        <Link
-          href="/search"
-          className="group rounded-symmetric border border-transparent px-5 py-4 transition-colors hover:border-border-subtle hover:bg-bg-secondary"
-        >
-          <h2 className="mb-3 text-subtitle font-semibold">
-            Explore Rentals{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              &rarr;
-            </span>
-          </h2>
-          <p className="m-0 text-metadata text-text-muted">
-            Browse Nairobi apartment ratings and read structured tenant feedback.
-          </p>
-        </Link>
+        {/* 2. Featured Properties Section */}
+        <Section>
+          <Container>
+            <div className="flex flex-col gap-xxs mb-md">
+              <H2 className="font-semibold">Featured Properties</H2>
+              <Body className="text-text-muted text-[14px]">
+                Explore highly-rated Kenyan listings with active tenant reviews
+              </Body>
+            </div>
 
-        <Link
-          href="/review/new"
-          className="group rounded-symmetric border border-transparent px-5 py-4 transition-colors hover:border-border-subtle hover:bg-bg-secondary"
-        >
-          <h2 className="mb-3 text-subtitle font-semibold">
-            Add a Review{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              &rarr;
-            </span>
-          </h2>
-          <p className="m-0 text-metadata text-text-muted">
-            Share anonymous insights about your current or former apartment.
-          </p>
-        </Link>
+            <Grid cols={3} gap="sm">
+              {featuredProperties.map((prop) => (
+                <PropertyCard
+                  key={prop.id}
+                  name={prop.name}
+                  neighborhood={prop.neighborhood}
+                  rentMin={prop.rentMin}
+                  rentMax={prop.rentMax}
+                  houseType={prop.houseType}
+                  healthScore={prop.healthScore}
+                  isVerified={prop.isVerified}
+                  waterRating={prop.waterRating}
+                  securityRating={prop.securityRating}
+                  caretakerRating={prop.caretakerRating}
+                />
+              ))}
+            </Grid>
+          </Container>
+        </Section>
 
-        <Link
-          href="/about"
-          className="group rounded-symmetric border border-transparent px-5 py-4 transition-colors hover:border-border-subtle hover:bg-bg-secondary"
-        >
-          <h2 className="mb-3 text-subtitle font-semibold">
-            Our Methodology{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              &rarr;
-            </span>
-          </h2>
-          <p className="m-0 text-metadata text-text-muted">
-            Learn how we compute the Property Health Score and protect user privacy.
-          </p>
-        </Link>
-      </div>
-    </main>
+        {/* 3. "How Nyumbani Works" Section */}
+        <Section className="bg-[#FAFBFD] border-y border-border-subtle py-16">
+          <Container>
+            <div className="flex flex-col gap-xxs mb-lg text-center max-w-xl mx-auto">
+              <H2 className="font-semibold">How Nyumbani Works</H2>
+              <Body className="text-text-muted text-[14px]">
+                Built on transparency, anonymity, and manual verification to guarantee renter trust.
+              </Body>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-md items-start">
+              {/* Step 1 */}
+              <Stack gap="xs" className="items-center text-center">
+                <div className="h-12 w-12 bg-brand-indigo/10 text-brand-indigo rounded-pill flex items-center justify-center">
+                  <Eye size={22} />
+                </div>
+                <h3 className="font-semibold text-subtitle text-text-primary">
+                  1. Search Anonymously
+                </h3>
+                <p className="text-[13px] text-text-muted leading-relaxed">
+                  Browse apartment metrics and resident evaluations without ever needing to create
+                  an account. No SMS paywalls.
+                </p>
+              </Stack>
+
+              {/* Step 2 */}
+              <Stack gap="xs" className="items-center text-center">
+                <div className="h-12 w-12 bg-[#10B981]/10 text-[#10B981] rounded-pill flex items-center justify-center">
+                  <ShieldCheck size={22} />
+                </div>
+                <h3 className="font-semibold text-subtitle text-text-primary">
+                  2. Verified Landlords
+                </h3>
+                <p className="text-[13px] text-text-muted leading-relaxed">
+                  Property owners submit municipal bills to verify ownership. Verified badges prove
+                  listing authenticity.
+                </p>
+              </Stack>
+
+              {/* Step 3 */}
+              <Stack gap="xs" className="items-center text-center">
+                <div className="h-12 w-12 bg-[#6366F1]/10 text-[#6366F1] rounded-pill flex items-center justify-center">
+                  <Sparkles size={22} />
+                </div>
+                <h3 className="font-semibold text-subtitle text-text-primary">
+                  3. Community Driven
+                </h3>
+                <p className="text-[13px] text-text-muted leading-relaxed">
+                  Reviews are evaluated across five vectors. Scores update instantly on PostgreSQL
+                  database triggers.
+                </p>
+              </Stack>
+            </div>
+          </Container>
+        </Section>
+      </main>
+
+      {/* Shared Footer block */}
+      <Footer />
+    </div>
   )
 }

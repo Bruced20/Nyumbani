@@ -42,7 +42,9 @@ export async function submitClaim(data: ClaimSubmissionInput) {
       .single()
 
     if (error) {
-      logger.error('Supabase claim insertion error:', error)
+      logger.error('Supabase claim insertion error:', {
+        rawError: error as unknown as Record<string, unknown>,
+      })
       throw new AppError('Failed to record your ownership claim.', 'DATABASE_ERROR', 500)
     }
 

@@ -220,3 +220,53 @@ export const Pagination: React.FC<PaginationProps> = ({
     </div>
   )
 }
+
+/**
+ * Shared layout Footer component.
+ */
+export const Footer: React.FC = () => {
+  return (
+    <footer className="w-full bg-bg-secondary border-t border-border-subtle py-lg mt-auto">
+      <div className="max-w-6xl mx-auto px-md grid grid-cols-1 md:grid-cols-4 gap-md text-text-muted text-[13px]">
+        <div className="flex flex-col gap-xxs">
+          <span className="font-bold text-[15px] text-text-primary mb-xxs">Nyumbani</span>
+          <p className="leading-relaxed">
+            Kenya&apos;s rental intelligence platform, bringing trust and transparency to home
+            hunting.
+          </p>
+        </div>
+        <div className="flex flex-col gap-xxs">
+          <span className="font-semibold text-text-primary mb-xxs">Platform</span>
+          <Link href="/search" className="hover:text-text-primary transition-colors">
+            Search Listings
+          </Link>
+          <Link href="/review/new" className="hover:text-text-primary transition-colors">
+            Write a Review
+          </Link>
+        </div>
+        <div className="flex flex-col gap-xxs">
+          <span className="font-semibold text-text-primary mb-xxs">Landlords</span>
+          <Link href="/owners" className="hover:text-text-primary transition-colors">
+            Owner Portal
+          </Link>
+          <Link href="/owners/dashboard" className="hover:text-text-primary transition-colors">
+            Verification Claims
+          </Link>
+        </div>
+        <div className="flex flex-col gap-xxs">
+          <span className="font-semibold text-text-primary mb-xxs">Legal & Safety</span>
+          <Link href="/about" className="hover:text-text-primary transition-colors">
+            Scoring Methodology
+          </Link>
+          <Link href="/about" className="hover:text-text-primary transition-colors">
+            Privacy Policy
+          </Link>
+        </div>
+      </div>
+      <div className="max-w-6xl mx-auto px-md border-t border-border-subtle pt-sm mt-md flex justify-between items-center text-[12px] text-text-muted flex-wrap gap-xs">
+        <span>© {new Date().getFullYear()} Nyumbani Rental Intelligence. All rights reserved.</span>
+        <span>Made for Kenya 🇰🇪</span>
+      </div>
+    </footer>
+  )
+}

@@ -46,7 +46,9 @@ export async function createProperty(data: PropertyCreateInput) {
       .single()
 
     if (error) {
-      logger.error('Supabase property insertion error:', error)
+      logger.error('Supabase property insertion error:', {
+        rawError: error as unknown as Record<string, unknown>,
+      })
       throw new AppError(
         'Failed to create property listing inside database.',
         'DATABASE_ERROR',

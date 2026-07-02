@@ -41,7 +41,9 @@ export async function submitReview(data: ReviewSubmissionInput) {
     })
 
     if (error) {
-      logger.error('Supabase review insertion error:', error)
+      logger.error('Supabase review insertion error:', {
+        rawError: error as unknown as Record<string, unknown>,
+      })
       if (error.code === '23505') {
         throw new AppError(
           'You have already submitted a review for this property.',
