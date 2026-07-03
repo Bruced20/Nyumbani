@@ -58,3 +58,20 @@ export function createAdminClient(): SupabaseClient<Database> {
     },
   })
 }
+
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+
+/**
+ * Creates a static, cookie-free Supabase client.
+ * Safe to execute inside Next.js cache scopes (e.g. unstable_cache) during build time.
+ */
+export function createStaticClient(): SupabaseClient<Database> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!url || !anonKey) {
+    throw new Error('Supabase environment variables are missing.')
+  }
+
+  return createSupabaseClient<Database>(url, anonKey)
+}

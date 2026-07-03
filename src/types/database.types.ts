@@ -243,6 +243,75 @@ export type Database = {
         }
         Relationships: []
       }
+      property_images: {
+        Row: {
+          id: string
+          property_id: string
+          image_url: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          property_id: string
+          image_url: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          property_id?: string
+          image_url?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+      property_amenities: {
+        Row: {
+          id: string
+          property_id: string
+          amenity_name: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          property_id: string
+          amenity_name: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          property_id?: string
+          amenity_name?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+      nearby_places: {
+        Row: {
+          id: string
+          property_id: string
+          name: string
+          type: string
+          distance: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          property_id: string
+          name: string
+          type: string
+          distance: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          property_id?: string
+          name?: string
+          type?: string
+          distance?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

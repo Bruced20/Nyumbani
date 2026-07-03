@@ -10,6 +10,7 @@ import { MOCK_PROPERTIES } from '@/lib/mock-data'
 import { Gallery } from '@/features/properties/gallery'
 import { ActionButtons } from '@/features/properties/action-buttons'
 import { HealthBars } from '@/features/properties/health-bars'
+import { PropertyService } from '@/lib/services/properties'
 import {
   Droplet,
   Wifi,
@@ -73,20 +74,29 @@ export async function generateMetadata({ params }: PropertyDetailPageProps): Pro
  * 8. Community Ratings (Category bars)
  * 9. Resident Reviews
  * 10. Owner Responses
+ *
+ * Migrated to load production data directly from Supabase Services.
  */
 export default async function PropertyDetailPage({ params }: PropertyDetailPageProps) {
   const { slug } = await params
-  const property = MOCK_PROPERTIES.find((p) => p.slug === slug)
+
+  let property
+  try {
+    // Fetch property from Supabase via PropertyService
+    property = await PropertyService.getPropertyBySlug(slug)
+  } catch {
+    notFound()
+  }
 
   if (!property) {
     notFound()
   }
 
-  // Find 3 similar properties in the same neighborhood or same price range
-  const similarProperties = MOCK_PROPERTIES.filter(
-    (p) =>
-      p.id !== property.id && p.neighborhood.split(',')[0] === property.neighborhood.split(',')[0]
-  ).slice(0, 3)
+  // Find similar properties nearby from the database
+  const similarProperties = await PropertyService.getNearbyProperties(
+    property.neighborhood.split(',')[0],
+    slug
+  )
 
   return (
     <div className="flex flex-col min-h-screen bg-bg-primary text-text-primary">

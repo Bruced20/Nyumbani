@@ -4,16 +4,17 @@ import { Container, Section, Grid, Stack } from '@ui/layout'
 import { Display, H2, Body } from '@ui/typography'
 import { PropertyCard } from '@ui/card'
 import { SearchBar } from '@/features/properties/search-bar'
-import { MOCK_PROPERTIES } from '@/lib/mock-data'
+import { PropertyService } from '@/lib/services/properties'
 import { ShieldCheck, Eye, Sparkles } from 'lucide-react'
 
 /**
  * Public Discovery Homepage.
  * Integrates layout frameworks, featured properties sliders, and explanation checklists.
+ * Migrated to load production data directly from Supabase Services.
  */
-export default function Home() {
-  // Only display verified or high-score properties as featured listings
-  const featuredProperties = MOCK_PROPERTIES.slice(0, 3)
+export default async function Home() {
+  // Fetch featured properties directly from Supabase via PropertyService
+  const featuredProperties = await PropertyService.getFeaturedProperties()
 
   return (
     <div className="flex flex-col min-h-screen bg-bg-primary text-text-primary">

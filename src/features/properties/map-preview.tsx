@@ -4,12 +4,12 @@ import React from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { scaleVariants, SPRING_SUBTLE } from '@ui/animations'
 import { MapPin, Sparkles, Maximize2, Minimize2 } from 'lucide-react'
-import { PropertyMock } from '@/lib/mock-data'
+import { Property } from '@/lib/mappers'
 import { HealthScore } from '@ui/badge'
 import { cn } from '@/lib/utils'
 
 interface MapPreviewProps {
-  properties: PropertyMock[]
+  properties: Property[]
   onSelectProperty?: (slug: string) => void
 }
 
@@ -21,7 +21,7 @@ interface MapPreviewProps {
 export const MapPreview: React.FC<MapPreviewProps> = ({ properties, onSelectProperty }) => {
   const [isInteractive, setIsInteractive] = React.useState(false)
   const [isExpanded, setIsExpanded] = React.useState(false)
-  const [hoveredProperty, setHoveredProperty] = React.useState<PropertyMock | null>(null)
+  const [hoveredProperty, setHoveredProperty] = React.useState<Property | null>(null)
 
   // Pin offsets coordinates to place indicators on the canvas
   const pinOffsets = [
