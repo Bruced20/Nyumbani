@@ -1,3 +1,17 @@
+export interface ReviewMock {
+  id: string
+  role: 'Current Resident' | 'Former Resident' | 'Neighbour' | 'Community Contributor'
+  rating: number
+  comment: string
+  createdAt: string
+}
+
+export interface NearbyPlaceMock {
+  name: string
+  type: string
+  distance: string // e.g. "5 min walk", "10 min walk"
+}
+
 export interface PropertyMock {
   id: string
   slug: string
@@ -19,12 +33,27 @@ export interface PropertyMock {
   reviewCount: number
   vacancyStatus: boolean
   isVerified: boolean
-  updatedAt: string // ISO string for sorting by recently updated
+  updatedAt: string
   coordinates: {
     lat: number
     lng: number
   }
-  imageUrl?: string
+  // Added detailed mock fields for Sprint 3C
+  deposit: string
+  distanceFromRoad: string
+  availableUnits: number
+  petsAllowed: boolean
+  caretakerAvailable: boolean
+  amenities: string[]
+  nearbyPlaces: NearbyPlaceMock[]
+  reviews: ReviewMock[]
+  aiSummary: {
+    sentiment: string
+    positives: string[]
+    complaints: string[]
+    recommendation: string
+  }
+  images: string[]
 }
 
 // 30 Realistic Kenyan locations for Autocomplete
@@ -85,7 +114,7 @@ export const NEARBY_NEIGHBORHOODS: Record<string, string[]> = {
   'thika road': ['Roysambu', 'Kasarani', 'Zimmerman', 'Kahawa Sukari', 'Kahawa Wendani'],
 }
 
-// Generator to produce 50 realistic properties across the neighborhoods
+// Generator to produce 52 realistic properties across the neighborhoods
 const generateMockProperties = (): PropertyMock[] => {
   const neighborhoods = [
     { name: 'Westlands', lat: -1.2682, lng: 36.8041 },
@@ -202,7 +231,6 @@ const generateMockProperties = (): PropertyMock[] => {
     const caretaker = ratings[(i + 2) % ratings.length]
     const electricity = ratings[(i + 3) % ratings.length]
 
-    // Map rating string values to numeric scores for property health calculation
     const scoreMap = { Excellent: 5, Good: 4, Fair: 3, Poor: 1.5 }
     const healthScore = parseFloat(
       ((scoreMap[water] + scoreMap[security] + scoreMap[caretaker]) / 3).toFixed(2)
@@ -213,7 +241,45 @@ const generateMockProperties = (): PropertyMock[] => {
 
     // Distribute recently updated timeline
     const date = new Date()
-    date.setDate(date.getDate() - i * 3) // spread updates over last 150 days
+    date.setDate(date.getDate() - i * 3)
+
+    // Mock images
+    const images = [
+      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&auto=format&fit=crop&q=60',
+      'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&auto=format&fit=crop&q=60',
+      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&auto=format&fit=crop&q=60',
+    ]
+
+    // Create 3 realistic review objects
+    const roles: ReviewMock['role'][] = [
+      'Current Resident',
+      'Former Resident',
+      'Neighbour',
+      'Community Contributor',
+    ]
+    const reviews: ReviewMock[] = [
+      {
+        id: `rev-${i}-1`,
+        role: roles[i % roles.length],
+        rating: healthScore >= 4 ? 5 : healthScore >= 3 ? 4 : 3,
+        comment: `Excellent location in ${neighborhoodObj.name}. The water is consistently reliable. Caretaker is friendly but can be slow to fix broken tiles.`,
+        createdAt: '2026-06-15T12:00:00Z',
+      },
+      {
+        id: `rev-${i}-2`,
+        role: roles[(i + 1) % roles.length],
+        rating: healthScore >= 4 ? 4 : 3,
+        comment: `Safe and secure building. CCTV cameras are active. However, noise levels can get loud on weekends due to passing traffic on the nearby access road.`,
+        createdAt: '2026-05-20T10:00:00Z',
+      },
+      {
+        id: `rev-${i}-3`,
+        role: roles[(i + 2) % roles.length],
+        rating: healthScore >= 4.5 ? 5 : 3,
+        comment: `Good value for rent money. Deposit refund takes about 2 weeks after moving out, which is better than most landlords in Nairobi.`,
+        createdAt: '2026-04-10T14:30:00Z',
+      },
+    ]
 
     properties.push({
       id: `prop-gen-${i}`,
@@ -233,14 +299,53 @@ const generateMockProperties = (): PropertyMock[] => {
       roadType: roads[i % roads.length],
       garbageReliability: garbages[i % garbages.length],
       healthScore,
-      reviewCount: ((i * 7) % 35) + 2, // realistic reviews count
-      vacancyStatus: i % 4 !== 0, // 75% vacancy availability
-      isVerified: i % 3 === 0, // 33% verified listings
+      reviewCount: reviews.length,
+      vacancyStatus: i % 4 !== 0,
+      isVerified: i % 3 === 0,
       updatedAt: date.toISOString(),
       coordinates: {
         lat: neighborhoodObj.lat + (Math.random() - 0.5) * 0.015,
         lng: neighborhoodObj.lng + (Math.random() - 0.5) * 0.015,
       },
+      // Added detailed mock fields
+      deposit: `${Math.round(rentMin * 1.0).toLocaleString()} KES (1 Month)`,
+      distanceFromRoad: `${((i * 50) % 250) + 50}m from Main Road`,
+      availableUnits: ((i * 3) % 8) + 1,
+      petsAllowed: i % 2 === 0,
+      caretakerAvailable: i % 3 !== 1,
+      amenities: [
+        'Water Tank Backup',
+        'Secure Perimeter Wall',
+        'Zuku/Safaricom Fiber',
+        'Assigned Parking Slot',
+        'Token Electricity Meters',
+        '24/7 Gate Guard',
+      ],
+      nearbyPlaces: [
+        { name: `${neighborhoodObj.name} Shopping Stage`, type: 'Transit', distance: '5 min walk' },
+        { name: 'Quickmart Supermarket', type: 'Shopping', distance: '8 min walk' },
+        { name: 'Local Community Hospital', type: 'Medical', distance: '12 min walk' },
+      ],
+      reviews,
+      aiSummary: {
+        sentiment:
+          healthScore >= 4.0
+            ? 'Highly Positive'
+            : healthScore >= 3.0
+              ? 'Mixed Positive'
+              : 'Needs attention',
+        positives: [
+          'High water availability with backup borehole',
+          'Stable fiber internet options',
+          'Prompt trash removal schedules',
+        ],
+        complaints: ['Noise from nearby main streets', 'Visitor parking is extremely limited'],
+        recommendation:
+          healthScore >= 4.0
+            ? 'Highly recommended for families looking for secure, hassle-free rental access.'
+            : 'A solid option for budget hunters, provided you negotiate deposit refunds in writing.',
+      },
+      images,
     })
   }
 
