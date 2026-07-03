@@ -59,9 +59,13 @@ export default function Home() {
                   houseType={prop.houseType}
                   healthScore={prop.healthScore}
                   isVerified={prop.isVerified}
-                  waterRating={prop.waterRating}
-                  securityRating={prop.securityRating}
-                  caretakerRating={prop.caretakerRating}
+                  waterRating={
+                    prop.waterRating === 'Excellent' ? 5 : prop.waterRating === 'Good' ? 4 : 3
+                  }
+                  securityRating={
+                    prop.securityRating === 'Excellent' ? 5 : prop.securityRating === 'Good' ? 4 : 3
+                  }
+                  caretakerRating={prop.healthScore >= 4 ? 4.5 : 3.5}
                 />
               ))}
             </Grid>

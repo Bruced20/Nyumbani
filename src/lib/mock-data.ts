@@ -5,137 +5,246 @@ export interface PropertyMock {
   neighborhood: string
   rentMin: number
   rentMax: number
-  houseType: string
+  houseType:
+    'Single Room' | 'Bedsitter' | 'Studio' | 'One Bedroom' | 'Two Bedroom' | 'Three Bedroom'
   waterSource: string
-  internetProviders: string[]
-  securityDetails: string
-  depositConditions: string
-  parkingSpaces: string
-  roadAccess: string
-  publicTransportDist: string
+  waterRating: 'Excellent' | 'Good' | 'Fair' | 'Poor'
+  electricityRating: 'Excellent' | 'Good' | 'Fair' | 'Poor'
+  internetType: 'Fiber Available' | 'Mobile Internet Only' | 'No Internet'
+  securityRating: 'Excellent' | 'Good' | 'Fair' | 'Poor'
+  parking: 'Available' | 'Limited' | 'None'
+  roadType: 'Tarmac' | 'Murram' | 'Seasonal'
+  garbageReliability: 'Reliable' | 'Occasional' | 'Poor'
   healthScore: number
+  reviewCount: number
+  vacancyStatus: boolean
   isVerified: boolean
-  waterRating: number
-  securityRating: number
-  caretakerRating: number
+  updatedAt: string // ISO string for sorting by recently updated
+  coordinates: {
+    lat: number
+    lng: number
+  }
   imageUrl?: string
 }
 
-export const MOCK_PROPERTIES: PropertyMock[] = [
-  {
-    id: 'prop-1',
-    slug: 'sunrise-apartments-kilimani',
-    name: 'Sunrise Apartments',
-    neighborhood: 'Kilimani, Nairobi',
-    rentMin: 25000,
-    rentMax: 32000,
-    houseType: '2 Bedroom',
-    waterSource: 'Borehole & Council (Reliable 24/7)',
-    internetProviders: ['Safaricom Fibre', 'Zuku'],
-    securityDetails: '24/7 Guard, Electric Fence, CCTV',
-    depositConditions: '1 Month Rent + 1 Month Water Deposit (Fully Refunded)',
-    parkingSpaces: '1 Assigned Slot',
-    roadAccess: 'Tarmac Road Access',
-    publicTransportDist: '5-minute walk to Kilimani Stage',
-    healthScore: 4.8,
-    isVerified: true,
-    waterRating: 5,
-    securityRating: 5,
-    caretakerRating: 4.5,
-  },
-  {
-    id: 'prop-2',
-    slug: 'westlands-heights-plaza',
-    name: 'Westlands Heights Plaza',
-    neighborhood: 'Westlands, Nairobi',
-    rentMin: 45000,
-    rentMax: 60000,
-    houseType: '1 & 2 Bedroom',
-    waterSource: 'Council Water (Rationed on Tuesdays)',
-    internetProviders: ['Safaricom Fibre', 'JamboPlay'],
-    securityDetails: 'Controlled Access Gate, Guard Dogs',
-    depositConditions: '2 Months Deposit (Refundable within 30 days)',
-    parkingSpaces: '2 Slots per tenant',
-    roadAccess: 'Cabro Paved Driveway',
-    publicTransportDist: '2-minute walk to Matatu Route',
-    healthScore: 3.9,
-    isVerified: false,
-    waterRating: 3.2,
-    securityRating: 4.5,
-    caretakerRating: 4.0,
-  },
-  {
-    id: 'prop-3',
-    slug: 'kileleshwa-gardens-court',
-    name: 'Kileleshwa Gardens Court',
-    neighborhood: 'Kileleshwa, Nairobi',
-    rentMin: 55000,
-    rentMax: 75000,
-    houseType: '3 Bedroom',
-    waterSource: 'Borehole Only (Salty, requires purifier)',
-    internetProviders: ['Safaricom Fibre', 'Zuku', 'Liquid Telecom'],
-    securityDetails: 'Intercom System, 2 Guard Stations',
-    depositConditions: '1 Month Deposit (Refundable, but cleaning fee deducted)',
-    parkingSpaces: 'Underground Parking',
-    roadAccess: 'Rough Road for 200m, then Tarmac',
-    publicTransportDist: '10-minute walk to nearest stage',
-    healthScore: 4.2,
-    isVerified: true,
-    waterRating: 4.0,
-    securityRating: 4.8,
-    caretakerRating: 3.8,
-  },
-  {
-    id: 'prop-4',
-    slug: 'madaraka-green-villas',
-    name: 'Madaraka Green Villas',
-    neighborhood: 'Madaraka, Nairobi',
-    rentMin: 18000,
-    rentMax: 22000,
-    houseType: 'Bedsitter & Single Room',
-    waterSource: 'Council Water (Stored in overhead tanks)',
-    internetProviders: ['Telkom Fibre', 'Safaricom Fibre'],
-    securityDetails: 'Caretaker at gate, Double Lock main entrance',
-    depositConditions: '1 Month Deposit (Fully Refunded after paint check)',
-    parkingSpaces: 'On-street parking only',
-    roadAccess: 'Cabro paved walk paths',
-    publicTransportDist: '3-minute walk to Strathmore stage',
-    healthScore: 2.8,
-    isVerified: false,
-    waterRating: 2.5,
-    securityRating: 3.0,
-    caretakerRating: 3.0,
-  },
-  {
-    id: 'prop-5',
-    slug: 'south-c-executive-suites',
-    name: 'South C Executive Suites',
-    neighborhood: 'South C, Nairobi',
-    rentMin: 35000,
-    rentMax: 42000,
-    houseType: '1 Bedroom',
-    waterSource: 'Council Water & Tanker backup',
-    internetProviders: ['Safaricom Fibre', 'Zuku'],
-    securityDetails: 'High gate, Razor wire fence',
-    depositConditions: '1 Month Rent + 10k Electricity/Water Deposit',
-    parkingSpaces: '1 Slot assigned',
-    roadAccess: 'Potholed access road (floods in rainy season)',
-    publicTransportDist: '8-minute walk to South C stage',
-    healthScore: 3.5,
-    isVerified: true,
-    waterRating: 3.5,
-    securityRating: 3.8,
-    caretakerRating: 3.2,
-  },
-]
-
-export const MOCK_NEIGHBORHOODS = [
+// 30 Realistic Kenyan locations for Autocomplete
+export const KENYAN_LOCATIONS = [
   'Westlands',
   'Kilimani',
   'Kileleshwa',
-  'Madaraka',
+  'Lavington',
+  'South B',
   'South C',
-  'Langata',
+  "Lang'ata",
+  'Karen',
+  'Embakasi',
+  'Pipeline',
   'Roysambu',
+  'Kasarani',
+  'Zimmerman',
+  'Ruaka',
+  'Ruiru',
+  'Kikuyu',
   'Syokimau',
+  'Mlolongo',
+  'Utawala',
+  'Thika Road',
+  'Parklands',
+  'Gigiri',
+  'Hurlingham',
+  'Madaraka',
+  'Donholm',
+  'Imara Daima',
+  'Kahawa Sukari',
+  'Kahawa Wendani',
+  'Ngong',
+  'Rongai',
 ]
+
+// Nearby neighborhood mapping for search recommendations when empty
+export const NEARBY_NEIGHBORHOODS: Record<string, string[]> = {
+  westlands: ['Parklands', 'Gigiri', 'Kileleshwa', 'Lavington', 'Hurlingham'],
+  kilimani: ['Kileleshwa', 'Lavington', 'Hurlingham', 'Madaraka', 'South C'],
+  kileleshwa: ['Lavington', 'Westlands', 'Kilimani', 'Parklands', 'Hurlingham'],
+  lavington: ['Kileleshwa', 'Westlands', 'Karen', 'Kilimani', 'Ngong'],
+  'south b': ['South C', 'Madaraka', 'Imara Daima', 'Donholm', 'Pipeline'],
+  'south c': ['South B', "Lang'ata", 'Madaraka', 'Hurlingham', 'Imara Daima'],
+  "lang'ata": ['South C', 'Karen', 'Ngong', 'Rongai', 'Madaraka'],
+  karen: ["Lang'ata", 'Ngong', 'Kikuyu', 'Lavington', 'Rongai'],
+  embakasi: ['Pipeline', 'Donholm', 'Utawala', 'Imara Daima', 'South B'],
+  pipeline: ['Embakasi', 'Donholm', 'Imara Daima', 'Utawala', 'South B'],
+  roysambu: ['Zimmerman', 'Kasarani', 'Kahawa Sukari', 'Kahawa Wendani', 'Thika Road'],
+  kasarani: ['Roysambu', 'Zimmerman', 'Thika Road', 'Kahawa Wendani', 'Utawala'],
+  zimmerman: ['Roysambu', 'Kasarani', 'Thika Road', 'Kahawa Sukari', 'Kahawa Wendani'],
+  ruaka: ['Westlands', 'Kikuyu', 'Parklands', 'Gigiri', 'Ruiru'],
+  ruiru: ['Thika Road', 'Kahawa Sukari', 'Roysambu', 'Kikuyu', 'Zimmerman'],
+  kikuyu: ['Karen', 'Ngong', 'Ruaka', 'Westlands', 'Ruiru'],
+  syokimau: ['Mlolongo', 'Imara Daima', 'Utawala', 'South B', 'Pipeline'],
+  mlolongo: ['Syokimau', 'Utawala', 'Imara Daima', 'Donholm', 'Ngong'],
+  utawala: ['Syokimau', 'Mlolongo', 'Pipeline', 'Embakasi', 'Donholm'],
+  'thika road': ['Roysambu', 'Kasarani', 'Zimmerman', 'Kahawa Sukari', 'Kahawa Wendani'],
+}
+
+// Generator to produce 50 realistic properties across the neighborhoods
+const generateMockProperties = (): PropertyMock[] => {
+  const neighborhoods = [
+    { name: 'Westlands', lat: -1.2682, lng: 36.8041 },
+    { name: 'Kilimani', lat: -1.2908, lng: 36.7828 },
+    { name: 'Kileleshwa', lat: -1.2789, lng: 36.7766 },
+    { name: 'Lavington', lat: -1.2858, lng: 36.7645 },
+    { name: 'South B', lat: -1.3105, lng: 36.8373 },
+    { name: 'South C', lat: -1.3214, lng: 36.8285 },
+    { name: "Lang'ata", lat: -1.3255, lng: 36.7823 },
+    { name: 'Karen', lat: -1.3201, lng: 36.7029 },
+    { name: 'Embakasi', lat: -1.3197, lng: 36.9028 },
+    { name: 'Pipeline', lat: -1.3175, lng: 36.892 },
+    { name: 'Roysambu', lat: -1.2189, lng: 36.8885 },
+    { name: 'Kasarani', lat: -1.2201, lng: 36.8992 },
+    { name: 'Zimmerman', lat: -1.2114, lng: 36.8912 },
+    { name: 'Ruaka', lat: -1.2065, lng: 36.7788 },
+    { name: 'Ruiru', lat: -1.1492, lng: 36.9582 },
+    { name: 'Kikuyu', lat: -1.2541, lng: 36.6817 },
+    { name: 'Syokimau', lat: -1.3524, lng: 36.9381 },
+    { name: 'Mlolongo', lat: -1.3934, lng: 36.9248 },
+    { name: 'Utawala', lat: -1.2801, lng: 36.9744 },
+    { name: 'Thika Road', lat: -1.2255, lng: 36.879 },
+  ]
+
+  const prefixes = [
+    'Sunrise',
+    'Pinecrest',
+    'Emerald',
+    'Oakridge',
+    'Bella Vista',
+    'Highland',
+    'Lantana',
+    'Jasmine',
+    'Crestview',
+    'Royal',
+    'Nandi',
+    'Tana',
+    'Safari',
+    'Karibu',
+    'Raha',
+  ]
+  const suffixes = [
+    'Apartments',
+    'Suites',
+    'Court',
+    'Gardens',
+    'Villas',
+    'Plaza',
+    'Residency',
+    'Homes',
+    'Heights',
+    'Terraces',
+  ]
+  const houseTypes: PropertyMock['houseType'][] = [
+    'Single Room',
+    'Bedsitter',
+    'Studio',
+    'One Bedroom',
+    'Two Bedroom',
+    'Three Bedroom',
+  ]
+  const ratings: ('Excellent' | 'Good' | 'Fair' | 'Poor')[] = ['Excellent', 'Good', 'Fair', 'Poor']
+  const internets: PropertyMock['internetType'][] = [
+    'Fiber Available',
+    'Mobile Internet Only',
+    'No Internet',
+  ]
+  const parkings: PropertyMock['parking'][] = ['Available', 'Limited', 'None']
+  const roads: PropertyMock['roadType'][] = ['Tarmac', 'Murram', 'Seasonal']
+  const garbages: PropertyMock['garbageReliability'][] = ['Reliable', 'Occasional', 'Poor']
+
+  const properties: PropertyMock[] = []
+
+  // Create exactly 52 properties (to satisfy the "at least 50" requirement)
+  for (let i = 0; i < 52; i++) {
+    const neighborhoodObj = neighborhoods[i % neighborhoods.length]
+    const pfx = prefixes[i % prefixes.length]
+    const sfx = suffixes[i % suffixes.length]
+    const name = `${pfx} ${sfx}`
+    const houseType = houseTypes[i % houseTypes.length]
+
+    // Set realistic rent ranges per house type
+    let rentMin = 5000
+    let rentMax = 8000
+    if (houseType === 'Bedsitter') {
+      rentMin = 8000
+      rentMax = 12000
+    } else if (houseType === 'Studio') {
+      rentMin = 12000
+      rentMax = 18000
+    } else if (houseType === 'One Bedroom') {
+      rentMin = 15000
+      rentMax = 25000
+    } else if (houseType === 'Two Bedroom') {
+      rentMin = 22000
+      rentMax = 40000
+    } else if (houseType === 'Three Bedroom') {
+      rentMin = 35000
+      rentMax = 80000
+    }
+
+    // Add neighborhood modifier (e.g. Karen & Westlands are more expensive)
+    if (
+      neighborhoodObj.name === 'Karen' ||
+      neighborhoodObj.name === 'Westlands' ||
+      neighborhoodObj.name === 'Lavington'
+    ) {
+      rentMin = Math.round(rentMin * 1.5)
+      rentMax = Math.round(rentMax * 1.6)
+    }
+
+    const water = ratings[i % ratings.length]
+    const security = ratings[(i + 1) % ratings.length]
+    const caretaker = ratings[(i + 2) % ratings.length]
+    const electricity = ratings[(i + 3) % ratings.length]
+
+    // Map rating string values to numeric scores for property health calculation
+    const scoreMap = { Excellent: 5, Good: 4, Fair: 3, Poor: 1.5 }
+    const healthScore = parseFloat(
+      ((scoreMap[water] + scoreMap[security] + scoreMap[caretaker]) / 3).toFixed(2)
+    )
+
+    // Build unique slug
+    const slug = `${name.toLowerCase().replace(/\s+/g, '-')}-${neighborhoodObj.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${i}`
+
+    // Distribute recently updated timeline
+    const date = new Date()
+    date.setDate(date.getDate() - i * 3) // spread updates over last 150 days
+
+    properties.push({
+      id: `prop-gen-${i}`,
+      slug,
+      name,
+      neighborhood: `${neighborhoodObj.name}, Nairobi`,
+      rentMin,
+      rentMax,
+      houseType,
+      waterSource:
+        water === 'Excellent' ? 'Borehole & Council (Backup Tanks)' : 'Council Water supply',
+      waterRating: water,
+      electricityRating: electricity,
+      internetType: internets[i % internets.length],
+      securityRating: security,
+      parking: parkings[i % parkings.length],
+      roadType: roads[i % roads.length],
+      garbageReliability: garbages[i % garbages.length],
+      healthScore,
+      reviewCount: ((i * 7) % 35) + 2, // realistic reviews count
+      vacancyStatus: i % 4 !== 0, // 75% vacancy availability
+      isVerified: i % 3 === 0, // 33% verified listings
+      updatedAt: date.toISOString(),
+      coordinates: {
+        lat: neighborhoodObj.lat + (Math.random() - 0.5) * 0.015,
+        lng: neighborhoodObj.lng + (Math.random() - 0.5) * 0.015,
+      },
+    })
+  }
+
+  return properties
+}
+
+export const MOCK_PROPERTIES = generateMockProperties()

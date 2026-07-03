@@ -2,10 +2,11 @@
 
 import React from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { scaleVariants } from '@ui/animations'
-import { MapPin, Sparkles } from 'lucide-react'
+import { scaleVariants, SPRING_SUBTLE } from '@ui/animations'
+import { MapPin, Sparkles, Maximize2, Minimize2 } from 'lucide-react'
 import { PropertyMock } from '@/lib/mock-data'
 import { HealthScore } from '@ui/badge'
+import { cn } from '@/lib/utils'
 
 interface MapPreviewProps {
   properties: PropertyMock[]
@@ -13,28 +14,52 @@ interface MapPreviewProps {
 }
 
 /**
- * MapPreview: Renders a static mockup of Nairobi map by default.
- * Selecting "Open Interactive Map" loads a simulated interactive pane
- * showing clickable pins mapped to coordinate offsets.
+ * Mapped MapPreview Component.
+ * Supports static cartography mockup, clicking "Open Interactive Map" to enter interactive simulator,
+ * and clicking "Expand / Collapse" buttons to grow/shrink layout bounds with spring animations.
  */
 export const MapPreview: React.FC<MapPreviewProps> = ({ properties, onSelectProperty }) => {
   const [isInteractive, setIsInteractive] = React.useState(false)
+  const [isExpanded, setIsExpanded] = React.useState(false)
   const [hoveredProperty, setHoveredProperty] = React.useState<PropertyMock | null>(null)
 
-  // Mapped pins offsets to simulate map locations
+  // Pin offsets coordinates to place indicators on the canvas
   const pinOffsets = [
-    { top: '30%', left: '40%' },
-    { top: '50%', left: '60%' },
-    { top: '40%', left: '70%' },
-    { top: '65%', left: '30%' },
-    { top: '20%', left: '50%' },
+    { top: '35%', left: '30%' },
+    { top: '50%', left: '55%' },
+    { top: '42%', left: '72%' },
+    { top: '65%', left: '25%' },
+    { top: '22%', left: '48%' },
+    { top: '75%', left: '50%' },
+    { top: '15%', left: '68%' },
+    { top: '58%', left: '80%' },
+    { top: '30%', left: '15%' },
+    { top: '80%', left: '20%' },
   ]
 
   return (
-    <div className="w-full h-full relative flex flex-col items-center justify-center bg-[#E5E9F0] border border-border-subtle rounded-symmetric overflow-hidden min-h-[400px]">
-      {/* 1. Static Map Preview Overlay (Default state) */}
+    <motion.div
+      layout
+      transition={SPRING_SUBTLE}
+      className={cn(
+        'w-full bg-[#E5E9F0] border border-border-subtle rounded-symmetric overflow-hidden shadow-sm relative flex flex-col items-center justify-center transition-all duration-300',
+        isExpanded ? 'h-[calc(100vh-100px)] lg:h-[calc(100vh-100px)] z-30' : 'h-[400px] lg:h-full'
+      )}
+    >
+      {/* 1. Expand / Collapse Trigger overlay */}
+      <div className="absolute top-xs right-xs z-20 flex gap-xxs">
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="p-xxs bg-bg-primary text-text-primary border border-border-subtle rounded-pill hover:bg-neutral-50 shadow-sm cursor-pointer"
+          title={isExpanded ? 'Collapse Map' : 'Expand Map'}
+        >
+          {isExpanded ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+        </button>
+      </div>
+
       <AnimatePresence mode="wait">
         {!isInteractive ? (
+          /* Static Cartography Grid Overlay */
           <motion.div
             key="static"
             variants={scaleVariants}
@@ -43,8 +68,8 @@ export const MapPreview: React.FC<MapPreviewProps> = ({ properties, onSelectProp
             exit="exit"
             className="absolute inset-0 flex flex-col items-center justify-center p-md text-center bg-slate-100 bg-opacity-95"
           >
-            {/* Draw a mock cartography grid */}
-            <div className="absolute inset-0 opacity-15 pointer-events-none grid grid-cols-6 grid-rows-6 border border-slate-300">
+            {/* Draw mapping coordinates */}
+            <div className="absolute inset-0 opacity-10 pointer-events-none grid grid-cols-6 grid-rows-6 border border-slate-300">
               {Array.from({ length: 36 }).map((_, i) => (
                 <div key={i} className="border border-slate-300" />
               ))}
@@ -54,9 +79,10 @@ export const MapPreview: React.FC<MapPreviewProps> = ({ properties, onSelectProp
               <div className="h-10 w-10 bg-brand-indigo/10 text-brand-indigo rounded-pill flex items-center justify-center">
                 <MapPin size={22} />
               </div>
-              <h3 className="font-semibold text-[15px] text-text-primary">Nairobi Property Map</h3>
+              <h3 className="font-semibold text-[15px] text-text-primary">Nairobi Map View</h3>
               <p className="text-[12px] text-text-muted">
-                Explore local rent prices and safety scores visually on our static map preview.
+                Locate verified properties across 20 Nairobi neighborhoods with active quality
+                metrics.
               </p>
               <button
                 onClick={() => setIsInteractive(true)}
@@ -67,7 +93,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({ properties, onSelectProp
             </div>
           </motion.div>
         ) : (
-          /* 2. Interactive Map Simulator (Simulates click and hover) */
+          /* Mapped pins simulator */
           <motion.div
             key="interactive"
             variants={scaleVariants}
@@ -76,18 +102,18 @@ export const MapPreview: React.FC<MapPreviewProps> = ({ properties, onSelectProp
             exit="exit"
             className="absolute inset-0 w-full h-full bg-[#EAEDF2]"
           >
-            {/* Simulated streets lines */}
+            {/* Simulated cartography streets lines */}
             <svg
               className="absolute inset-0 w-full h-full opacity-35 pointer-events-none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <line x1="0" y1="100" x2="600" y2="400" stroke="#CBD5E1" strokeWidth="6" />
-              <line x1="200" y1="0" x2="200" y2="600" stroke="#CBD5E1" strokeWidth="8" />
-              <line x1="0" y1="300" x2="600" y2="200" stroke="#CBD5E1" strokeWidth="5" />
+              <line x1="0" y1="120" x2="800" y2="450" stroke="#CBD5E1" strokeWidth="6" />
+              <line x1="220" y1="0" x2="220" y2="800" stroke="#CBD5E1" strokeWidth="8" />
+              <line x1="0" y1="350" x2="800" y2="280" stroke="#CBD5E1" strokeWidth="5" />
               <circle
-                cx="200"
-                cy="250"
-                r="80"
+                cx="220"
+                cy="280"
+                r="100"
                 fill="none"
                 stroke="#CBD5E1"
                 strokeWidth="3"
@@ -111,16 +137,16 @@ export const MapPreview: React.FC<MapPreviewProps> = ({ properties, onSelectProp
                     whileHover={{ scale: 1.2 }}
                     className="p-[6px] bg-brand-indigo text-white rounded-pill shadow-md flex items-center justify-center border-2 border-white"
                   >
-                    <MapPin size={16} />
+                    <MapPin size={15} />
                   </motion.div>
                 </div>
               )
             })}
 
-            {/* Map Simulator HUD Banner */}
-            <div className="absolute top-xs left-xs bg-bg-primary border border-border-subtle px-xs py-[4px] rounded-soft text-[11px] font-semibold text-text-primary shadow-sm flex items-center gap-[4px]">
-              <Sparkles size={12} className="text-brand-indigo" />
-              Simulated Interactive Map
+            {/* HUD Status Bar */}
+            <div className="absolute top-xs left-xs bg-bg-primary border border-border-subtle px-xs py-[4px] rounded-soft text-[11px] font-semibold text-text-primary shadow-sm flex items-center gap-[4px] z-10">
+              <Sparkles size={12} className="text-brand-indigo animate-pulse" />
+              Interactive Map Simulator
               <button
                 onClick={() => setIsInteractive(false)}
                 className="text-text-muted hover:text-text-primary underline ml-xs cursor-pointer"
@@ -129,7 +155,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({ properties, onSelectProp
               </button>
             </div>
 
-            {/* Hover tooltip detailing hovered property details */}
+            {/* Tooltip detail block */}
             <AnimatePresence>
               {hoveredProperty && (
                 <motion.div
@@ -144,8 +170,8 @@ export const MapPreview: React.FC<MapPreviewProps> = ({ properties, onSelectProp
                       {hoveredProperty.name}
                     </h4>
                     <p className="text-[11px] text-text-muted truncate">
-                      {hoveredProperty.neighborhood} • {hoveredProperty.rentMin.toLocaleString()}{' '}
-                      KES
+                      {hoveredProperty.neighborhood} • {hoveredProperty.rentMin.toLocaleString()} -{' '}
+                      {hoveredProperty.rentMax.toLocaleString()} KES
                     </p>
                   </div>
                 </motion.div>
@@ -154,6 +180,6 @@ export const MapPreview: React.FC<MapPreviewProps> = ({ properties, onSelectProp
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   )
 }
