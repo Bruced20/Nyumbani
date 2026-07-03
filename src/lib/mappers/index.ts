@@ -9,6 +9,8 @@ export interface Profile {
   role: 'Renter' | 'Owner' | 'Moderator' | 'Admin'
   createdAt: string
   updatedAt: string
+  lastLoginAt: string | null
+  provider: string | null
 }
 
 export interface Review {
@@ -98,6 +100,8 @@ export const mapProfileRow = (row: Database['public']['Tables']['profiles']['Row
     role: row.role,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+    lastLoginAt: row.last_login_at,
+    provider: row.provider,
   }
 }
 

@@ -1,6 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
-import { Navbar, Footer } from '@ui/navigation'
+import { Footer } from '@ui/navigation'
+import { Navbar } from '@/components/navbar-wrapper'
 import { Container, Section, Stack } from '@ui/layout'
 import { H2, Body } from '@ui/typography'
 import { Button } from '@ui/button'

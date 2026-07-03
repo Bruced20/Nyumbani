@@ -1,5 +1,6 @@
 import React from 'react'
-import { Navbar, Footer } from '@ui/navigation'
+import { Footer } from '@ui/navigation'
+import { Navbar } from '@/components/navbar-wrapper'
 import { Container, Section, Grid, Stack } from '@ui/layout'
 import { Display, H2, Body } from '@ui/typography'
 import { PropertyCard } from '@ui/card'

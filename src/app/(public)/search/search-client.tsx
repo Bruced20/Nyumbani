@@ -2,7 +2,8 @@
 
 import React from 'react'
 import { useRouter } from 'next/navigation'
-import { Navbar, Footer } from '@ui/navigation'
+import { Footer } from '@ui/navigation'
+import { Navbar } from '@/components/navbar-wrapper'
 import { Container } from '@ui/layout'
 import { PropertyCard } from '@ui/card'
 import { EmptyState, ErrorState, Skeleton } from '@ui/feedback'

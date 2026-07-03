@@ -1,5 +1,3 @@
-import { AsyncLocalStorage } from 'node:async_hooks'
-
 type LogLevel = 'info' | 'warn' | 'error' | 'debug'
 
 interface LogMessage {
@@ -10,8 +8,19 @@ interface LogMessage {
   context?: Record<string, unknown>
 }
 
-// AsyncLocalStorage to propagate request-level correlation IDs across asynchronous boundaries
-export const loggerStorage = new AsyncLocalStorage<{ requestId: string }>()
+// Conditionally load AsyncLocalStorage on server side to prevent browser bundle crashes
+let loggerStorage: { getStore: () => { requestId?: string } | undefined } | null = null
+if (typeof window === 'undefined') {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { AsyncLocalStorage } = require('node:async_hooks')
+    loggerStorage = new AsyncLocalStorage()
+  } catch {
+    // fallback
+  }
+}
+
+export { loggerStorage }
 
 const SENSITIVE_KEYS = new Set([
   'email',
@@ -82,8 +91,8 @@ export const logger = {
   },
 
   _log(level: LogLevel, message: string, context?: Record<string, unknown>) {
-    // 1. Resolve correlation ID from AsyncLocalStorage store
-    const store = loggerStorage.getStore()
+    // 1. Resolve correlation ID from AsyncLocalStorage store (server-only)
+    const store = loggerStorage ? loggerStorage.getStore() : null
     const requestId = store?.requestId || (context?.requestId as string) || undefined
 
     // Remove requestId from context if it was passed there

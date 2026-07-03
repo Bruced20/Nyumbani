@@ -1,33 +1,45 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { AuthService } from '@/lib/services/auth'
+import { logger } from '@/lib/utils/logger'
 
 /**
- * Route Handler for Supabase Auth OAuth Callback.
- * Exchanges authorization code for session tokens and redirects.
+ * Supabase OAuth Callback Handler.
+ * Exchanges single-use authentication codes for user sessions.
  */
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url)
-  const code = searchParams.get('code')
-  const next = searchParams.get('next') ?? '/'
+  const requestUrl = new URL(request.url)
+  const code = requestUrl.searchParams.get('code')
+  const next = requestUrl.searchParams.get('next') || '/'
 
   if (code) {
-    const supabase = await createClient()
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    try {
+      const supabase = await createClient()
+      const {
+        data: { user },
+        error,
+      } = await supabase.auth.exchangeCodeForSession(code)
 
-    if (!error) {
-      const forwardedHost = request.headers.get('x-forwarded-host')
-      const isLocalEnv = process.env.NODE_ENV === 'development'
-
-      if (isLocalEnv) {
-        return NextResponse.redirect(`${origin}${next}`)
-      } else if (forwardedHost) {
-        return NextResponse.redirect(`https://${forwardedHost}${next}`)
-      } else {
-        return NextResponse.redirect(`${origin}${next}`)
+      if (error) {
+        throw error
       }
+
+      if (user) {
+        // Sync profiles and update last login parameters
+        logger.info('OAuth Callback: Code exchange successful. Syncing profile...', {
+          userId: user.id,
+        })
+        await AuthService.syncUserProfile(user)
+      }
+    } catch (err) {
+      logger.error('OAuth Callback: Error exchanging auth code for session.', {
+        error: err instanceof Error ? err.message : err,
+      })
+      // Redirect to home page with error parameter
+      return NextResponse.redirect(new URL('/?auth_error=exchange_failed', requestUrl.origin))
     }
   }
 
-  // Redirect back to landing page with an authentication error code if exchange fails
-  return NextResponse.redirect(`${origin}/?error=auth-callback-failed`)
+  // URL redirect cleanup
+  return NextResponse.redirect(new URL(next, requestUrl.origin))
 }

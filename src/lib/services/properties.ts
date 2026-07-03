@@ -225,4 +225,24 @@ export const PropertyService = {
       return similar as unknown as Property[]
     }
   },
+
+  /**
+   * Fetch lightweight listing entries to optimize search/autocomplete dropdowns.
+   */
+  async getAllPropertiesBrief(): Promise<{ id: string; name: string; neighborhood: string }[]> {
+    try {
+      const rows = await PropertyRepository.findAll()
+      return rows.map((r) => ({
+        id: r.id,
+        name: r.name,
+        neighborhood: r.neighborhood,
+      }))
+    } catch {
+      return MOCK_PROPERTIES.map((p) => ({
+        id: p.id,
+        name: p.name,
+        neighborhood: p.neighborhood,
+      }))
+    }
+  },
 }

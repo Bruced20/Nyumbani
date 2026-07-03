@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
+import { logger } from '@/lib/utils/logger'
 
 /**
  * Next.js Middleware.
@@ -8,8 +9,8 @@ import { updateSession } from '@/lib/supabase/middleware'
  * 3. Enforces Route Protection policies.
  */
 export async function middleware(request: NextRequest) {
-  // 1. Refresh Supabase Session
-  const response = await updateSession(request)
+  // 1. Refresh Supabase Session and retrieve user details
+  const { response, user, supabase } = await updateSession(request)
 
   // 2. Add Security Headers
   response.headers.set('X-DNS-Prefetch-Control', 'on')
@@ -22,7 +23,6 @@ export async function middleware(request: NextRequest) {
     'camera=(), microphone=(), geolocation=(), interest-cohort=()'
   )
 
-  // Custom Content-Security-Policy (CSP) - Customizable based on final third-party resources
   const cspHeader = `
     default-src 'self';
     script-src 'self' 'unsafe-eval' 'unsafe-inline' *.supabase.co;
@@ -40,16 +40,64 @@ export async function middleware(request: NextRequest) {
 
   // 3. Enforce Route Protection
   const path = request.nextUrl.pathname
-  const sessionToken = request.cookies.get('sb-access-token')
 
-  // Landlord Dashboard Route Protection
-  if (path.startsWith('/owners/dashboard') && !sessionToken) {
-    return NextResponse.redirect(new URL('/owners', request.url))
-  }
+  // Check if target path requires authentication
+  const isReviewRoute = path.startsWith('/review/new')
+  const isClaimRoute = path.startsWith('/owners/claim')
+  const isOwnerDashboard = path.startsWith('/owners/dashboard')
+  const isAdminRoute = path.startsWith('/admin')
+  const isModeratorRoute = path.startsWith('/moderator')
 
-  // Admin Dashboard Route Protection
-  if (path.startsWith('/admin') && !sessionToken) {
-    return NextResponse.redirect(new URL('/', request.url))
+  if (isReviewRoute || isClaimRoute || isOwnerDashboard || isAdminRoute || isModeratorRoute) {
+    if (!user) {
+      logger.info(
+        `Middleware: Guest attempted to access protected route "${path}". Redirecting to authentication.`
+      )
+
+      // Determine redirection URL with auth=required context parameter
+      if (isReviewRoute) {
+        return NextResponse.redirect(
+          new URL(`/?auth=required&next=${encodeURIComponent(path)}`, request.url)
+        )
+      }
+      if (isClaimRoute || isOwnerDashboard) {
+        return NextResponse.redirect(
+          new URL(`/owners?auth=required&next=${encodeURIComponent(path)}`, request.url)
+        )
+      }
+      return NextResponse.redirect(
+        new URL(`/?auth=required&next=${encodeURIComponent(path)}`, request.url)
+      )
+    }
+
+    // Role-based route authorization
+    if (isAdminRoute || isModeratorRoute) {
+      let userRole = 'Renter'
+      if (supabase) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single()
+        if (profile) {
+          userRole = profile.role
+        }
+      }
+
+      if (isAdminRoute && userRole !== 'Admin') {
+        logger.warn(
+          `Middleware: Unauthorized access attempt to "/admin" by user "${user.id}" (Role: ${userRole}).`
+        )
+        return NextResponse.redirect(new URL('/', request.url))
+      }
+
+      if (isModeratorRoute && userRole !== 'Moderator' && userRole !== 'Admin') {
+        logger.warn(
+          `Middleware: Unauthorized access attempt to "/moderator" by user "${user.id}" (Role: ${userRole}).`
+        )
+        return NextResponse.redirect(new URL('/', request.url))
+      }
+    }
   }
 
   return response

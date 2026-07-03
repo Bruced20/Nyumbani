@@ -2,14 +2,17 @@ import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import React from 'react'
-import { Navbar, Footer } from '@ui/navigation'
+import { Footer } from '@ui/navigation'
+import { Navbar } from '@/components/navbar-wrapper'
 import { Container, Divider } from '@ui/layout'
 import { HealthScore, VerifiedOwnerBadge, CommunityListingBadge } from '@ui/badge'
 import { PropertyCard } from '@ui/card'
+import { Button } from '@ui/button'
 import { MOCK_PROPERTIES } from '@/lib/mock-data'
 import { Gallery } from '@/features/properties/gallery'
 import { ActionButtons } from '@/features/properties/action-buttons'
 import { HealthBars } from '@/features/properties/health-bars'
+import { ReviewCardActions } from '@/features/reviews/review-card-actions'
 import { PropertyService } from '@/lib/services/properties'
 import {
   Droplet,
@@ -25,8 +28,6 @@ import {
   Sparkles,
   Calendar,
   Lock,
-  ThumbsUp,
-  AlertTriangle,
   Info,
 } from 'lucide-react'
 
@@ -396,9 +397,16 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
 
           {/* 9. Resident ReviewsTimeline */}
           <div className="flex flex-col gap-sm">
-            <h2 className="text-[15px] font-bold text-text-primary uppercase tracking-wider">
-              Resident Reviews
-            </h2>
+            <div className="flex justify-between items-center">
+              <h2 className="text-[15px] font-bold text-text-primary uppercase tracking-wider">
+                Resident Reviews
+              </h2>
+              <Link href={`/review/new?propertyId=${property.id}`}>
+                <Button variant="outline" className="text-metadata py-xxs h-auto cursor-pointer">
+                  Write a Review
+                </Button>
+              </Link>
+            </div>
             <div className="flex flex-col gap-xs">
               {property.reviews.map((rev) => (
                 <div
@@ -422,22 +430,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
 
                   <p className="text-[14px] text-text-primary leading-relaxed">{rev.comment}</p>
 
-                  <div className="flex gap-xs border-t border-border-subtle pt-xs mt-xxs">
-                    <button
-                      disabled
-                      className="text-[12px] text-text-muted hover:text-text-primary disabled:opacity-40 flex items-center gap-[4px] cursor-not-allowed"
-                    >
-                      <ThumbsUp size={12} />
-                      Helpful
-                    </button>
-                    <button
-                      disabled
-                      className="text-[12px] text-text-muted hover:text-accent-coral disabled:opacity-40 flex items-center gap-[4px] cursor-not-allowed"
-                    >
-                      <AlertTriangle size={12} />
-                      Report
-                    </button>
-                  </div>
+                  <ReviewCardActions reviewId={rev.id} />
                 </div>
               ))}
             </div>

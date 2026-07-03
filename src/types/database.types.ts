@@ -12,6 +12,8 @@ export type Database = {
           role: 'Renter' | 'Owner' | 'Moderator' | 'Admin'
           created_at: string
           updated_at: string
+          last_login_at: string | null
+          provider: string | null
         }
         Insert: {
           id: string
@@ -21,6 +23,8 @@ export type Database = {
           role?: 'Renter' | 'Owner' | 'Moderator' | 'Admin'
           created_at?: string
           updated_at?: string
+          last_login_at?: string | null
+          provider?: string | null
         }
         Update: {
           id?: string
@@ -30,6 +34,8 @@ export type Database = {
           role?: 'Renter' | 'Owner' | 'Moderator' | 'Admin'
           created_at?: string
           updated_at?: string
+          last_login_at?: string | null
+          provider?: string | null
         }
         Relationships: []
       }

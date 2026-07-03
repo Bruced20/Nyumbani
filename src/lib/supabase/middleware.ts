@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { Database } from '../../types/database.types'
 
 /**
- * Updates the user's session cookie dynamically.
+ * Updates the user's session cookie dynamically and returns the active user session.
  * Binds token refresh calls to Next.js middleware routing hooks.
  */
 export async function updateSession(request: NextRequest) {
@@ -15,7 +15,7 @@ export async function updateSession(request: NextRequest) {
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!url || !anonKey) {
-    return supabaseResponse
+    return { response: supabaseResponse, user: null, supabase: null }
   }
 
   const supabase = createServerClient<Database>(url, anonKey, {
@@ -36,7 +36,9 @@ export async function updateSession(request: NextRequest) {
   })
 
   // Refresh session if expired
-  await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
-  return supabaseResponse
+  return { response: supabaseResponse, user, supabase }
 }
