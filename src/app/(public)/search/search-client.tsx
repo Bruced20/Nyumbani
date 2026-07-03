@@ -25,7 +25,7 @@ interface SearchPageContentClientProps {
 
 /**
  * Client-side Search dashboard.
- * Receives filtered properties from server components and handles route transitions.
+ * Redesigned for Product Design System v2 (Premium Experience).
  */
 export function SearchPageContentClient({
   properties,
@@ -131,7 +131,6 @@ export function SearchPageContentClient({
     router.push(`/property/${slug}`)
   }
 
-  // Get nearby suggestions if search location results in empty states
   const key = filters.neighborhood.toLowerCase().trim()
   const nearbySuggestions = NEARBY_NEIGHBORHOODS[key] || [
     'Westlands',
@@ -144,16 +143,16 @@ export function SearchPageContentClient({
     <div className="flex flex-col min-h-screen bg-bg-primary text-text-primary">
       <Navbar />
 
-      <main className="flex-1 py-sm">
-        <Container className="max-w-6xl flex flex-col gap-sm">
-          {/* Header search bar overlay controller */}
-          <div className="flex flex-col gap-xs pb-xs border-b border-border-subtle">
+      <main className="flex-1 py-md">
+        <Container className="max-w-6xl flex flex-col gap-md">
+          {/* Header search bar overlay controller (Spotlight-style Shadow container) */}
+          <div className="w-full max-w-xl mx-auto shadow-md rounded-symmetric mb-xs">
             <SearchBar initialQuery={filters.neighborhood} />
           </div>
 
-          <div className="flex flex-col lg:flex-row gap-sm items-start">
-            {/* Left Pane: Filters & Listing results list */}
-            <div className="w-full lg:w-[60%] flex flex-col gap-sm">
+          <div className="flex flex-col lg:flex-row gap-md items-start">
+            {/* Left Pane: Filters & Listing results list (Spacious breathing room) */}
+            <div className="w-full lg:w-[60%] flex flex-col gap-md">
               {/* Filters form block */}
               <SearchFilters filters={filters} onFiltersChange={setFilters} />
 
@@ -164,7 +163,7 @@ export function SearchPageContentClient({
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="flex flex-wrap gap-xs items-center"
+                    className="flex flex-wrap gap-xs items-center px-xxs"
                   >
                     {activeChips.map((chip) => (
                       <motion.div
@@ -174,14 +173,14 @@ export function SearchPageContentClient({
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.8, opacity: 0 }}
                         transition={SPRING_SUBTLE}
-                        className="inline-flex items-center gap-[4px] px-xs py-[4px] bg-brand-indigo/5 text-brand-indigo border border-brand-indigo/15 rounded-pill text-[12px] font-semibold select-none"
+                        className="inline-flex items-center gap-[4px] px-sm py-[6px] bg-brand-indigo/10 text-brand-indigo border border-brand-indigo/20 rounded-pill text-[13px] font-semibold select-none shadow-sm"
                       >
                         {chip.label}
                         <button
                           onClick={() => removeChip(chip.key)}
-                          className="hover:bg-brand-indigo/10 p-[2px] rounded-pill cursor-pointer"
+                          className="hover:bg-brand-indigo/20 p-[2px] rounded-pill cursor-pointer transition-colors"
                         >
-                          <X size={12} />
+                          <X size={13} />
                         </button>
                       </motion.div>
                     ))}
@@ -206,7 +205,7 @@ export function SearchPageContentClient({
                           recentlyUpdated: false,
                         })
                       }
-                      className="text-[12px] font-bold text-text-muted hover:text-text-primary transition-colors cursor-pointer select-none ml-xxs"
+                      className="text-[13px] font-bold text-text-muted hover:text-text-primary transition-colors cursor-pointer select-none ml-xxs"
                     >
                       Clear All
                     </button>
@@ -215,18 +214,18 @@ export function SearchPageContentClient({
               </AnimatePresence>
 
               {/* Sorting HUD Bar */}
-              <div className="flex justify-between items-center bg-bg-secondary border border-border-subtle p-xs rounded-symmetric shadow-sm mt-xxs">
-                <span className="text-[13px] font-medium text-text-muted">
+              <div className="flex justify-between items-center bg-bg-secondary border border-border-subtle px-sm py-xs rounded-symmetric shadow-sm">
+                <span className="text-[14px] font-semibold text-text-muted">
                   Showing {isPending ? '...' : properties.length} homes
                 </span>
 
-                <div className="flex items-center gap-xxs text-[13px] text-text-primary">
-                  <ArrowUpDown size={14} className="text-text-muted shrink-0" />
-                  <span className="font-medium text-text-muted">Sort:</span>
+                <div className="flex items-center gap-xxs text-[14px] text-text-primary">
+                  <ArrowUpDown size={15} className="text-text-muted shrink-0" />
+                  <span className="font-semibold text-text-muted">Sort:</span>
                   <select
                     value={sortState}
                     onChange={handleSortChange}
-                    className="bg-transparent border-none font-semibold text-brand-indigo focus:outline-none cursor-pointer"
+                    className="bg-transparent border-none font-bold text-brand-indigo focus:outline-none cursor-pointer pr-xxs"
                   >
                     <option value="match">Best Match</option>
                     <option value="rent-low">Lowest Rent</option>
@@ -240,38 +239,38 @@ export function SearchPageContentClient({
               </div>
 
               {/* Content Grid results layout */}
-              <div className="flex flex-col gap-xs">
+              <div className="flex flex-col gap-md">
                 {errorOccurred ? (
                   <ErrorState
-                    message="A simulated database connection timeout occurred while fetching search listings."
+                    message="A database connection timeout occurred while fetching search listings."
                     onRetry={() => router.push('/search')}
                   />
                 ) : isPending ? (
-                  // Loading skeletons grid
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-sm">
+                  // Loading skeletons grid matching new aspect ratios
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
                     {Array.from({ length: 4 }).map((_, idx) => (
                       <div
                         key={idx}
-                        className="border border-border-subtle rounded-symmetric p-xs flex flex-col gap-xs"
+                        className="border border-border-subtle rounded-symmetric p-xs flex flex-col gap-xs bg-bg-secondary"
                       >
-                        <Skeleton className="w-full aspect-[4/3]" />
+                        <Skeleton className="w-full aspect-[16/10]" />
                         <Skeleton className="h-4 w-2/3" />
                         <Skeleton className="h-4 w-1/2" />
                       </div>
                     ))}
                   </div>
                 ) : properties.length === 0 ? (
-                  // Upgraded Empty State matching the prompt criteria
-                  <div className="flex flex-col gap-md">
+                  // Empty State suggesting panel
+                  <div className="flex flex-col gap-md bg-transparent">
                     <EmptyState
                       title="We couldn't find homes matching your search"
                       description="Try widening your budget, removing a filter, or exploring nearby areas."
-                      icon={<AlertOctagon size={32} className="text-text-muted" />}
+                      icon={<AlertOctagon size={36} className="text-text-muted" />}
                     />
 
                     {/* Nearby suggestions HUD */}
-                    <div className="p-sm bg-bg-secondary border border-border-subtle rounded-symmetric">
-                      <h4 className="font-semibold text-[13px] text-text-primary mb-xs">
+                    <div className="p-md bg-bg-secondary border border-border-subtle rounded-symmetric shadow-sm">
+                      <h4 className="font-bold text-[14px] text-text-primary mb-sm">
                         Explore Nearby Neighborhoods:
                       </h4>
                       <div className="flex flex-wrap gap-xs">
@@ -284,7 +283,7 @@ export function SearchPageContentClient({
                                 neighborhood: hood,
                               })
                             }
-                            className="px-xs py-xxs bg-bg-primary border border-border-subtle text-text-primary rounded-soft text-[12px] font-semibold hover:border-brand-indigo transition-colors cursor-pointer"
+                            className="px-sm py-xs bg-bg-primary border border-border-subtle text-text-primary rounded-soft text-[13px] font-bold hover:border-brand-indigo transition-colors cursor-pointer"
                           >
                             📍 {hood}
                           </button>
@@ -293,12 +292,12 @@ export function SearchPageContentClient({
                     </div>
                   </div>
                 ) : (
-                  // Properties List (using spring-based list staggers)
+                  // Properties List (using staggered spring motion)
                   <motion.div
                     variants={listContainerVariants}
                     initial="initial"
                     animate="animate"
-                    className="grid grid-cols-1 md:grid-cols-2 gap-sm"
+                    className="grid grid-cols-1 md:grid-cols-2 gap-md"
                   >
                     {properties.map((prop) => (
                       <motion.div key={prop.id} variants={listItemVariants}>
@@ -310,6 +309,7 @@ export function SearchPageContentClient({
                           houseType={prop.houseType}
                           healthScore={prop.healthScore}
                           isVerified={prop.isVerified}
+                          imageUrl={prop.images?.[0]}
                           waterRating={
                             prop.waterRating === 'Excellent'
                               ? 5
@@ -334,8 +334,8 @@ export function SearchPageContentClient({
               </div>
             </div>
 
-            {/* Right Pane: Map Preview Simulator */}
-            <div className="w-full lg:w-[40%] lg:sticky lg:top-[80px]">
+            {/* Right Pane: Sticky Map Preview Simulator */}
+            <div className="w-full lg:w-[40%] lg:sticky lg:top-[96px] shadow-sm rounded-symmetric overflow-hidden">
               <MapPreview properties={properties} onSelectProperty={handlePropertySelect} />
             </div>
           </div>

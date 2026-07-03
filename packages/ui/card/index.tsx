@@ -30,7 +30,8 @@ interface PropertyCardProps {
 
 /**
  * PropertyCard: Summary layout details for search results and homepage grids.
- * Implements hover scaling and spring-based layouts (Design Bible Section 11).
+ * Implements hover scaling and spring-based layouts.
+ * Redesigned to support Product Design System v2 (Premium Experience).
  */
 export const PropertyCard: React.FC<PropertyCardProps> = ({
   name,
@@ -52,15 +53,19 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
       whileHover="hover"
       whileTap="tap"
       onClick={onClick}
-      className="flex flex-col bg-bg-primary border border-border-subtle rounded-symmetric overflow-hidden shadow-sm cursor-pointer select-none"
+      className="flex flex-col bg-bg-secondary border border-border-subtle rounded-symmetric overflow-hidden shadow-sm cursor-pointer select-none transition-shadow hover:shadow-md duration-300"
     >
-      {/* Property Image Cover */}
-      <div className="w-full aspect-[4/3] bg-bg-secondary relative overflow-hidden flex items-center justify-center border-b border-border-subtle">
+      {/* Property Widescreen Image Cover (16:10 aspect ratio) */}
+      <div className="w-full aspect-[16/10] bg-bg-primary relative overflow-hidden flex items-center justify-center border-b border-border-subtle">
         {imageUrl ? (
           /* eslint-disable-next-line @next/next/no-img-element */
-          <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
+          <img
+            src={imageUrl}
+            alt={name}
+            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+          />
         ) : (
-          <span className="text-text-muted text-[13px]">No image provided</span>
+          <span className="text-text-muted text-[13px] font-medium">No image provided</span>
         )}
 
         {/* Floating Health Score Badge */}
@@ -70,26 +75,26 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
       </div>
 
       {/* Property Details */}
-      <div className="p-sm flex flex-col gap-[6px]">
-        <div className="flex items-center gap-xxs flex-wrap">
-          <h3 className="font-semibold text-[15px] text-text-primary leading-snug truncate max-w-[70%]">
+      <div className="p-sm flex flex-col gap-xxs">
+        <div className="flex items-center justify-between gap-xxs flex-wrap mb-xxs">
+          <h3 className="font-bold text-[16px] text-text-primary leading-snug truncate max-w-[70%]">
             {name}
           </h3>
           {isVerified ? <VerifiedOwnerBadge /> : <CommunityListingBadge />}
         </div>
 
         <p className="text-[13px] text-text-muted flex items-center gap-[4px]">
-          <MapPin size={14} className="shrink-0" />
+          <MapPin size={13} className="shrink-0 text-text-muted/70" />
           {neighborhood} • {houseType}
         </p>
 
-        <p className="text-[14px] font-semibold text-text-primary mt-xxs">
+        <p className="text-[15px] font-bold text-text-primary mt-xs">
           {rentMin.toLocaleString()} - {rentMax.toLocaleString()} KES{' '}
-          <span className="text-text-muted font-normal text-[12px]">/ month</span>
+          <span className="text-text-muted font-normal text-[13px]">/ month</span>
         </p>
 
         {/* Dynamic Vector Quick Indicator Bar */}
-        <div className="flex gap-xs border-t border-border-subtle pt-xs mt-xs text-text-muted text-[12px] font-medium justify-between">
+        <div className="flex gap-xs border-t border-border-subtle pt-xs mt-sm text-text-muted text-[12px] font-medium justify-between">
           <span className="flex items-center gap-[4px]">
             <Droplet
               size={13}
@@ -129,7 +134,8 @@ interface ReviewCardProps {
 }
 
 /**
- * ReviewCard: Represents user feedback details on Property pages (Design Bible Section 12).
+ * ReviewCard: Represents user feedback details on Property pages.
+ * Redesigned to be highly spacious, clean, and card-isolated.
  */
 export const ReviewCard: React.FC<ReviewCardProps> = ({
   roleTag,
@@ -154,17 +160,17 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
   }
 
   return (
-    <div className="p-sm bg-bg-secondary border border-border-subtle rounded-symmetric flex flex-col gap-xs">
+    <div className="p-md bg-bg-secondary border border-border-subtle rounded-symmetric flex flex-col gap-sm shadow-sm transition-shadow hover:shadow-md duration-300">
       {/* Header Info */}
       <header className="flex justify-between items-center flex-wrap gap-xs">
-        <div className="flex items-center gap-xs">
+        <div className="flex items-center gap-sm">
           {/* Avatar Icon */}
-          <div className="h-8 w-8 rounded-pill bg-border-subtle flex items-center justify-center font-bold text-[12px] text-text-muted">
+          <div className="h-9 w-9 rounded-pill bg-bg-primary border border-border-subtle flex items-center justify-center font-bold text-[13px] text-brand-indigo">
             {roleTag[0]}
           </div>
           <div className="flex flex-col">
-            <span className="font-semibold text-[13px] text-text-primary">{roleTag}</span>
-            <span className="text-[11px] text-text-muted">
+            <span className="font-bold text-[14px] text-text-primary">{roleTag}</span>
+            <span className="text-[12px] text-text-muted">
               Reviewed on{' '}
               {new Date(createdAt).toLocaleDateString('en-KE', { year: 'numeric', month: 'long' })}
             </span>
@@ -177,7 +183,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
       {/* Structured Recommendation Pill */}
       <div
         className={cn(
-          'self-start px-xs py-[2px] rounded-pill border text-[11px] font-bold uppercase tracking-wider',
+          'self-start px-sm py-[4px] rounded-pill border text-[11px] font-bold uppercase tracking-wider',
           recommendColors[recommend]
         )}
       >
@@ -185,21 +191,21 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
       </div>
 
       {/* Ratings Vectors Breakdown */}
-      <div className="grid grid-cols-3 gap-xs py-xxs border-y border-border-subtle text-[12px] text-text-muted">
-        <div>
+      <div className="grid grid-cols-3 gap-sm py-xs border-y border-border-subtle text-[13px] text-text-muted">
+        <div className="flex items-center gap-xxs justify-center">
           Water: <strong className="text-text-primary">{waterRating}/5</strong>
         </div>
-        <div>
+        <div className="flex items-center gap-xxs justify-center border-x border-border-subtle">
           Security: <strong className="text-text-primary">{securityRating}/5</strong>
         </div>
-        <div>
+        <div className="flex items-center gap-xxs justify-center">
           Caretaker: <strong className="text-text-primary">{caretakerRating}/5</strong>
         </div>
       </div>
 
       {/* Comment text body */}
       {comment && (
-        <p className="text-[14px] text-text-primary leading-relaxed mt-xxs whitespace-pre-line">
+        <p className="text-[15px] text-text-primary leading-relaxed mt-xxs whitespace-pre-line">
           {comment}
         </p>
       )}
@@ -219,15 +225,15 @@ interface StatCardProps {
  */
 export const StatCard: React.FC<StatCardProps> = ({ title, value, description, icon }) => {
   return (
-    <div className="p-sm bg-bg-secondary border border-border-subtle rounded-symmetric flex items-center justify-between shadow-sm">
+    <div className="p-md bg-bg-secondary border border-border-subtle rounded-symmetric flex items-center justify-between shadow-sm transition-shadow hover:shadow-md duration-300">
       <div className="flex flex-col gap-xxs">
-        <span className="text-[12px] font-medium text-text-muted uppercase tracking-wider">
+        <span className="text-[12px] font-bold text-text-muted uppercase tracking-wider">
           {title}
         </span>
-        <span className="text-[24px] font-bold text-text-primary tracking-tight leading-none mt-xxs">
+        <span className="text-[28px] font-extrabold text-text-primary tracking-tight leading-none mt-xxs">
           {value}
         </span>
-        {description && <span className="text-[11px] text-text-muted mt-xxs">{description}</span>}
+        {description && <span className="text-[12px] text-text-muted mt-xxs">{description}</span>}
       </div>
       {icon && <div className="text-brand-indigo">{icon}</div>}
     </div>
@@ -247,14 +253,14 @@ export const InformationCard: React.FC<InformationCardProps> = ({ title, childre
   return (
     <div
       className={cn(
-        'p-sm bg-bg-secondary border border-border-subtle rounded-symmetric flex flex-col gap-xs shadow-sm',
+        'p-md bg-bg-secondary border border-border-subtle rounded-symmetric flex flex-col gap-sm shadow-sm transition-shadow hover:shadow-md duration-300',
         className
       )}
     >
-      <h3 className="font-semibold text-subtitle text-text-primary border-b border-border-subtle pb-xxs">
+      <h3 className="font-bold text-[16px] text-text-primary border-b border-border-subtle pb-xs">
         {title}
       </h3>
-      <div className="text-[14px] leading-relaxed text-text-muted">{children}</div>
+      <div className="text-[15px] leading-relaxed text-text-muted">{children}</div>
     </div>
   )
 }

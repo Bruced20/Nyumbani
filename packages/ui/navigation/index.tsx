@@ -16,6 +16,7 @@ interface NavbarProps {
 
 /**
  * Main Application Navigation Header.
+ * Redesigned for Product Design System v2 (Premium Experience).
  */
 export const Navbar: React.FC<NavbarProps> = ({
   className,
@@ -28,43 +29,43 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <header
       className={cn(
-        'sticky top-0 z-40 w-full bg-bg-primary border-b border-border-subtle backdrop-blur-md bg-opacity-95',
+        'sticky top-0 z-40 w-full bg-bg-primary/80 border-b border-border-subtle backdrop-blur-md transition-all duration-300',
         className
       )}
     >
-      <div className="max-w-6xl mx-auto h-[64px] px-md flex items-center justify-between">
+      <div className="max-w-6xl mx-auto h-[72px] px-md flex items-center justify-between">
         {/* Brand Logo */}
         <Link
           href="/"
-          className="font-bold text-[18px] tracking-tight text-text-primary flex items-center gap-xxs"
+          className="font-bold text-[20px] tracking-tight text-text-primary flex items-center gap-xs"
         >
-          <span className="h-6 w-6 rounded-soft bg-brand-indigo flex items-center justify-center text-white text-[12px]">
+          <span className="h-7 w-7 rounded-soft bg-brand-indigo flex items-center justify-center text-white text-[13px] font-extrabold shadow-sm">
             N
           </span>
           Nyumbani
         </Link>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-md text-[14px] font-medium text-text-muted">
-          <Link href="/search" className="hover:text-text-primary transition-colors">
+        <nav className="hidden md:flex items-center gap-lg text-[15px] font-semibold text-text-muted">
+          <Link href="/search" className="hover:text-text-primary transition-colors py-xxs">
             Find Rentals
           </Link>
-          <Link href="/review/new" className="hover:text-text-primary transition-colors">
+          <Link href="/review/new" className="hover:text-text-primary transition-colors py-xxs">
             Write a Review
           </Link>
-          <Link href="/owners" className="hover:text-text-primary transition-colors">
+          <Link href="/owners" className="hover:text-text-primary transition-colors py-xxs">
             Landlord Hub
           </Link>
-          <Link href="/about" className="hover:text-text-primary transition-colors">
+          <Link href="/about" className="hover:text-text-primary transition-colors py-xxs">
             Our Method
           </Link>
         </nav>
 
         {/* User Session CTA */}
-        <div className="flex items-center gap-xs">
+        <div className="flex items-center gap-sm">
           {isAuthenticated ? (
-            <div className="flex items-center gap-xs">
-              <span className="hidden sm:inline-block text-[13px] text-text-muted">
+            <div className="flex items-center gap-sm">
+              <span className="hidden sm:inline-block text-[14px] text-text-muted font-medium">
                 Hello, {userName}
               </span>
               {avatarUrl ? (
@@ -72,16 +73,16 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <img
                   src={avatarUrl}
                   alt="user avatar"
-                  className="h-8 w-8 rounded-pill object-cover border border-border-subtle"
+                  className="h-9 w-9 rounded-pill object-cover border border-border-subtle"
                 />
               ) : (
-                <div className="h-8 w-8 rounded-pill bg-border-subtle flex items-center justify-center font-bold text-[12px]">
+                <div className="h-9 w-9 rounded-pill bg-bg-secondary border border-border-subtle flex items-center justify-center font-bold text-[13px] text-brand-indigo">
                   {userName?.[0]}
                 </div>
               )}
               <button
                 onClick={onSignOut}
-                className="text-[13px] font-medium text-text-muted hover:text-text-primary cursor-pointer"
+                className="text-[14px] font-semibold text-text-muted hover:text-text-primary cursor-pointer transition-colors"
               >
                 Sign Out
               </button>
@@ -89,15 +90,15 @@ export const Navbar: React.FC<NavbarProps> = ({
           ) : (
             <button
               onClick={onSignOpen}
-              className="px-sm py-xxs bg-text-primary text-bg-primary text-[13px] font-medium rounded-soft hover:bg-opacity-90 transition-colors cursor-pointer"
+              className="px-sm py-[8px] bg-text-primary text-bg-primary text-[14px] font-semibold rounded-soft hover:bg-opacity-90 transition-all cursor-pointer shadow-sm"
             >
               Sign In
             </button>
           )}
 
           {/* Mobile Menu Icon */}
-          <button className="md:hidden text-text-primary hover:text-text-muted cursor-pointer">
-            <Menu size={20} />
+          <button className="md:hidden text-text-primary hover:text-text-muted cursor-pointer p-xxs">
+            <Menu size={22} />
           </button>
         </div>
       </div>
@@ -110,41 +111,44 @@ interface MobileBottomNavProps {
 }
 
 /**
- * MobileBottomNav: Bottom sticky navigation tabs for Mobile-first usage (Design Bible Section 15).
+ * MobileBottomNav: Bottom sticky navigation tabs for Mobile-first usage.
  */
 export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ currentPath }) => {
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-bg-primary border-t border-border-subtle h-[60px] flex items-center justify-around pb-safe">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-bg-secondary/95 border-t border-border-subtle h-[64px] flex items-center justify-around pb-safe backdrop-blur-md">
       <Link
         href="/search"
         className={cn(
-          'flex flex-col items-center justify-center gap-[3px] text-[10px] font-medium text-text-muted select-none w-16 h-full',
-          currentPath === '/search' && 'text-brand-indigo font-semibold'
+          'flex flex-col items-center justify-center gap-[4px] text-[11px] font-medium text-text-muted select-none w-16 h-full transition-colors',
+          currentPath === '/search' && 'text-brand-indigo font-bold'
         )}
       >
-        <Search size={18} />
+        <Search size={18} className={currentPath === '/search' ? 'stroke-[2.5px]' : ''} />
         Search
       </Link>
 
       <Link
         href="/review/new"
         className={cn(
-          'flex flex-col items-center justify-center gap-[3px] text-[10px] font-medium text-text-muted select-none w-16 h-full',
-          currentPath === '/review/new' && 'text-brand-indigo font-semibold'
+          'flex flex-col items-center justify-center gap-[4px] text-[11px] font-medium text-text-muted select-none w-16 h-full transition-colors',
+          currentPath === '/review/new' && 'text-brand-indigo font-bold'
         )}
       >
-        <PenSquare size={18} />
+        <PenSquare size={18} className={currentPath === '/review/new' ? 'stroke-[2.5px]' : ''} />
         Review
       </Link>
 
       <Link
         href="/owners"
         className={cn(
-          'flex flex-col items-center justify-center gap-[3px] text-[10px] font-medium text-text-muted select-none w-16 h-full',
-          currentPath?.startsWith('/owners') && 'text-brand-indigo font-semibold'
+          'flex flex-col items-center justify-center gap-[4px] text-[11px] font-medium text-text-muted select-none w-16 h-full transition-colors',
+          currentPath?.startsWith('/owners') && 'text-brand-indigo font-bold'
         )}
       >
-        <Building2 size={18} />
+        <Building2
+          size={18}
+          className={currentPath?.startsWith('/owners') ? 'stroke-[2.5px]' : ''}
+        />
         Owner Hub
       </Link>
     </nav>
@@ -160,7 +164,7 @@ interface BreadcrumbProps {
  */
 export const Breadcrumb: React.FC<BreadcrumbProps> = ({ items }) => {
   return (
-    <nav className="flex items-center gap-[6px] text-[13px] text-text-muted font-medium py-xxs overflow-x-auto whitespace-nowrap">
+    <nav className="flex items-center gap-[8px] text-[14px] text-text-muted font-medium py-xs overflow-x-auto whitespace-nowrap">
       {items.map((item, idx) => {
         const isLast = idx === items.length - 1
         return (
@@ -170,9 +174,9 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({ items }) => {
                 {item.label}
               </Link>
             ) : (
-              <span className={isLast ? 'text-text-primary font-semibold' : ''}>{item.label}</span>
+              <span className={isLast ? 'text-text-primary font-bold' : ''}>{item.label}</span>
             )}
-            {!isLast && <ChevronRight size={14} className="shrink-0" />}
+            {!isLast && <ChevronRight size={14} className="shrink-0 text-text-muted/60" />}
           </React.Fragment>
         )
       })}
@@ -197,23 +201,23 @@ export const Pagination: React.FC<PaginationProps> = ({
   if (totalPages <= 1) return null
 
   return (
-    <div className="flex items-center justify-center gap-xs mt-md">
+    <div className="flex items-center justify-center gap-sm mt-lg">
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="px-xs py-xxs border border-border-subtle rounded-soft text-[13px] font-medium text-text-primary hover:bg-bg-secondary disabled:opacity-40 disabled:cursor-not-allowed select-none cursor-pointer"
+        className="px-sm py-xs border border-border-subtle rounded-soft text-[14px] font-semibold text-text-primary hover:bg-bg-secondary disabled:opacity-40 disabled:cursor-not-allowed select-none cursor-pointer transition-colors"
       >
         Previous
       </button>
 
-      <span className="text-[13px] font-semibold text-text-muted select-none">
+      <span className="text-[14px] font-bold text-text-muted select-none px-xs">
         Page {currentPage} of {totalPages}
       </span>
 
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="px-xs py-xxs border border-border-subtle rounded-soft text-[13px] font-medium text-text-primary hover:bg-bg-secondary disabled:opacity-40 disabled:cursor-not-allowed select-none cursor-pointer"
+        className="px-sm py-xs border border-border-subtle rounded-soft text-[14px] font-semibold text-text-primary hover:bg-bg-secondary disabled:opacity-40 disabled:cursor-not-allowed select-none cursor-pointer transition-colors"
       >
         Next
       </button>
@@ -226,46 +230,51 @@ export const Pagination: React.FC<PaginationProps> = ({
  */
 export const Footer: React.FC = () => {
   return (
-    <footer className="w-full bg-bg-secondary border-t border-border-subtle py-lg mt-auto">
-      <div className="max-w-6xl mx-auto px-md grid grid-cols-1 md:grid-cols-4 gap-md text-text-muted text-[13px]">
-        <div className="flex flex-col gap-xxs">
-          <span className="font-bold text-[15px] text-text-primary mb-xxs">Nyumbani</span>
+    <footer className="w-full bg-bg-secondary border-t border-border-subtle py-xl mt-auto">
+      <div className="max-w-6xl mx-auto px-md grid grid-cols-1 md:grid-cols-4 gap-lg text-text-muted text-[14px]">
+        <div className="flex flex-col gap-sm pr-md">
+          <span className="font-extrabold text-[16px] text-text-primary tracking-tight">
+            Nyumbani
+          </span>
           <p className="leading-relaxed">
             Kenya&apos;s rental intelligence platform, bringing trust and transparency to home
             hunting.
           </p>
         </div>
-        <div className="flex flex-col gap-xxs">
-          <span className="font-semibold text-text-primary mb-xxs">Platform</span>
-          <Link href="/search" className="hover:text-text-primary transition-colors">
+        <div className="flex flex-col gap-xs">
+          <span className="font-bold text-text-primary mb-xxs">Platform</span>
+          <Link href="/search" className="hover:text-text-primary transition-colors py-[2px]">
             Search Listings
           </Link>
-          <Link href="/review/new" className="hover:text-text-primary transition-colors">
+          <Link href="/review/new" className="hover:text-text-primary transition-colors py-[2px]">
             Write a Review
           </Link>
         </div>
-        <div className="flex flex-col gap-xxs">
-          <span className="font-semibold text-text-primary mb-xxs">Landlords</span>
-          <Link href="/owners" className="hover:text-text-primary transition-colors">
+        <div className="flex flex-col gap-xs">
+          <span className="font-bold text-text-primary mb-xxs">Landlords</span>
+          <Link href="/owners" className="hover:text-text-primary transition-colors py-[2px]">
             Owner Portal
           </Link>
-          <Link href="/owners/dashboard" className="hover:text-text-primary transition-colors">
+          <Link
+            href="/owners/dashboard"
+            className="hover:text-text-primary transition-colors py-[2px]"
+          >
             Verification Claims
           </Link>
         </div>
-        <div className="flex flex-col gap-xxs">
-          <span className="font-semibold text-text-primary mb-xxs">Legal & Safety</span>
-          <Link href="/about" className="hover:text-text-primary transition-colors">
+        <div className="flex flex-col gap-xs">
+          <span className="font-bold text-text-primary mb-xxs">Legal & Safety</span>
+          <Link href="/about" className="hover:text-text-primary transition-colors py-[2px]">
             Scoring Methodology
           </Link>
-          <Link href="/about" className="hover:text-text-primary transition-colors">
+          <Link href="/about" className="hover:text-text-primary transition-colors py-[2px]">
             Privacy Policy
           </Link>
         </div>
       </div>
-      <div className="max-w-6xl mx-auto px-md border-t border-border-subtle pt-sm mt-md flex justify-between items-center text-[12px] text-text-muted flex-wrap gap-xs">
+      <div className="max-w-6xl mx-auto px-md border-t border-border-subtle pt-md mt-lg flex justify-between items-center text-[13px] text-text-muted flex-wrap gap-sm">
         <span>© {new Date().getFullYear()} Nyumbani Rental Intelligence. All rights reserved.</span>
-        <span>Made for Kenya 🇰🇪</span>
+        <span className="font-semibold">Made for Kenya 🇰🇪</span>
       </div>
     </footer>
   )

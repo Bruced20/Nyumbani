@@ -1,18 +1,18 @@
 @import 'tailwindcss';
 
 :root {
-  /* Brand Theme Tokens (Light Mode - Active by Default) */
-  --bg-primary: hsl(0, 0%, 100%);
-  --bg-secondary: hsl(210, 40%, 98%);
-  --text-primary: hsl(220, 20%, 10%);
-  --text-muted: hsl(215, 15%, 50%);
-  --border-subtle: hsl(214, 32%, 91%);
+  /* Brand Theme Tokens (v2 Premium Calm Light Theme) */
+  --bg-primary: #faf9f7;
+  --bg-secondary: #ffffff;
+  --text-primary: #1f2937;
+  --text-muted: #6b7280;
+  --border-subtle: #e7e5e4;
 
-  --accent-emerald: hsl(150, 60%, 35%);
-  --accent-amber: hsl(38, 92%, 50%);
-  --accent-coral: hsl(6, 78%, 57%);
+  --accent-emerald: #3f7d58;
+  --accent-amber: #b7791f;
+  --accent-coral: #b91c1c;
 
-  --brand-indigo: hsl(250, 84%, 54%);
+  --brand-indigo: #1f5e4a;
 
   /* Base next/font typography config */
   --font-sans: var(--font-geist-sans), sans-serif;
@@ -21,17 +21,17 @@
 
 /* Prepared Dark Mode Tokens (Inactive in V1 - Available for V2) */
 .dark {
-  --bg-primary: hsl(220, 20%, 8%);
-  --bg-secondary: hsl(220, 15%, 12%);
-  --text-primary: hsl(210, 40%, 98%);
-  --text-muted: hsl(215, 15%, 65%);
-  --border-subtle: hsl(217, 19%, 20%);
+  --bg-primary: #111827;
+  --bg-secondary: #1f2937;
+  --text-primary: #f9fafb;
+  --text-muted: #9ca3af;
+  --border-subtle: #374151;
 
-  --accent-emerald: hsl(150, 65%, 45%);
-  --accent-amber: hsl(38, 95%, 48%);
-  --accent-coral: hsl(6, 85%, 60%);
+  --accent-emerald: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-coral: #ef4444;
 
-  --brand-indigo: hsl(250, 90%, 65%);
+  --brand-indigo: #34d399;
 }
 
 @theme {
@@ -51,27 +51,32 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
 
-  /* Spacing Grid */
+  /* Spacing Grid (Refined for v2 spacing rhythm) */
   --spacing-xxs: 4px;
   --spacing-xs: 8px;
   --spacing-sm: 16px;
-  --spacing-md: 24px;
-  --spacing-lg: 48px;
-  --spacing-xl: 80px;
+  --spacing-md: 28px;
+  --spacing-lg: 56px;
+  --spacing-xl: 96px;
 
   /* Corner Radius */
-  --radius-sharp: 4px;
-  --radius-soft: 8px;
-  --radius-symmetric: 16px;
+  --radius-sharp: 6px;
+  --radius-soft: 12px;
+  --radius-symmetric: 20px;
   --radius-pill: 9999px;
 
   /* Spring Animations */
   --animate-spring-subtle: spring-subtle 200ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Custom Premium Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(31, 41, 55, 0.02);
+  --shadow-md: 0 4px 12px -2px rgba(31, 41, 55, 0.03), 0 2px 4px -1px rgba(31, 41, 55, 0.02);
+  --shadow-lg: 0 12px 30px -4px rgba(31, 41, 55, 0.04), 0 4px 12px -2px rgba(31, 41, 55, 0.02);
 }
 
 @keyframes spring-subtle {
   0% {
-    transform: scale(0.97);
+    transform: scale(0.98);
     opacity: 0;
   }
   100% {

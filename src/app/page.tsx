@@ -2,7 +2,7 @@ import React from 'react'
 import { Footer } from '@ui/navigation'
 import { Navbar } from '@/components/navbar-wrapper'
 import { Container, Section, Grid, Stack } from '@ui/layout'
-import { Display, H2, Body } from '@ui/typography'
+import { Display, H1, H2, Body } from '@ui/typography'
 import { PropertyCard } from '@ui/card'
 import { SearchBar } from '@/features/properties/search-bar'
 import { PropertyService } from '@/lib/services/properties'
@@ -10,11 +10,9 @@ import { ShieldCheck, Eye, Sparkles } from 'lucide-react'
 
 /**
  * Public Discovery Homepage.
- * Integrates layout frameworks, featured properties sliders, and explanation checklists.
- * Migrated to load production data directly from Supabase Services.
+ * Redesigned to support Product Design System v2 (Premium Experience).
  */
 export default async function Home() {
-  // Fetch featured properties directly from Supabase via PropertyService
   const featuredProperties = await PropertyService.getFeaturedProperties()
 
   return (
@@ -22,35 +20,36 @@ export default async function Home() {
       {/* Navbar Header */}
       <Navbar />
 
-      {/* Main Homepage content */}
       <main className="flex-1">
-        {/* 1. Hero Search Section */}
-        <Section className="bg-[#FAFBFD] border-b border-border-subtle py-20">
+        {/* 1. Hero Search Section (Spacious & Editorial) */}
+        <Section className="bg-transparent py-xl md:py-xl flex items-center justify-center">
           <Container className="flex flex-col items-center text-center max-w-3xl gap-sm">
-            <Display className="text-display max-w-2xl font-bold leading-tight">
+            <Display className="text-display max-w-2xl font-bold tracking-tight text-text-primary">
               What is it actually like to live here?
             </Display>
-            <Body className="text-text-muted text-[16px] max-w-xl leading-relaxed mb-xs">
+            <Body className="text-text-muted text-[18px] max-w-2xl leading-relaxed mt-xxs mb-md">
               Nyumbani is Kenya’s community-driven rental intelligence network. Discover verified
               details about water reliability, security, and deposit refunds before signing a lease.
             </Body>
 
             {/* Embedded Search Bar Component */}
-            <SearchBar />
+            <div className="w-full max-w-xl shadow-md rounded-symmetric">
+              <SearchBar />
+            </div>
           </Container>
         </Section>
 
         {/* 2. Featured Properties Section */}
-        <Section>
+        <Section className="py-lg bg-transparent border-t border-border-subtle">
           <Container>
-            <div className="flex flex-col gap-xxs mb-md">
-              <H2 className="font-semibold">Featured Properties</H2>
-              <Body className="text-text-muted text-[14px]">
+            <div className="flex flex-col gap-xxs mb-lg">
+              <H1 className="font-bold text-text-primary tracking-tight">Featured Properties</H1>
+              <Body className="text-text-muted text-[15px]">
                 Explore highly-rated Kenyan listings with active tenant reviews
               </Body>
             </div>
 
-            <Grid cols={3} gap="sm">
+            <Grid cols={3} gap="md">
               {featuredProperties.map((prop) => (
                 <PropertyCard
                   key={prop.id}
@@ -61,6 +60,7 @@ export default async function Home() {
                   houseType={prop.houseType}
                   healthScore={prop.healthScore}
                   isVerified={prop.isVerified}
+                  imageUrl={prop.images?.[0]}
                   waterRating={
                     prop.waterRating === 'Excellent' ? 5 : prop.waterRating === 'Good' ? 4 : 3
                   }
@@ -74,54 +74,56 @@ export default async function Home() {
           </Container>
         </Section>
 
-        {/* 3. "How Nyumbani Works" Section */}
-        <Section className="bg-[#FAFBFD] border-y border-border-subtle py-16">
+        {/* 3. "How Nyumbani Works" Section (Alternating Pure White background) */}
+        <Section className="bg-bg-secondary border-t border-border-subtle py-lg">
           <Container>
             <div className="flex flex-col gap-xxs mb-lg text-center max-w-xl mx-auto">
-              <H2 className="font-semibold">How Nyumbani Works</H2>
-              <Body className="text-text-muted text-[14px]">
+              <H2 className="font-bold text-text-primary tracking-tight text-[24px]">
+                How Nyumbani Works
+              </H2>
+              <Body className="text-text-muted text-[15px] leading-relaxed">
                 Built on transparency, anonymity, and manual verification to guarantee renter trust.
               </Body>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-md items-start">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-lg items-start pt-sm">
               {/* Step 1 */}
-              <Stack gap="xs" className="items-center text-center">
-                <div className="h-12 w-12 bg-brand-indigo/10 text-brand-indigo rounded-pill flex items-center justify-center">
-                  <Eye size={22} />
+              <Stack gap="xs" className="items-center text-center px-sm">
+                <div className="h-14 w-14 bg-brand-indigo/5 text-brand-indigo rounded-pill flex items-center justify-center shadow-sm border border-brand-indigo/10">
+                  <Eye size={24} />
                 </div>
-                <h3 className="font-semibold text-subtitle text-text-primary">
+                <h3 className="font-bold text-[16px] text-text-primary mt-sm">
                   1. Search Anonymously
                 </h3>
-                <p className="text-[13px] text-text-muted leading-relaxed">
+                <p className="text-[14px] text-text-muted leading-relaxed mt-xxs">
                   Browse apartment metrics and resident evaluations without ever needing to create
                   an account. No SMS paywalls.
                 </p>
               </Stack>
 
               {/* Step 2 */}
-              <Stack gap="xs" className="items-center text-center">
-                <div className="h-12 w-12 bg-[#10B981]/10 text-[#10B981] rounded-pill flex items-center justify-center">
-                  <ShieldCheck size={22} />
+              <Stack gap="xs" className="items-center text-center px-sm">
+                <div className="h-14 w-14 bg-brand-indigo/5 text-brand-indigo rounded-pill flex items-center justify-center shadow-sm border border-brand-indigo/10">
+                  <ShieldCheck size={24} />
                 </div>
-                <h3 className="font-semibold text-subtitle text-text-primary">
+                <h3 className="font-bold text-[16px] text-text-primary mt-sm">
                   2. Verified Landlords
                 </h3>
-                <p className="text-[13px] text-text-muted leading-relaxed">
+                <p className="text-[14px] text-text-muted leading-relaxed mt-xxs">
                   Property owners submit municipal bills to verify ownership. Verified badges prove
                   listing authenticity.
                 </p>
               </Stack>
 
               {/* Step 3 */}
-              <Stack gap="xs" className="items-center text-center">
-                <div className="h-12 w-12 bg-[#6366F1]/10 text-[#6366F1] rounded-pill flex items-center justify-center">
-                  <Sparkles size={22} />
+              <Stack gap="xs" className="items-center text-center px-sm">
+                <div className="h-14 w-14 bg-brand-indigo/5 text-brand-indigo rounded-pill flex items-center justify-center shadow-sm border border-brand-indigo/10">
+                  <Sparkles size={24} />
                 </div>
-                <h3 className="font-semibold text-subtitle text-text-primary">
+                <h3 className="font-bold text-[16px] text-text-primary mt-sm">
                   3. Community Driven
                 </h3>
-                <p className="text-[13px] text-text-muted leading-relaxed">
+                <p className="text-[14px] text-text-muted leading-relaxed mt-xxs">
                   Reviews are evaluated across five vectors. Scores update instantly on PostgreSQL
                   database triggers.
                 </p>

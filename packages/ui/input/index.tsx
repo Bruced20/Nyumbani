@@ -12,26 +12,27 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 /**
  * Standard TextInput component with inline validation errors and focus states.
+ * Redesigned for Product Design System v2 (Premium Experience).
  */
 export const TextInput = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type = 'text', label, error, helperText, ...props }, ref) => {
     return (
       <div className="flex flex-col gap-[6px] w-full">
         {label && (
-          <label className="text-[13px] font-medium text-text-primary select-none">{label}</label>
+          <label className="text-[14px] font-bold text-text-primary select-none">{label}</label>
         )}
         <input
           ref={ref}
           type={type}
           className={cn(
-            'w-full px-sm py-[10px] bg-bg-secondary text-text-primary border border-border-subtle rounded-soft text-[14px] outline-none transition-all duration-200 focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/10 disabled:opacity-50 disabled:cursor-not-allowed',
-            error && 'border-accent-coral focus:border-accent-coral focus:ring-accent-coral/10',
+            'w-full px-sm py-[11px] bg-bg-secondary text-text-primary border border-border-subtle rounded-soft text-[15px] outline-none transition-all duration-200 focus:border-brand-indigo focus:ring-4 focus:ring-brand-indigo/5 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm',
+            error && 'border-accent-coral focus:border-accent-coral focus:ring-accent-coral/5',
             className
           )}
           {...props}
         />
-        {error && <span className="text-[12px] font-medium text-accent-coral">{error}</span>}
-        {!error && helperText && <span className="text-[12px] text-text-muted">{helperText}</span>}
+        {error && <span className="text-[13px] font-semibold text-accent-coral">{error}</span>}
+        {!error && helperText && <span className="text-[13px] text-text-muted">{helperText}</span>}
       </div>
     )
   }
@@ -40,19 +41,20 @@ TextInput.displayName = 'TextInput'
 
 /**
  * SearchInput: Text input containing a prefix Lucide Search icon.
+ * Spotlight-style query inputs.
  */
 export const SearchInput = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, error, ...props }, ref) => {
     return (
       <div className="relative w-full">
         <span className="absolute left-sm top-1/2 -translate-y-1/2 text-text-muted pointer-events-none">
-          <Search size={18} strokeWidth={2} />
+          <Search size={20} strokeWidth={2} className="text-text-muted/85" />
         </span>
         <input
           ref={ref}
           type="text"
           className={cn(
-            'w-full pl-[42px] pr-sm py-[12px] bg-bg-secondary text-text-primary border border-border-subtle rounded-symmetric text-[15px] outline-none transition-all duration-200 focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/10 shadow-sm',
+            'w-full pl-[46px] pr-sm py-[14px] bg-bg-secondary text-text-primary border border-border-subtle rounded-soft text-[16px] font-medium outline-none transition-all duration-200 focus:border-brand-indigo focus:ring-4 focus:ring-brand-indigo/5 shadow-md',
             error && 'border-accent-coral focus:border-accent-coral',
             className
           )}
@@ -103,20 +105,20 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <div className="flex flex-col gap-[6px] w-full">
         {label && (
-          <label className="text-[13px] font-medium text-text-primary select-none">{label}</label>
+          <label className="text-[14px] font-bold text-text-primary select-none">{label}</label>
         )}
         <textarea
           ref={ref}
           rows={rows}
           className={cn(
-            'w-full px-sm py-[10px] bg-bg-secondary text-text-primary border border-border-subtle rounded-soft text-[14px] outline-none resize-none transition-all duration-200 focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/10 disabled:opacity-50 disabled:cursor-not-allowed',
-            error && 'border-accent-coral focus:border-accent-coral focus:ring-accent-coral/10',
+            'w-full px-sm py-[11px] bg-bg-secondary text-text-primary border border-border-subtle rounded-soft text-[15px] outline-none transition-all duration-200 focus:border-brand-indigo focus:ring-4 focus:ring-brand-indigo/5 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm resize-none',
+            error && 'border-accent-coral focus:border-accent-coral focus:ring-accent-coral/5',
             className
           )}
           {...props}
         />
-        {error && <span className="text-[12px] font-medium text-accent-coral">{error}</span>}
-        {!error && helperText && <span className="text-[12px] text-text-muted">{helperText}</span>}
+        {error && <span className="text-[13px] font-semibold text-accent-coral">{error}</span>}
+        {!error && helperText && <span className="text-[13px] text-text-muted">{helperText}</span>}
       </div>
     )
   }

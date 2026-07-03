@@ -41,13 +41,11 @@ interface SearchFiltersProps {
 
 /**
  * Advanced Filters Panel.
- * Includes property types, KES pricing bounds, community quality (water, safety, power, roads, waste),
- * owner filters, and price shortcut chips.
+ * Redesigned to support Product Design System v2 (Premium Experience).
  */
 export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFiltersChange }) => {
   const [showAdvanced, setShowAdvanced] = React.useState(false)
 
-  // Property types options
   const propertyTypes = [
     'Single Room',
     'Bedsitter',
@@ -57,7 +55,6 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
     'Three Bedroom',
   ]
 
-  // Price chips configuration
   const priceChips = [
     { label: 'Under 8K', min: 0, max: 8000 },
     { label: 'Under 10K', min: 0, max: 10000 },
@@ -67,11 +64,17 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
 
   const ratingOptions = ['Excellent', 'Good', 'Fair', 'Poor']
 
+  const activeBtnClass = 'bg-brand-indigo text-white border-transparent shadow-sm'
+  const inactiveBtnClass =
+    'bg-bg-primary text-text-primary border-border-subtle hover:bg-bg-primary/50 hover:border-text-muted/30'
+
   return (
-    <div className="bg-bg-secondary border border-border-subtle p-sm rounded-symmetric flex flex-col gap-sm w-full shadow-sm">
+    <div className="bg-bg-secondary border border-border-subtle p-md rounded-symmetric flex flex-col gap-md w-full shadow-sm">
       {/* Header controls */}
-      <div className="flex justify-between items-center border-b border-border-subtle pb-xxs">
-        <h4 className="font-semibold text-[15px] text-text-primary">Search Filters</h4>
+      <div className="flex justify-between items-center border-b border-border-subtle pb-xs">
+        <h4 className="font-extrabold text-[15px] text-text-primary tracking-tight">
+          Search Filters
+        </h4>
         <button
           onClick={() =>
             onFiltersChange({
@@ -92,15 +95,15 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
               recentlyUpdated: false,
             })
           }
-          className="text-[12px] font-medium text-text-muted hover:text-text-primary transition-colors cursor-pointer"
+          className="text-[13px] font-bold text-text-muted hover:text-text-primary transition-colors cursor-pointer"
         >
           Clear All
         </button>
       </div>
 
       {/* 1. Property Type Selector */}
-      <div className="flex flex-col gap-xxs">
-        <span className="text-[12px] font-bold text-text-muted uppercase tracking-wider select-none">
+      <div className="flex flex-col gap-xs">
+        <span className="text-[12px] font-extrabold text-text-muted uppercase tracking-wider select-none">
           Property Type
         </span>
         <div className="flex flex-wrap gap-xs mt-xxs">
@@ -111,10 +114,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
                 key={type}
                 type="button"
                 onClick={() => onFiltersChange({ ...filters, houseType: isSelected ? '' : type })}
-                className={`px-xs py-[6px] border text-[13px] font-medium rounded-pill transition-all cursor-pointer select-none ${
-                  isSelected
-                    ? 'bg-brand-indigo text-white border-brand-indigo'
-                    : 'bg-bg-primary text-text-primary border-border-subtle hover:bg-neutral-50'
+                className={`px-sm py-[8px] border text-[13px] font-semibold rounded-pill transition-all cursor-pointer select-none ${
+                  isSelected ? activeBtnClass : inactiveBtnClass
                 }`}
               >
                 {type}
@@ -125,8 +126,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
       </div>
 
       {/* 2. Rent Range Bounds & Quick Price Chips */}
-      <div className="flex flex-col gap-xs border-t border-border-subtle pt-xs">
-        <span className="text-[12px] font-bold text-text-muted uppercase tracking-wider select-none">
+      <div className="flex flex-col gap-xs border-t border-border-subtle pt-sm">
+        <span className="text-[12px] font-extrabold text-text-muted uppercase tracking-wider select-none">
           KES Monthly Rent
         </span>
 
@@ -145,10 +146,10 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
                     rentMax: chip.max,
                   })
                 }
-                className={`px-xs py-[4px] border text-[12px] font-medium rounded-soft cursor-pointer transition-all ${
+                className={`px-sm py-[6px] border text-[13px] font-semibold rounded-soft cursor-pointer transition-all ${
                   isActive
-                    ? 'bg-brand-indigo/10 text-brand-indigo border-brand-indigo/35'
-                    : 'bg-bg-primary text-text-primary border-border-subtle hover:bg-neutral-50'
+                    ? 'bg-brand-indigo/10 text-brand-indigo border-brand-indigo/25'
+                    : 'bg-bg-primary text-text-primary border-border-subtle hover:bg-bg-primary/50'
                 }`}
               >
                 {chip.label}
@@ -168,7 +169,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
             }
             className="w-full text-center"
           />
-          <span className="text-text-muted text-[13px]">—</span>
+          <span className="text-text-muted text-[14px] font-bold">—</span>
           <TextInput
             placeholder="Max Rent"
             type="number"
@@ -182,21 +183,21 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
       </div>
 
       {/* 3. Collapsible Advanced/Community & Owner Filters */}
-      <div className="border-t border-border-subtle pt-xs">
+      <div className="border-t border-border-subtle pt-sm">
         <button
           type="button"
           onClick={() => setShowAdvanced(!showAdvanced)}
-          className="flex items-center justify-between w-full text-left text-[13px] font-semibold text-text-primary cursor-pointer"
+          className="flex items-center justify-between w-full text-left text-[14px] font-bold text-text-primary cursor-pointer hover:text-brand-indigo transition-colors"
         >
           <span>Community Quality & Verification Filters</span>
           {showAdvanced ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </button>
 
         {showAdvanced && (
-          <div className="flex flex-col gap-sm mt-sm">
+          <div className="flex flex-col gap-md mt-md">
             {/* Water Reliability Filter */}
-            <div className="flex flex-col gap-xxs">
-              <span className="text-[12px] font-semibold text-text-muted flex items-center gap-[4px]">
+            <div className="flex flex-col gap-xs">
+              <span className="text-[12px] font-extrabold text-text-muted flex items-center gap-[4px] uppercase tracking-wider">
                 <Droplet size={13} className="text-brand-indigo" />
                 Water Reliability
               </span>
@@ -207,10 +208,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
                     <button
                       key={opt}
                       onClick={() => onFiltersChange({ ...filters, waterRating: isSel ? '' : opt })}
-                      className={`py-[4px] border rounded-soft text-[11px] font-medium transition-all cursor-pointer ${
-                        isSel
-                          ? 'bg-brand-indigo text-white border-brand-indigo'
-                          : 'bg-bg-primary border-border-subtle hover:bg-neutral-50'
+                      className={`py-[6px] border rounded-soft text-[12px] font-semibold transition-all cursor-pointer ${
+                        isSel ? activeBtnClass : inactiveBtnClass
                       }`}
                     >
                       {opt}
@@ -221,8 +220,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
             </div>
 
             {/* Power Reliability Filter */}
-            <div className="flex flex-col gap-xxs">
-              <span className="text-[12px] font-semibold text-text-muted flex items-center gap-[4px]">
+            <div className="flex flex-col gap-xs">
+              <span className="text-[12px] font-extrabold text-text-muted flex items-center gap-[4px] uppercase tracking-wider">
                 <Zap size={13} className="text-accent-amber" />
                 Power / Electricity
               </span>
@@ -235,10 +234,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
                       onClick={() =>
                         onFiltersChange({ ...filters, electricityRating: isSel ? '' : opt })
                       }
-                      className={`py-[4px] border rounded-soft text-[11px] font-medium transition-all cursor-pointer ${
-                        isSel
-                          ? 'bg-brand-indigo text-white border-brand-indigo'
-                          : 'bg-bg-primary border-border-subtle hover:bg-neutral-50'
+                      className={`py-[6px] border rounded-soft text-[12px] font-semibold transition-all cursor-pointer ${
+                        isSel ? activeBtnClass : inactiveBtnClass
                       }`}
                     >
                       {opt}
@@ -249,8 +246,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
             </div>
 
             {/* Internet Type Filter */}
-            <div className="flex flex-col gap-xxs">
-              <span className="text-[12px] font-semibold text-text-muted flex items-center gap-[4px]">
+            <div className="flex flex-col gap-xs">
+              <span className="text-[12px] font-extrabold text-text-muted flex items-center gap-[4px] uppercase tracking-wider">
                 <Wifi size={13} className="text-text-primary" />
                 Internet Type
               </span>
@@ -263,10 +260,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
                       onClick={() =>
                         onFiltersChange({ ...filters, internetType: isSel ? '' : opt })
                       }
-                      className={`py-[4px] px-[2px] border rounded-soft text-[10px] font-medium transition-all cursor-pointer ${
-                        isSel
-                          ? 'bg-brand-indigo text-white border-brand-indigo'
-                          : 'bg-bg-primary border-border-subtle hover:bg-neutral-50'
+                      className={`py-[6px] px-[2px] border rounded-soft text-[11px] font-semibold transition-all cursor-pointer ${
+                        isSel ? activeBtnClass : inactiveBtnClass
                       }`}
                     >
                       {opt}
@@ -277,8 +272,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
             </div>
 
             {/* Security Level Filter */}
-            <div className="flex flex-col gap-xxs">
-              <span className="text-[12px] font-semibold text-text-muted flex items-center gap-[4px]">
+            <div className="flex flex-col gap-xs">
+              <span className="text-[12px] font-extrabold text-text-muted flex items-center gap-[4px] uppercase tracking-wider">
                 <Shield size={13} className="text-accent-emerald" />
                 Security Standards
               </span>
@@ -291,10 +286,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
                       onClick={() =>
                         onFiltersChange({ ...filters, securityRating: isSel ? '' : opt })
                       }
-                      className={`py-[4px] border rounded-soft text-[11px] font-medium transition-all cursor-pointer ${
-                        isSel
-                          ? 'bg-brand-indigo text-white border-brand-indigo'
-                          : 'bg-bg-primary border-border-subtle hover:bg-neutral-50'
+                      className={`py-[6px] border rounded-soft text-[12px] font-semibold transition-all cursor-pointer ${
+                        isSel ? activeBtnClass : inactiveBtnClass
                       }`}
                     >
                       {opt}
@@ -305,8 +298,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
             </div>
 
             {/* Parking space availability */}
-            <div className="flex flex-col gap-xxs">
-              <span className="text-[12px] font-semibold text-text-muted flex items-center gap-[4px]">
+            <div className="flex flex-col gap-xs">
+              <span className="text-[12px] font-extrabold text-text-muted flex items-center gap-[4px] uppercase tracking-wider">
                 <Car size={13} className="text-text-primary" />
                 Parking Space
               </span>
@@ -317,10 +310,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
                     <button
                       key={opt}
                       onClick={() => onFiltersChange({ ...filters, parking: isSel ? '' : opt })}
-                      className={`py-[4px] border rounded-soft text-[11px] font-medium transition-all cursor-pointer ${
-                        isSel
-                          ? 'bg-brand-indigo text-white border-brand-indigo'
-                          : 'bg-bg-primary border-border-subtle hover:bg-neutral-50'
+                      className={`py-[6px] border rounded-soft text-[12px] font-semibold transition-all cursor-pointer ${
+                        isSel ? activeBtnClass : inactiveBtnClass
                       }`}
                     >
                       {opt}
@@ -331,8 +322,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
             </div>
 
             {/* Road Access type */}
-            <div className="flex flex-col gap-xxs">
-              <span className="text-[12px] font-semibold text-text-muted flex items-center gap-[4px]">
+            <div className="flex flex-col gap-xs">
+              <span className="text-[12px] font-extrabold text-text-muted flex items-center gap-[4px] uppercase tracking-wider">
                 <Road size={13} className="text-text-muted" />
                 Road Access
               </span>
@@ -343,10 +334,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
                     <button
                       key={opt}
                       onClick={() => onFiltersChange({ ...filters, roadType: isSel ? '' : opt })}
-                      className={`py-[4px] border rounded-soft text-[11px] font-medium transition-all cursor-pointer ${
-                        isSel
-                          ? 'bg-brand-indigo text-white border-brand-indigo'
-                          : 'bg-bg-primary border-border-subtle hover:bg-neutral-50'
+                      className={`py-[6px] border rounded-soft text-[12px] font-semibold transition-all cursor-pointer ${
+                        isSel ? activeBtnClass : inactiveBtnClass
                       }`}
                     >
                       {opt}
@@ -357,8 +346,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
             </div>
 
             {/* Waste Collection */}
-            <div className="flex flex-col gap-xxs">
-              <span className="text-[12px] font-semibold text-text-muted flex items-center gap-[4px]">
+            <div className="flex flex-col gap-xs">
+              <span className="text-[12px] font-extrabold text-text-muted flex items-center gap-[4px] uppercase tracking-wider">
                 <Trash2 size={13} className="text-text-primary" />
                 Garbage Collection
               </span>
@@ -371,10 +360,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
                       onClick={() =>
                         onFiltersChange({ ...filters, garbageReliability: isSel ? '' : opt })
                       }
-                      className={`py-[4px] border rounded-soft text-[11px] font-medium transition-all cursor-pointer ${
-                        isSel
-                          ? 'bg-brand-indigo text-white border-brand-indigo'
-                          : 'bg-bg-primary border-border-subtle hover:bg-neutral-50'
+                      className={`py-[6px] border rounded-soft text-[12px] font-semibold transition-all cursor-pointer ${
+                        isSel ? activeBtnClass : inactiveBtnClass
                       }`}
                     >
                       {opt}
@@ -385,19 +372,19 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
             </div>
 
             {/* Owner Verifications Toggles */}
-            <div className="flex flex-col gap-xs border-t border-border-subtle pt-sm">
-              <span className="text-[12px] font-bold text-text-muted uppercase tracking-wider flex items-center gap-[4px]">
+            <div className="flex flex-col gap-sm border-t border-border-subtle pt-md">
+              <span className="text-[12px] font-extrabold text-text-muted uppercase tracking-wider flex items-center gap-[4px]">
                 <UserCheck size={13} className="text-brand-indigo" />
                 Owner & Listing Badges
               </span>
 
               {/* Verified Owner Only */}
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between py-xs">
                 <div className="flex flex-col">
-                  <span className="text-[13px] font-medium text-text-primary">
+                  <span className="text-[14px] font-bold text-text-primary">
                     Verified Owner Only
                   </span>
-                  <span className="text-[11px] text-text-muted">
+                  <span className="text-[12px] text-text-muted">
                     Show properties authenticated by landlord documentation
                   </span>
                 </div>
@@ -410,12 +397,10 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
               </div>
 
               {/* Community Listed */}
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between py-xs border-t border-border-subtle/40">
                 <div className="flex flex-col">
-                  <span className="text-[13px] font-medium text-text-primary">
-                    Community Listed
-                  </span>
-                  <span className="text-[11px] text-text-muted">
+                  <span className="text-[14px] font-bold text-text-primary">Community Listed</span>
+                  <span className="text-[12px] text-text-muted">
                     Display crowd-sourced renter evaluations
                   </span>
                 </div>
@@ -428,12 +413,10 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
               </div>
 
               {/* Vacancy Available */}
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between py-xs border-t border-border-subtle/40">
                 <div className="flex flex-col">
-                  <span className="text-[13px] font-medium text-text-primary">
-                    Vacancy Available
-                  </span>
-                  <span className="text-[11px] text-text-muted">
+                  <span className="text-[14px] font-bold text-text-primary">Vacancy Available</span>
+                  <span className="text-[12px] text-text-muted">
                     Show apartments with open listing vacancies
                   </span>
                 </div>
@@ -446,12 +429,10 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
               </div>
 
               {/* Recently Updated */}
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between py-xs border-t border-border-subtle/40">
                 <div className="flex flex-col">
-                  <span className="text-[13px] font-medium text-text-primary">
-                    Recently Updated
-                  </span>
-                  <span className="text-[11px] text-text-muted">
+                  <span className="text-[14px] font-bold text-text-primary">Recently Updated</span>
+                  <span className="text-[12px] text-text-muted">
                     Show properties updated in the last 14 days
                   </span>
                 </div>

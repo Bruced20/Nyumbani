@@ -15,32 +15,34 @@ interface ButtonProps extends HTMLMotionProps<'button'> {
 /**
  * Reusable Design System Button component.
  * Leverages Framer Motion for micro-interactions (scale-down on click, spring hover transition).
+ * Upgraded to match Product Design System v2 (Premium Experience).
  */
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     { children, className, variant = 'primary', isLoading = false, icon, disabled, ...props },
     ref
   ) => {
-    // Determine variant CSS tokens (conforming to Design Bible Section 25)
     const variantClasses = {
-      primary: 'bg-brand-indigo text-white hover:bg-opacity-95 shadow-sm border border-transparent',
+      primary:
+        'bg-brand-indigo text-white hover:bg-brand-indigo/90 shadow-sm border border-transparent',
       secondary:
-        'bg-bg-secondary text-text-primary border border-border-subtle hover:bg-neutral-100',
-      outline: 'bg-transparent text-text-primary border border-border-subtle hover:bg-bg-secondary',
-      ghost: 'bg-transparent text-text-primary hover:bg-bg-secondary border border-transparent',
+        'bg-bg-primary text-text-primary border border-border-subtle hover:bg-bg-primary/50 shadow-sm',
+      outline:
+        'bg-transparent text-text-primary border border-border-subtle hover:bg-bg-primary shadow-sm',
+      ghost: 'bg-transparent text-text-primary hover:bg-bg-primary border border-transparent',
       destructive:
-        'bg-accent-coral text-white hover:bg-opacity-95 shadow-sm border border-transparent',
+        'bg-accent-coral text-white hover:bg-accent-coral/95 shadow-sm border border-transparent',
     }
 
     return (
       <motion.button
         ref={ref}
         disabled={disabled || isLoading}
-        whileHover={disabled || isLoading ? undefined : { scale: 1.01 }}
-        whileTap={disabled || isLoading ? undefined : { scale: 0.98 }}
-        transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+        whileHover={disabled || isLoading ? undefined : { scale: 1.015, y: -0.5 }}
+        whileTap={disabled || isLoading ? undefined : { scale: 0.98, y: 0 }}
+        transition={{ type: 'spring', stiffness: 450, damping: 22 }}
         className={cn(
-          'inline-flex items-center justify-center gap-xs px-sm py-xxs font-sans text-[14px] font-medium rounded-soft cursor-pointer transition-colors duration-200 select-none outline-none focus:ring-2 focus:ring-brand-indigo focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed',
+          'inline-flex items-center justify-center gap-xs px-sm py-[10px] font-sans text-[14px] font-semibold rounded-soft cursor-pointer transition-all duration-200 select-none outline-none focus:ring-2 focus:ring-brand-indigo/20 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed',
           variantClasses[variant],
           className
         )}
