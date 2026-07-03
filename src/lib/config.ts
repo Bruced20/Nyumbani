@@ -1,14 +1,22 @@
 import { z } from 'zod'
 
-// Define the environment schema
+// Define the environment schema with optional/empty-friendly local fallbacks
 const envSchema = z.object({
   NEXT_PUBLIC_SUPABASE_URL: z.string().url('NEXT_PUBLIC_SUPABASE_URL must be a valid URL.'),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z
     .string()
-    .min(10, 'NEXT_PUBLIC_SUPABASE_ANON_KEY must be a valid token.'),
-  SUPABASE_SERVICE_ROLE_KEY: z.string().min(10, 'SUPABASE_SERVICE_ROLE_KEY must be a valid token.'),
-  UPSTASH_REDIS_REST_URL: z.string().url('UPSTASH_REDIS_REST_URL must be a valid URL.'),
-  UPSTASH_REDIS_REST_TOKEN: z.string().min(10, 'UPSTASH_REDIS_REST_TOKEN must be a valid token.'),
+    .min(5, 'NEXT_PUBLIC_SUPABASE_ANON_KEY must be a valid token.'),
+  SUPABASE_SERVICE_ROLE_KEY: z
+    .string()
+    .min(5, 'SUPABASE_SERVICE_ROLE_KEY must be a valid token.')
+    .optional()
+    .or(z.literal('')),
+  UPSTASH_REDIS_REST_URL: z
+    .string()
+    .url('UPSTASH_REDIS_REST_URL must be a valid URL.')
+    .optional()
+    .or(z.literal('')),
+  UPSTASH_REDIS_REST_TOKEN: z.string().optional().or(z.literal('')),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 })
 
@@ -22,8 +30,8 @@ function validateConfig() {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
-    UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
-    UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
+    UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL || undefined,
+    UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN || undefined,
     NODE_ENV: process.env.NODE_ENV,
   }
 
