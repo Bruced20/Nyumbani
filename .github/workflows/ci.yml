@@ -1,0 +1,47 @@
+name: Integration Pipeline
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://dummy-supabase.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: dummy-supabase-anon-key-satisfies-length-requirements
+      SUPABASE_SERVICE_ROLE_KEY: dummy-supabase-service-role-key-satisfies-length-requirements
+      UPSTASH_REDIS_REST_URL: https://dummy-redis.upstash.io
+      UPSTASH_REDIS_REST_TOKEN: dummy-upstash-redis-rest-token-satisfies-length-requirements
+      NODE_ENV: test
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check Security Audit
+        run: npm audit --audit-level=high || true
+
+      - name: Lint Codebase
+        run: npm run lint
+
+      - name: TypeScript Compiler Verification
+        run: npx tsc --noEmit
+
+      - name: Run Unit Tests
+        run: npm run test
+
+      - name: Production Build Check
+        run: npm run build

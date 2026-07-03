@@ -27,7 +27,7 @@ export async function middleware(request: NextRequest) {
     default-src 'self';
     script-src 'self' 'unsafe-eval' 'unsafe-inline' *.supabase.co;
     style-src 'self' 'unsafe-inline' fonts.googleapis.com;
-    img-src 'self' data: blob: *.supabase.co res.cloudinary.com;
+    img-src 'self' data: blob: *.supabase.co res.cloudinary.com *.unsplash.com;
     font-src 'self' fonts.gstatic.com;
     connect-src 'self' *.supabase.co *.upstash.io;
     frame-ancestors 'none';
