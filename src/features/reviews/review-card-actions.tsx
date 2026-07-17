@@ -43,18 +43,20 @@ export const ReviewCardActions: React.FC<ReviewCardActionsProps> = ({ reviewId }
         onClick={handleHelpfulClick}
         className={`text-[12px] flex items-center gap-[4px] cursor-pointer transition-colors ${
           hasVotedHelpful
-            ? 'text-brand-indigo font-bold'
+            ? 'text-brand-primary font-bold'
             : 'text-text-muted hover:text-text-primary'
         }`}
       >
-        <ThumbsUp size={12} className={hasVotedHelpful ? 'fill-brand-indigo/10' : ''} />
+        <ThumbsUp size={12} className={hasVotedHelpful ? 'fill-brand-primary/10' : ''} />
         Helpful {helpfulCount > 0 ? `(${helpfulCount})` : ''}
       </button>
 
       <button
         onClick={handleReportClick}
         className={`text-[12px] flex items-center gap-[4px] cursor-pointer transition-colors ${
-          hasReported ? 'text-accent-coral font-bold' : 'text-text-muted hover:text-accent-coral'
+          hasReported
+            ? 'text-status-error font-semibold'
+            : 'text-text-muted hover:text-status-error'
         }`}
       >
         <AlertTriangle size={12} />

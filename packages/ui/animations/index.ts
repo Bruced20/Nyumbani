@@ -60,11 +60,10 @@ export const pageTransitionVariants: Variants = {
 }
 
 // 5. Card Hover Preset (applied on hover gesture)
+// Simplified to remove hardcoded shadow injection, using native CSS transitions instead.
 export const cardHoverPreset: Variants = {
   hover: {
-    y: -4,
-    scale: 1.01,
-    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+    y: -2,
     transition: SPRING_SUBTLE,
   },
   tap: {

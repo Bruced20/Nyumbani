@@ -6,7 +6,7 @@ import { Footer } from '@ui/navigation'
 import { Navbar } from '@/components/navbar-wrapper'
 import { Container } from '@ui/layout'
 import { HealthScore, VerifiedOwnerBadge, CommunityListingBadge } from '@ui/badge'
-import { PropertyCard } from '@ui/card'
+import { PropertyCard, ReviewCard } from '@ui/card'
 import { Button } from '@ui/button'
 import { MOCK_PROPERTIES } from '@/lib/mock-data'
 import { Gallery } from '@/features/properties/gallery'
@@ -14,22 +14,7 @@ import { ActionButtons } from '@/features/properties/action-buttons'
 import { HealthBars } from '@/features/properties/health-bars'
 import { ReviewCardActions } from '@/features/reviews/review-card-actions'
 import { PropertyService } from '@/lib/services/properties'
-import {
-  Droplet,
-  Wifi,
-  Shield,
-  Car,
-  Road,
-  Trash2,
-  User,
-  Smile,
-  Frown,
-  MapPin,
-  Sparkles,
-  Calendar,
-  Lock,
-  Info,
-} from 'lucide-react'
+import { MapPin } from 'lucide-react'
 
 interface PropertyDetailPageProps {
   params: Promise<{
@@ -64,7 +49,9 @@ export async function generateMetadata({ params }: PropertyDetailPageProps): Pro
 
 /**
  * Property Details Page.
- * Redesigned into a premium, visual magazine layout with sticky sidebar (v2 Premium Experience).
+ * Magazine layout with sticky sidebar. Redesigned against the ten calm-trust
+ * design principles: whitespace over containers, one focal point, color with
+ * meaning, and progressive disclosure.
  */
 export default async function PropertyDetailPage({ params }: PropertyDetailPageProps) {
   const { slug } = await params
@@ -85,14 +72,18 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
     slug
   )
 
+  // Shared section-label treatment: consistent everywhere on this page,
+  // deliberately quieter than the old uppercase/extrabold eyebrow.
+  const sectionLabel = 'text-[14px] font-semibold text-text-muted'
+
   return (
     <div className="flex flex-col min-h-screen bg-bg-primary text-text-primary">
       <Navbar />
 
       <main className="flex-1 py-lg">
         <Container className="max-w-6xl flex flex-col gap-lg">
-          {/* 1. Hero Gallery Container */}
-          <div className="rounded-symmetric overflow-hidden shadow-sm">
+          {/* 1. Hero Gallery — the page's primary visual anchor */}
+          <div className="rounded-symmetric overflow-hidden">
             <Gallery images={property.images} />
           </div>
 
@@ -103,7 +94,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
               {/* Header Titles block */}
               <div className="flex flex-col gap-xs">
                 <div className="flex flex-wrap items-center gap-xs">
-                  <h1 className="text-[2.25rem] font-extrabold text-text-primary tracking-tight leading-tight">
+                  <h1 className="text-[2.25rem] font-semibold text-text-primary tracking-tight leading-tight">
                     {property.name}
                   </h1>
                 </div>
@@ -111,16 +102,16 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                 <div className="flex flex-wrap items-center gap-sm mt-xxs">
                   {property.isVerified ? <VerifiedOwnerBadge /> : <CommunityListingBadge />}
                   <span
-                    className={`px-sm py-[4px] text-[12px] font-bold rounded-pill border select-none ${
+                    className={`px-sm py-[4px] text-[12px] font-semibold rounded-pill border select-none ${
                       property.vacancyStatus
-                        ? 'bg-accent-emerald/10 text-accent-emerald border-accent-emerald/20'
+                        ? 'bg-status-success/5 text-status-success border-status-success/20'
                         : 'bg-text-muted/10 text-text-muted border-text-muted/20'
                     }`}
                   >
                     {property.vacancyStatus ? 'Vacancy Available' : 'No Vacancy'}
                   </span>
-                  <span className="text-text-muted text-[14px] font-medium flex items-center gap-[4px]">
-                    <MapPin size={15} className="text-brand-indigo" />
+                  <span className="text-text-muted text-[14px] flex items-center gap-[4px]">
+                    <MapPin size={15} className="text-text-muted" />
                     {property.neighborhood}
                   </span>
                 </div>
@@ -128,108 +119,84 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
 
               <hr className="border-border-subtle" />
 
-              {/* Quick Facts Grid */}
+              {/* Quick Facts — borderless label/value pairs, consistent icon treatment.
+                  Icon comprehension test: all icons removed. Labels carry the information. */}
               <div className="flex flex-col gap-sm">
-                <h2 className="text-[14px] font-extrabold text-text-muted uppercase tracking-wider">
-                  Quick Facts
-                </h2>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-sm">
-                  <div className="p-sm bg-bg-secondary rounded-soft border border-border-subtle flex flex-col gap-xxs shadow-sm">
-                    <span className="text-[12px] font-bold text-text-muted flex items-center gap-[4px]">
-                      <Droplet size={13} className="text-brand-indigo" /> Water
-                    </span>
-                    <span className="text-[14px] font-bold text-text-primary truncate">
+                <h2 className={sectionLabel}>Quick Facts</h2>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-lg gap-y-sm">
+                  <div className="flex flex-col gap-[2px]">
+                    <span className="text-[12px] text-text-muted">Water</span>
+                    <span className="text-[14px] font-semibold text-text-primary truncate">
                       {property.waterSource}
                     </span>
                   </div>
 
-                  <div className="p-sm bg-bg-secondary rounded-soft border border-border-subtle flex flex-col gap-xxs shadow-sm">
-                    <span className="text-[12px] font-bold text-text-muted flex items-center gap-[4px]">
-                      <Wifi size={13} className="text-brand-indigo" /> Internet
-                    </span>
-                    <span className="text-[14px] font-bold text-text-primary truncate">
+                  <div className="flex flex-col gap-[2px]">
+                    <span className="text-[12px] text-text-muted">Internet</span>
+                    <span className="text-[14px] font-semibold text-text-primary truncate">
                       {property.internetType}
                     </span>
                   </div>
 
-                  <div className="p-sm bg-bg-secondary rounded-soft border border-border-subtle flex flex-col gap-xxs shadow-sm">
-                    <span className="text-[12px] font-bold text-text-muted flex items-center gap-[4px]">
-                      <Shield size={13} className="text-brand-indigo" /> Security
-                    </span>
-                    <span className="text-[14px] font-bold text-text-primary truncate">
+                  <div className="flex flex-col gap-[2px]">
+                    <span className="text-[12px] text-text-muted">Security</span>
+                    <span className="text-[14px] font-semibold text-text-primary truncate">
                       {property.securityRating} Standard
                     </span>
                   </div>
 
-                  <div className="p-sm bg-bg-secondary rounded-soft border border-border-subtle flex flex-col gap-xxs shadow-sm">
-                    <span className="text-[12px] font-bold text-text-muted flex items-center gap-[4px]">
-                      <Info size={13} className="text-brand-indigo" /> Deposit
-                    </span>
-                    <span className="text-[14px] font-bold text-text-primary truncate">
+                  <div className="flex flex-col gap-[2px]">
+                    <span className="text-[12px] text-text-muted">Deposit</span>
+                    <span className="text-[14px] font-semibold text-text-primary truncate">
                       {property.deposit}
                     </span>
                   </div>
 
-                  <div className="p-sm bg-bg-secondary rounded-soft border border-border-subtle flex flex-col gap-xxs shadow-sm">
-                    <span className="text-[12px] font-bold text-text-muted flex items-center gap-[4px]">
-                      <Car size={13} className="text-brand-indigo" /> Parking
-                    </span>
-                    <span className="text-[14px] font-bold text-text-primary truncate">
+                  <div className="flex flex-col gap-[2px]">
+                    <span className="text-[12px] text-text-muted">Parking</span>
+                    <span className="text-[14px] font-semibold text-text-primary truncate">
                       {property.parking}
                     </span>
                   </div>
 
-                  <div className="p-sm bg-bg-secondary rounded-soft border border-border-subtle flex flex-col gap-xxs shadow-sm">
-                    <span className="text-[12px] font-bold text-text-muted flex items-center gap-[4px]">
-                      <Road size={13} className="text-brand-indigo" /> Road
-                    </span>
-                    <span className="text-[14px] font-bold text-text-primary truncate">
+                  <div className="flex flex-col gap-[2px]">
+                    <span className="text-[12px] text-text-muted">Road</span>
+                    <span className="text-[14px] font-semibold text-text-primary truncate">
                       {property.roadType} Access
                     </span>
                   </div>
 
-                  <div className="p-sm bg-bg-secondary rounded-soft border border-border-subtle flex flex-col gap-xxs shadow-sm">
-                    <span className="text-[12px] font-bold text-text-muted flex items-center gap-[4px]">
-                      <Trash2 size={13} className="text-brand-indigo" /> Garbage
-                    </span>
-                    <span className="text-[14px] font-bold text-text-primary truncate">
+                  <div className="flex flex-col gap-[2px]">
+                    <span className="text-[12px] text-text-muted">Garbage</span>
+                    <span className="text-[14px] font-semibold text-text-primary truncate">
                       {property.garbageReliability}
                     </span>
                   </div>
 
-                  <div className="p-sm bg-bg-secondary rounded-soft border border-border-subtle flex flex-col gap-xxs shadow-sm">
-                    <span className="text-[12px] font-bold text-text-muted flex items-center gap-[4px]">
-                      <User size={13} className="text-brand-indigo" /> Caretaker
-                    </span>
-                    <span className="text-[14px] font-bold text-text-primary truncate">
+                  <div className="flex flex-col gap-[2px]">
+                    <span className="text-[12px] text-text-muted">Caretaker</span>
+                    <span className="text-[14px] font-semibold text-text-primary truncate">
                       {property.caretakerAvailable ? 'On-site' : 'Off-site'}
                     </span>
                   </div>
                 </div>
               </div>
 
-              {/* AI Community Summary Card */}
-              <div className="p-md bg-bg-secondary border border-dashed border-brand-indigo/35 rounded-symmetric relative flex flex-col gap-sm shadow-sm">
-                <div className="flex justify-between items-center flex-wrap gap-xs">
-                  <span className="text-[13px] font-extrabold text-brand-indigo flex items-center gap-[4px] uppercase tracking-wider">
-                    <Sparkles size={14} className="text-brand-indigo" />
-                    AI Sentiment Summary
-                  </span>
-                  <span className="text-[12px] bg-brand-indigo/10 text-brand-indigo px-sm py-[4px] rounded-pill font-bold border border-brand-indigo/15">
-                    Overall: {property.aiSummary.sentiment}
+              {/* AI Community Summary — restyled as editorial synthesis rather
+                  than a UI widget. A quiet left rule instead of a dashed box,
+                  badge, and sparkle icon. */}
+              <div className="flex flex-col gap-sm border-l-2 border-brand-primary/25 pl-md">
+                <div className="flex items-center justify-between flex-wrap gap-xs">
+                  <h2 className={sectionLabel}>What residents say</h2>
+                  <span className="text-[12px] text-text-muted">
+                    Summarized from {property.reviews.length} reviews · Overall{' '}
+                    {property.aiSummary.sentiment}
                   </span>
                 </div>
 
-                <p className="text-[15px] text-text-primary leading-relaxed font-bold">
-                  Based on crowd-sourced tenant reviews, here is what it is actually like to live
-                  here.
-                </p>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-md mt-xxs">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
                   <div className="flex flex-col gap-xxs">
-                    <span className="text-[13px] font-bold text-accent-emerald flex items-center gap-[2px]">
-                      <Smile size={14} /> Positives
-                    </span>
+                    <span className="text-[13px] font-semibold text-text-primary">Positives</span>
                     <ul className="text-[14px] text-text-muted list-disc list-inside leading-relaxed flex flex-col gap-[3px]">
                       {property.aiSummary.positives.map((pos) => (
                         <li key={pos}>{pos}</li>
@@ -237,8 +204,8 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                     </ul>
                   </div>
                   <div className="flex flex-col gap-xxs">
-                    <span className="text-[13px] font-bold text-accent-coral flex items-center gap-[2px]">
-                      <Frown size={14} /> Common Complaints
+                    <span className="text-[13px] font-semibold text-text-primary">
+                      Common complaints
                     </span>
                     <ul className="text-[14px] text-text-muted list-disc list-inside leading-relaxed flex flex-col gap-[3px]">
                       {property.aiSummary.complaints.map((comp) => (
@@ -248,70 +215,54 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                   </div>
                 </div>
 
-                <div className="border-t border-border-subtle pt-sm mt-xs">
-                  <span className="block text-[12px] font-bold text-text-muted uppercase tracking-wider mb-[2px]">
-                    Recommendation Summary
-                  </span>
-                  <p className="text-[14px] text-text-primary leading-relaxed font-bold italic">
-                    &ldquo;{property.aiSummary.recommendation}&rdquo;
-                  </p>
-                </div>
+                <p className="text-[14px] text-text-primary leading-relaxed italic">
+                  &ldquo;{property.aiSummary.recommendation}&rdquo;
+                </p>
               </div>
 
               {/* Vector breakdowns (Bars) */}
               <div className="flex flex-col gap-sm">
-                <h2 className="text-[14px] font-extrabold text-text-muted uppercase tracking-wider">
-                  Community quality breakdown
-                </h2>
-                <div className="border border-border-subtle p-md rounded-symmetric bg-bg-secondary shadow-sm">
-                  <HealthBars
-                    ratings={{
-                      water: property.waterRating,
-                      electricity: property.electricityRating,
-                      internet: property.internetType,
-                      security: property.securityRating,
-                      parking: property.parking,
-                      road: property.roadType,
-                      garbage: property.garbageReliability,
-                    }}
-                  />
-                </div>
+                <h2 className={sectionLabel}>Community quality breakdown</h2>
+                <HealthBars
+                  ratings={{
+                    water: property.waterRating,
+                    electricity: property.electricityRating,
+                    internet: property.internetType,
+                    security: property.securityRating,
+                    parking: property.parking,
+                    road: property.roadType,
+                    garbage: property.garbageReliability,
+                  }}
+                />
               </div>
 
-              {/* Amenities Grid */}
+              {/* Amenities — plain text list, no per-item box or icon */}
               <div className="flex flex-col gap-sm">
-                <h2 className="text-[14px] font-extrabold text-text-muted uppercase tracking-wider">
-                  Amenities
-                </h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-sm">
+                <h2 className={sectionLabel}>Amenities</h2>
+                <div className="flex flex-wrap gap-x-lg gap-y-xs">
                   {property.amenities.map((amenity) => (
-                    <div
-                      key={amenity}
-                      className="flex items-center gap-xs text-[14px] font-bold text-text-primary bg-bg-secondary border border-border-subtle p-sm rounded-soft shadow-sm"
-                    >
-                      <Sparkles size={14} className="text-brand-indigo" />
+                    <span key={amenity} className="text-[14px] text-text-primary">
                       {amenity}
-                    </div>
+                    </span>
                   ))}
                 </div>
               </div>
 
               {/* Location Map and Distance details */}
               <div className="flex flex-col gap-sm">
-                <h2 className="text-[14px] font-extrabold text-text-muted uppercase tracking-wider">
-                  Location & Nearby Areas
-                </h2>
+                <h2 className={sectionLabel}>Location & Nearby Areas</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-                  {/* Left Side: Mock Static map */}
-                  <div className="h-[220px] bg-bg-secondary rounded-symmetric border border-border-subtle relative overflow-hidden flex flex-col items-center justify-center shadow-sm">
+                  {/* Left Side: Mock Static map — kept bordered since it is a
+                      functional bounded canvas, not a decorative card */}
+                  <div className="h-[220px] bg-bg-secondary rounded-symmetric border border-border-subtle relative overflow-hidden flex flex-col items-center justify-center">
                     <div className="absolute inset-0 opacity-10 pointer-events-none grid grid-cols-4 grid-rows-4 border border-slate-300">
                       {Array.from({ length: 16 }).map((_, i) => (
                         <div key={i} className="border border-slate-300" />
                       ))}
                     </div>
                     <div className="flex flex-col items-center text-center gap-xxs p-xs z-10">
-                      <MapPin size={22} className="text-brand-indigo" />
-                      <span className="font-extrabold text-[15px] text-text-primary mt-xxs">
+                      <MapPin size={22} className="text-brand-primary" />
+                      <span className="font-semibold text-[15px] text-text-primary mt-xxs">
                         {property.neighborhood}
                       </span>
                       <span className="text-[12px] text-text-muted">
@@ -321,19 +272,17 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                     </div>
                   </div>
 
-                  {/* Right Side: Transit Distance details */}
-                  <div className="flex flex-col gap-sm p-md bg-bg-secondary border border-border-subtle rounded-symmetric shadow-sm justify-center">
-                    <span className="text-[12px] font-bold text-text-muted uppercase tracking-wider mb-xxs">
-                      Transit Walking Distance
-                    </span>
+                  {/* Right Side: Transit Distance details — plain list, no box */}
+                  <div className="flex flex-col gap-sm justify-center">
+                    <span className="text-[12px] text-text-muted">Transit walking distance</span>
                     <div className="flex flex-col gap-xs">
                       {property.nearbyPlaces.map((place) => (
                         <div
                           key={place.name}
                           className="flex justify-between items-center text-[14px] border-b border-border-subtle/40 pb-xxs"
                         >
-                          <span className="font-bold text-text-primary">{place.name}</span>
-                          <span className="text-text-muted font-medium">{place.distance}</span>
+                          <span className="font-medium text-text-primary">{place.name}</span>
+                          <span className="text-text-muted">{place.distance}</span>
                         </div>
                       ))}
                     </div>
@@ -341,12 +290,11 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                 </div>
               </div>
 
-              {/* Reviews List */}
+              {/* Reviews — a divided list rather than boxed cards, so it reads
+                  like testimonials rather than tagged UI components */}
               <div className="flex flex-col gap-sm">
                 <div className="flex justify-between items-center flex-wrap gap-xs">
-                  <h2 className="text-[14px] font-extrabold text-text-muted uppercase tracking-wider">
-                    Resident Reviews
-                  </h2>
+                  <h2 className={sectionLabel}>Resident Reviews</h2>
                   <Link href={`/review/new?propertyId=${property.id}`}>
                     <Button
                       variant="outline"
@@ -357,89 +305,83 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                   </Link>
                 </div>
 
-                <div className="flex flex-col gap-md">
-                  {property.reviews.map((rev) => (
-                    <div
-                      key={rev.id}
-                      className="bg-bg-secondary border border-border-subtle p-md rounded-symmetric shadow-sm flex flex-col gap-xs"
-                    >
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-xs">
-                          <span className="px-sm py-[4px] bg-brand-indigo/10 text-brand-indigo text-[12px] font-bold rounded-pill border border-brand-indigo/20">
-                            {rev.role}
-                          </span>
-                          <span className="text-[12px] text-text-muted flex items-center gap-[4px]">
-                            <Calendar size={12} className="text-text-muted/80" />
-                            {new Date(rev.createdAt).toLocaleDateString()}
-                          </span>
-                        </div>
-                        <div className="text-[14px] font-bold text-text-primary">
-                          ⭐ {rev.rating.toFixed(1)}
+                <div className="flex flex-col">
+                  {property.reviews.map((rev, idx) => {
+                    // Pass through only what the reviewer actually submitted —
+                    // vectors and recommendation render solely when present.
+                    const role = rev.roleTag ?? rev.role ?? 'Community Contributor'
+
+                    return (
+                      <div
+                        key={rev.id}
+                        className={`flex flex-col gap-xs ${idx !== 0 ? 'border-t border-border-subtle' : ''}`}
+                      >
+                        <ReviewCard
+                          roleTag={role}
+                          createdAt={rev.createdAt}
+                          overallRating={rev.rating}
+                          waterRating={rev.waterRating}
+                          securityRating={rev.securityRating}
+                          caretakerRating={rev.caretakerRating}
+                          recommend={rev.recommend}
+                          comment={rev.comment}
+                          isVerifiedResident={false}
+                        />
+                        <div className="pb-md">
+                          <ReviewCardActions reviewId={rev.id} />
                         </div>
                       </div>
-
-                      <p className="text-[15px] text-text-primary leading-relaxed mt-xxs">
-                        {rev.comment}
-                      </p>
-
-                      <ReviewCardActions reviewId={rev.id} />
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
 
-              {/* Owner Responses */}
-              <div className="p-md bg-bg-secondary border border-border-subtle rounded-symmetric flex flex-col gap-xxs shadow-sm">
-                <div className="flex items-center gap-[6px] text-[14px] font-bold text-text-primary">
-                  <Lock size={14} className="text-text-muted" />
-                  Owner & Caretaker Response
-                </div>
-                <p className="text-[13px] text-text-muted leading-relaxed mt-xxs">
+              {/* Owner Responses — closing note, no icon */}
+              <div className="flex flex-col gap-xxs pt-sm border-t border-border-subtle">
+                <span className="text-[14px] font-semibold text-text-primary">
+                  Owner &amp; Caretaker Response
+                </span>
+                <p className="text-[13px] text-text-muted leading-relaxed">
                   Verified landlords can review resident reports and post updates here once they
                   claim listing ownership. No claims have been recorded yet.
                 </p>
               </div>
             </div>
 
-            {/* Right Sticky Sidebar (4 cols) */}
+            {/* Right Sticky Sidebar (4 cols) — the one surface on this page
+                that keeps a border + shadow, since it is a genuinely distinct
+                control panel rather than page content */}
             <div className="lg:col-span-4 lg:sticky lg:top-[96px] flex flex-col gap-md">
-              {/* Rent & Format Details card */}
               <div className="bg-bg-secondary border border-border-subtle p-md rounded-symmetric flex flex-col gap-md shadow-sm">
+                {/* Rent — the primary decision number; intentionally dominant */}
                 <div className="flex flex-col border-b border-border-subtle pb-sm">
-                  <span className="text-[12px] font-bold text-text-muted uppercase tracking-wider">
-                    KES Monthly Rent
+                  <span className="text-[12px] font-medium text-text-muted">Monthly Rent</span>
+                  <span className="text-[32px] font-semibold text-text-primary tracking-tight mt-xxs leading-tight">
+                    {property.rentMin.toLocaleString()} &ndash; {property.rentMax.toLocaleString()}
                   </span>
-                  <span className="text-[20px] font-extrabold text-text-primary tracking-tight mt-xxs">
-                    {property.rentMin.toLocaleString()} – {property.rentMax.toLocaleString()} KES
-                  </span>
+                  <span className="text-[13px] text-text-muted mt-[2px]">KES per month</span>
                 </div>
 
                 <div className="flex flex-col border-b border-border-subtle pb-sm">
-                  <span className="text-[12px] font-bold text-text-muted uppercase tracking-wider">
-                    House Format
-                  </span>
-                  <span className="text-[15px] font-extrabold text-text-primary mt-xxs">
+                  <span className="text-[12px] font-medium text-text-muted">House Format</span>
+                  <span className="text-[15px] font-semibold text-text-primary mt-xxs">
                     {property.houseType}
                   </span>
                 </div>
 
-                {/* Overall Health score visualizer inside Sidebar */}
-                <div className="flex items-center gap-xs pt-xxs">
+                {/* Health Score — consolidated to badge + single label */}
+                <div className="flex items-center gap-sm">
                   <HealthScore
                     score={property.healthScore}
-                    className="h-11 w-11 flex items-center justify-center text-[15px] font-extrabold"
+                    className="h-11 w-11 flex items-center justify-center text-[15px] font-semibold shrink-0"
                   />
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-[14px] text-text-primary leading-tight">
+                    <p className="font-semibold text-[14px] text-text-primary leading-tight">
                       Health Index
-                    </h3>
-                    <p className="text-[11px] text-text-muted">
-                      Based on {property.reviews.length} tenant vectors
                     </p>
-                  </div>
-                  <div className="text-[18px] font-black text-brand-indigo pr-xxs">
-                    {Math.round(property.healthScore * 20)}
-                    <span className="text-[11px] text-text-muted font-normal">/100</span>
+                    <p className="text-[12px] text-text-muted">
+                      Based on {property.reviews.length} resident reviews
+                    </p>
                   </div>
                 </div>
 
@@ -456,13 +398,11 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
             </div>
           </div>
 
-          <hr className="border-border-subtle my-sm" />
+          <hr className="border-border-subtle my-xl" />
 
-          {/* Similar Properties Suggested List */}
-          <div className="flex flex-col gap-sm py-sm">
-            <h2 className="text-[14px] font-extrabold text-text-muted uppercase tracking-wider">
-              Similar Properties Nearby
-            </h2>
+          {/* Similar Properties — breathing room above */}
+          <div className="flex flex-col gap-sm pb-lg">
+            <h2 className={sectionLabel}>Similar Properties Nearby</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
               {similarProperties.map((prop) => (
                 <Link href={`/property/${prop.slug}`} key={prop.id} className="block group">
@@ -484,7 +424,6 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                           ? 4
                           : 3
                     }
-                    caretakerRating={prop.healthScore >= 4 ? 4.5 : 3.5}
                   />
                 </Link>
               ))}

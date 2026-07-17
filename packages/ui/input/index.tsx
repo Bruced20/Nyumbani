@@ -12,26 +12,26 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 /**
  * Standard TextInput component with inline validation errors and focus states.
- * Redesigned for Product Design System v2 (Premium Experience).
+ * Refactored for Sprint D2: standardized focus rings, validation styles, and placeholder styling.
  */
 export const TextInput = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type = 'text', label, error, helperText, ...props }, ref) => {
     return (
       <div className="flex flex-col gap-[6px] w-full">
         {label && (
-          <label className="text-[14px] font-bold text-text-primary select-none">{label}</label>
+          <label className="text-[14px] font-medium text-text-primary select-none">{label}</label>
         )}
         <input
           ref={ref}
           type={type}
           className={cn(
-            'w-full px-sm py-[11px] bg-bg-secondary text-text-primary border border-border-subtle rounded-soft text-[15px] outline-none transition-all duration-200 focus:border-brand-indigo focus:ring-4 focus:ring-brand-indigo/5 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm',
-            error && 'border-accent-coral focus:border-accent-coral focus:ring-accent-coral/5',
+            'w-full px-sm py-[11px] bg-bg-secondary text-text-primary border border-border-subtle rounded-soft text-[15px] outline-none transition-all duration-200 focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/5 placeholder:text-text-muted/50 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm min-h-[44px]',
+            error && 'border-status-error focus:border-status-error focus:ring-status-error/5',
             className
           )}
           {...props}
         />
-        {error && <span className="text-[13px] font-semibold text-accent-coral">{error}</span>}
+        {error && <span className="text-[13px] font-medium text-status-error">{error}</span>}
         {!error && helperText && <span className="text-[13px] text-text-muted">{helperText}</span>}
       </div>
     )
@@ -54,8 +54,8 @@ export const SearchInput = React.forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           type="text"
           className={cn(
-            'w-full pl-[46px] pr-sm py-[14px] bg-bg-secondary text-text-primary border border-border-subtle rounded-soft text-[16px] font-medium outline-none transition-all duration-200 focus:border-brand-indigo focus:ring-4 focus:ring-brand-indigo/5 shadow-md',
-            error && 'border-accent-coral focus:border-accent-coral',
+            'w-full pl-[46px] pr-sm py-[14px] bg-bg-secondary text-text-primary border border-border-subtle rounded-soft text-[16px] font-medium outline-none transition-all duration-200 focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/5 placeholder:text-text-muted/50 shadow-md min-h-[48px]',
+            error && 'border-status-error focus:border-status-error',
             className
           )}
           {...props}
@@ -105,19 +105,19 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <div className="flex flex-col gap-[6px] w-full">
         {label && (
-          <label className="text-[14px] font-bold text-text-primary select-none">{label}</label>
+          <label className="text-[14px] font-medium text-text-primary select-none">{label}</label>
         )}
         <textarea
           ref={ref}
           rows={rows}
           className={cn(
-            'w-full px-sm py-[11px] bg-bg-secondary text-text-primary border border-border-subtle rounded-soft text-[15px] outline-none transition-all duration-200 focus:border-brand-indigo focus:ring-4 focus:ring-brand-indigo/5 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm resize-none',
-            error && 'border-accent-coral focus:border-accent-coral focus:ring-accent-coral/5',
+            'w-full px-sm py-[11px] bg-bg-secondary text-text-primary border border-border-subtle rounded-soft text-[15px] outline-none transition-all duration-200 focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/5 placeholder:text-text-muted/50 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm resize-none min-h-[80px]',
+            error && 'border-status-error focus:border-status-error focus:ring-status-error/5',
             className
           )}
           {...props}
         />
-        {error && <span className="text-[13px] font-semibold text-accent-coral">{error}</span>}
+        {error && <span className="text-[13px] font-medium text-status-error">{error}</span>}
         {!error && helperText && <span className="text-[13px] text-text-muted">{helperText}</span>}
       </div>
     )

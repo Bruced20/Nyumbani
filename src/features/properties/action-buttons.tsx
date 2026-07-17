@@ -36,9 +36,9 @@ export const ActionButtons: React.FC = () => {
         <Button
           onClick={() => setIsSaved(!isSaved)}
           variant="outline"
-          className={`h-9 gap-xxs px-xs py-xxs ${isSaved ? 'text-accent-coral border-accent-coral/30 bg-accent-coral/5' : ''}`}
+          className={`h-9 gap-xxs px-xs py-xxs ${isSaved ? 'text-status-error border-status-error/30 bg-status-error/5' : ''}`}
         >
-          <Heart size={14} className={isSaved ? 'fill-accent-coral stroke-accent-coral' : ''} />
+          <Heart size={14} className={isSaved ? 'fill-status-error stroke-status-error' : ''} />
           {isSaved ? 'Saved' : 'Save'}
         </Button>
       </motion.div>

@@ -1,10 +1,10 @@
 'use client'
 
 import React from 'react'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { cardHoverPreset } from '../animations'
-import { Droplet, Shield, Clock, MapPin } from 'lucide-react'
+import { MapPin } from 'lucide-react'
 import {
   HealthScore,
   VerifiedOwnerBadge,
@@ -30,8 +30,7 @@ interface PropertyCardProps {
 
 /**
  * PropertyCard: Summary layout details for search results and homepage grids.
- * Implements hover scaling and spring-based layouts.
- * Redesigned to support Product Design System v2 (Premium Experience).
+ * Refined for Sprint D2: visual hierarchy, soft titles, and consistent reduced-motion states.
  */
 export const PropertyCard: React.FC<PropertyCardProps> = ({
   name,
@@ -43,17 +42,27 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
   imageUrl,
   isVerified = false,
   onClick,
-  waterRating = 5,
-  securityRating = 5,
-  caretakerRating = 5,
+  waterRating,
+  securityRating,
+  caretakerRating,
 }) => {
+  const shouldReduceMotion = useReducedMotion()
+
+  // Only show vectors the caller actually has data for — never default a
+  // rating into existence on a trust platform.
+  const vectors = [
+    waterRating !== undefined && `Water ${waterRating}/5`,
+    securityRating !== undefined && `Security ${securityRating}/5`,
+    caretakerRating !== undefined && `Caretaker ${caretakerRating}/5`,
+  ].filter(Boolean) as string[]
+
   return (
     <motion.div
-      variants={cardHoverPreset}
-      whileHover="hover"
-      whileTap="tap"
+      variants={shouldReduceMotion ? undefined : cardHoverPreset}
+      whileHover={shouldReduceMotion ? undefined : 'hover'}
+      whileTap={shouldReduceMotion ? undefined : 'tap'}
       onClick={onClick}
-      className="flex flex-col bg-bg-secondary border border-border-subtle rounded-symmetric overflow-hidden shadow-sm cursor-pointer select-none transition-shadow hover:shadow-md duration-300"
+      className="flex flex-col bg-bg-secondary border border-border-subtle rounded-symmetric overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 cursor-pointer select-none"
     >
       {/* Property Widescreen Image Cover (16:10 aspect ratio) */}
       <div className="w-full aspect-[16/10] bg-bg-primary relative overflow-hidden flex items-center justify-center border-b border-border-subtle">
@@ -77,7 +86,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
       {/* Property Details */}
       <div className="p-sm flex flex-col gap-xxs">
         <div className="flex items-center justify-between gap-xxs flex-wrap mb-xxs">
-          <h3 className="font-bold text-[16px] text-text-primary leading-snug truncate max-w-[70%]">
+          <h3 className="font-semibold text-[16px] text-text-primary leading-snug truncate max-w-[70%]">
             {name}
           </h3>
           {isVerified ? <VerifiedOwnerBadge /> : <CommunityListingBadge />}
@@ -88,35 +97,22 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
           {neighborhood} • {houseType}
         </p>
 
-        <p className="text-[15px] font-bold text-text-primary mt-xs">
+        <p className="text-[15px] font-semibold text-text-primary mt-xs">
           {rentMin.toLocaleString()} - {rentMax.toLocaleString()} KES{' '}
           <span className="text-text-muted font-normal text-[13px]">/ month</span>
         </p>
 
-        {/* Dynamic Vector Quick Indicator Bar */}
-        <div className="flex gap-xs border-t border-border-subtle pt-xs mt-sm text-text-muted text-[12px] font-medium justify-between">
-          <span className="flex items-center gap-[4px]">
-            <Droplet
-              size={13}
-              className={waterRating > 3 ? 'text-accent-emerald' : 'text-accent-coral'}
-            />
-            Water {waterRating}/5
-          </span>
-          <span className="flex items-center gap-[4px]">
-            <Shield
-              size={13}
-              className={securityRating > 3 ? 'text-accent-emerald' : 'text-accent-coral'}
-            />
-            Security {securityRating}/5
-          </span>
-          <span className="flex items-center gap-[4px]">
-            <Clock
-              size={13}
-              className={caretakerRating > 3 ? 'text-accent-emerald' : 'text-accent-coral'}
-            />
-            Caretaker {caretakerRating}/5
-          </span>
-        </div>
+        {/* Simplified Typographic Quick Indicator Bar (Removed redundant icons) */}
+        {vectors.length > 0 && (
+          <div className="flex flex-wrap border-t border-border-subtle pt-xs mt-sm text-text-muted text-[12px] font-medium items-center gap-x-sm gap-y-xxs">
+            {vectors.map((v, i) => (
+              <React.Fragment key={v}>
+                {i > 0 && <span className="text-border-subtle/50 font-normal">•</span>}
+                <span>{v}</span>
+              </React.Fragment>
+            ))}
+          </div>
+        )}
       </div>
     </motion.div>
   )
@@ -125,21 +121,27 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
 interface ReviewCardProps {
   roleTag: 'Current Resident' | 'Former Resident' | 'Neighbour' | 'Community Contributor'
   createdAt: string
-  waterRating: number
-  securityRating: number
-  caretakerRating: number
-  recommend: 'Yes' | 'Maybe' | 'No'
+  /** Overall star rating as submitted by the reviewer. */
+  overallRating?: number
+  /** Per-vector ratings — rendered only when the reviewer actually provided them. */
+  waterRating?: number
+  securityRating?: number
+  caretakerRating?: number
+  recommend?: 'Yes' | 'Maybe' | 'No'
   comment: string | null
   isVerifiedResident?: boolean
 }
 
 /**
  * ReviewCard: Represents user feedback details on Property pages.
- * Redesigned to be highly spacious, clean, and card-isolated.
+ * Refined for Sprint D2: flat spacing and soft dividers.
+ * Only renders data the reviewer actually submitted — vectors, recommendation,
+ * and overall rating are all optional and never derived from one another.
  */
 export const ReviewCard: React.FC<ReviewCardProps> = ({
   roleTag,
   createdAt,
+  overallRating,
   waterRating,
   securityRating,
   caretakerRating,
@@ -154,22 +156,25 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
   }
 
   const recommendColors = {
-    Yes: 'text-accent-emerald bg-accent-emerald/5 border-accent-emerald/10',
-    Maybe: 'text-accent-amber bg-accent-amber/5 border-accent-amber/10',
-    No: 'text-accent-coral bg-accent-coral/5 border-accent-coral/10',
+    Yes: 'text-status-success',
+    Maybe: 'text-status-warning',
+    No: 'text-status-error',
   }
 
+  const hasVectors =
+    waterRating !== undefined || securityRating !== undefined || caretakerRating !== undefined
+
   return (
-    <div className="p-md bg-bg-secondary border border-border-subtle rounded-symmetric flex flex-col gap-sm shadow-sm transition-shadow hover:shadow-md duration-300">
+    <div className="flex flex-col gap-sm py-sm">
       {/* Header Info */}
       <header className="flex justify-between items-center flex-wrap gap-xs">
         <div className="flex items-center gap-sm">
           {/* Avatar Icon */}
-          <div className="h-9 w-9 rounded-pill bg-bg-primary border border-border-subtle flex items-center justify-center font-bold text-[13px] text-brand-indigo">
+          <div className="h-9 w-9 rounded-pill bg-bg-primary border border-border-subtle flex items-center justify-center font-semibold text-[13px] text-brand-primary">
             {roleTag[0]}
           </div>
           <div className="flex flex-col">
-            <span className="font-bold text-[14px] text-text-primary">{roleTag}</span>
+            <span className="font-semibold text-[14px] text-text-primary">{roleTag}</span>
             <span className="text-[12px] text-text-muted">
               Reviewed on{' '}
               {new Date(createdAt).toLocaleDateString('en-KE', { year: 'numeric', month: 'long' })}
@@ -177,35 +182,50 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
           </div>
         </div>
 
-        {isVerifiedResident && <VerifiedResidentBadge />}
+        <div className="flex items-center gap-sm">
+          {overallRating !== undefined && (
+            <span className="text-[14px] font-semibold text-text-primary">
+              {overallRating.toFixed(1)}
+              <span className="text-text-muted font-normal text-[12px]"> / 5</span>
+            </span>
+          )}
+          {isVerifiedResident && <VerifiedResidentBadge />}
+        </div>
       </header>
 
-      {/* Structured Recommendation Pill */}
-      <div
-        className={cn(
-          'self-start px-sm py-[4px] rounded-pill border text-[11px] font-bold uppercase tracking-wider',
-          recommendColors[recommend]
-        )}
-      >
-        {recommendLabels[recommend]}
-      </div>
+      {/* Recommendation — only when the reviewer answered the question */}
+      {recommend && (
+        <p className={cn('text-[13px] font-semibold', recommendColors[recommend])}>
+          {recommendLabels[recommend]}
+        </p>
+      )}
 
-      {/* Ratings Vectors Breakdown */}
-      <div className="grid grid-cols-3 gap-sm py-xs border-y border-border-subtle text-[13px] text-text-muted">
-        <div className="flex items-center gap-xxs justify-center">
-          Water: <strong className="text-text-primary">{waterRating}/5</strong>
+      {/* Ratings Vectors Breakdown — plain inline row, no dividers */}
+      {hasVectors && (
+        <div className="flex flex-wrap gap-md text-[13px] text-text-muted font-medium">
+          {waterRating !== undefined && (
+            <span>
+              Water: <strong className="text-text-primary font-semibold">{waterRating}/5</strong>
+            </span>
+          )}
+          {securityRating !== undefined && (
+            <span>
+              Security:{' '}
+              <strong className="text-text-primary font-semibold">{securityRating}/5</strong>
+            </span>
+          )}
+          {caretakerRating !== undefined && (
+            <span>
+              Caretaker:{' '}
+              <strong className="text-text-primary font-semibold">{caretakerRating}/5</strong>
+            </span>
+          )}
         </div>
-        <div className="flex items-center gap-xxs justify-center border-x border-border-subtle">
-          Security: <strong className="text-text-primary">{securityRating}/5</strong>
-        </div>
-        <div className="flex items-center gap-xxs justify-center">
-          Caretaker: <strong className="text-text-primary">{caretakerRating}/5</strong>
-        </div>
-      </div>
+      )}
 
       {/* Comment text body */}
       {comment && (
-        <p className="text-[15px] text-text-primary leading-relaxed mt-xxs whitespace-pre-line">
+        <p className="text-[15px] text-text-primary/95 leading-relaxed whitespace-pre-line">
           {comment}
         </p>
       )}
@@ -225,17 +245,15 @@ interface StatCardProps {
  */
 export const StatCard: React.FC<StatCardProps> = ({ title, value, description, icon }) => {
   return (
-    <div className="p-md bg-bg-secondary border border-border-subtle rounded-symmetric flex items-center justify-between shadow-sm transition-shadow hover:shadow-md duration-300">
+    <div className="flex items-center justify-between gap-sm">
       <div className="flex flex-col gap-xxs">
-        <span className="text-[12px] font-bold text-text-muted uppercase tracking-wider">
-          {title}
-        </span>
-        <span className="text-[28px] font-extrabold text-text-primary tracking-tight leading-none mt-xxs">
+        <span className="text-[12px] font-medium text-text-muted/90">{title}</span>
+        <span className="text-[28px] font-semibold text-text-primary tracking-tight leading-none mt-xxs">
           {value}
         </span>
         {description && <span className="text-[12px] text-text-muted mt-xxs">{description}</span>}
       </div>
-      {icon && <div className="text-brand-indigo">{icon}</div>}
+      {icon && <div className="text-brand-primary">{icon}</div>}
     </div>
   )
 }
@@ -251,13 +269,8 @@ interface InformationCardProps {
  */
 export const InformationCard: React.FC<InformationCardProps> = ({ title, children, className }) => {
   return (
-    <div
-      className={cn(
-        'p-md bg-bg-secondary border border-border-subtle rounded-symmetric flex flex-col gap-sm shadow-sm transition-shadow hover:shadow-md duration-300',
-        className
-      )}
-    >
-      <h3 className="font-bold text-[16px] text-text-primary border-b border-border-subtle pb-xs">
+    <div className={cn('flex flex-col gap-sm', className)}>
+      <h3 className="font-medium text-[16px] text-text-primary border-b border-border-subtle pb-xs">
         {title}
       </h3>
       <div className="text-[15px] leading-relaxed text-text-muted">{children}</div>

@@ -20,10 +20,10 @@ export default function NotFound() {
         <Container className="max-w-md">
           <Section className="p-lg bg-bg-secondary border border-border-subtle rounded-symmetric shadow-sm text-center">
             <Stack gap="sm" className="items-center">
-              <div className="h-12 w-12 bg-brand-indigo/10 text-brand-indigo rounded-pill flex items-center justify-center mb-xxs">
+              <div className="h-12 w-12 bg-brand-primary/10 text-brand-primary rounded-pill flex items-center justify-center mb-xxs">
                 <AlertCircle size={24} />
               </div>
-              <H2 className="font-bold">Page Not Found</H2>
+              <H2>Page Not Found</H2>
               <Body className="text-text-muted text-[14px] leading-relaxed">
                 The listing, review search, or resource you are looking for does not exist or has
                 been archived by our moderation team.

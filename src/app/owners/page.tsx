@@ -1,5 +1,9 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import { Navbar } from '@/components/navbar-wrapper'
+import { Footer } from '@ui/navigation'
+import { Container, Grid, Stack } from '@ui/layout'
+import { Display, H3, Body } from '@ui/typography'
 
 export const metadata: Metadata = {
   title: 'Landlord Portal | Nyumbani',
@@ -8,55 +12,63 @@ export const metadata: Metadata = {
 
 /**
  * Owners Hub Landing Page.
- * Onboards landlords by explaining verification benefits and claimed listing advantages.
+ * Sprint P0: standard Navbar/Footer page shell, widened content column,
+ * and plain card containers (Section was injecting page-band padding).
  */
 export default function OwnersLandingPage() {
   return (
-    <main className="max-w-4xl mx-auto p-md bg-bg-primary text-text-primary min-h-screen flex flex-col justify-center gap-md">
-      <div className="text-center max-w-xl mx-auto flex flex-col gap-xxs">
-        <h1 className="text-display font-bold tracking-tight mb-xs">Nyumbani Owner Hub</h1>
-        <p className="text-body text-text-muted mb-lg">
-          Claim your property listing to showcase verified details, respond directly to tenant
-          reviews, and update vacancy status.
-        </p>
-      </div>
+    <div className="flex flex-col min-h-screen bg-bg-primary text-text-primary">
+      <Navbar />
 
-      <div className="grid md:grid-cols-2 gap-md items-stretch max-w-2xl mx-auto w-full">
-        {/* Onboarding block: Claiming properties */}
-        <div className="p-sm bg-bg-secondary border border-border-subtle rounded-symmetric flex flex-col justify-between">
-          <div>
-            <h3 className="font-semibold text-subtitle mb-xxs">Claim Existing Building</h3>
-            <p className="text-metadata text-text-muted mb-sm">
-              If your building already has reviews on Nyumbani, submit verification documents to
-              claim ownership and manage replies.
-            </p>
+      <main className="flex-1 py-xl flex flex-col justify-center">
+        <Container className="max-w-4xl flex flex-col gap-lg">
+          <div className="text-center max-w-2xl mx-auto flex flex-col gap-xs">
+            <Display className="mb-xs">Nyumbani Owner Hub</Display>
+            <Body className="text-text-muted mb-lg">
+              Claim your property listing to showcase verified details, respond directly to tenant
+              reviews, and update vacancy status.
+            </Body>
           </div>
-          <Link
-            href="/owners/dashboard"
-            className="w-full text-center py-xxs bg-text-primary text-bg-primary font-medium rounded-soft hover:bg-opacity-90 transition-colors"
-          >
-            Claim Property
-          </Link>
-        </div>
 
-        {/* Onboarding block: Registering new properties */}
-        <div className="p-sm bg-bg-secondary border border-border-subtle rounded-symmetric flex flex-col justify-between">
-          <div>
-            <h3 className="font-semibold text-subtitle mb-xxs">List New Property</h3>
-            <p className="text-metadata text-text-muted mb-sm">
-              Create a new listing for your property, add specifications, upload layout images, and
-              unlock verified badge status.
-            </p>
-          </div>
-          {/* TODO: Add logic to trigger Google login and navigate to property creation */}
-          <Link
-            href="/owners/dashboard"
-            className="w-full text-center py-xxs bg-brand-indigo text-white font-medium rounded-soft hover:bg-opacity-95 transition-colors"
-          >
-            Get Started
-          </Link>
-        </div>
-      </div>
-    </main>
+          <Grid cols={2} gap="md" className="w-full items-stretch">
+            {/* Onboarding block: Claiming properties */}
+            <div className="p-md bg-bg-secondary border border-border-subtle rounded-symmetric flex flex-col justify-between shadow-sm">
+              <Stack gap="xs" className="mb-md">
+                <H3>Claim Existing Building</H3>
+                <Body className="text-[14px] text-text-muted">
+                  If your building already has reviews on Nyumbani, submit verification documents to
+                  claim ownership and manage replies.
+                </Body>
+              </Stack>
+              <Link
+                href="/owners/dashboard"
+                className="w-full text-center py-[10px] bg-text-primary text-bg-primary font-semibold rounded-soft hover:bg-opacity-90 transition-colors text-[14px]"
+              >
+                Claim Property
+              </Link>
+            </div>
+
+            {/* Onboarding block: Registering new properties */}
+            <div className="p-md bg-bg-secondary border border-border-subtle rounded-symmetric flex flex-col justify-between shadow-sm">
+              <Stack gap="xs" className="mb-md">
+                <H3>List New Property</H3>
+                <Body className="text-[14px] text-text-muted">
+                  Create a new listing for your property, add specifications, upload layout images,
+                  and unlock verified badge status.
+                </Body>
+              </Stack>
+              <Link
+                href="/owners/dashboard"
+                className="w-full text-center py-[10px] bg-brand-primary text-white font-semibold rounded-soft hover:bg-opacity-95 transition-colors text-[14px]"
+              >
+                Get Started
+              </Link>
+            </div>
+          </Grid>
+        </Container>
+      </main>
+
+      <Footer />
+    </div>
   )
 }

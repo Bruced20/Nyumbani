@@ -12,7 +12,7 @@ import { SearchFilters, FilterState } from '@/features/properties/search-filters
 import { MapPreview } from '@/features/properties/map-preview'
 import { Property } from '@/lib/mappers'
 import { NEARBY_NEIGHBORHOODS } from '@/lib/mock-data'
-import { AlertOctagon, X, ArrowUpDown } from 'lucide-react'
+import { AlertOctagon, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { listContainerVariants, listItemVariants, SPRING_SUBTLE } from '@ui/animations'
 
@@ -70,37 +70,38 @@ export function SearchPageContentClient({
     updateURLParams(filters, e.target.value)
   }
 
-  // 2. Generate active filter chips directly during render
+  // 2. Generate active filter chips directly during render.
+  // Labels are plain text — the accent border/color already signals "active
+  // filter," so an emoji per chip would just be decoration without meaning.
   const activeChips: { key: keyof FilterState; label: string }[] = []
-  if (filters.neighborhood)
-    activeChips.push({ key: 'neighborhood', label: `📍 ${filters.neighborhood}` })
-  if (filters.houseType) activeChips.push({ key: 'houseType', label: `🏠 ${filters.houseType}` })
+  if (filters.neighborhood) activeChips.push({ key: 'neighborhood', label: filters.neighborhood })
+  if (filters.houseType) activeChips.push({ key: 'houseType', label: filters.houseType })
   if (filters.rentMin > 0 || filters.rentMax < 150000) {
     const minText = filters.rentMin > 0 ? `${filters.rentMin / 1000}k` : '0'
     const maxText = filters.rentMax < 150000 ? `${filters.rentMax / 1000}k` : '150k'
-    activeChips.push({ key: 'rentMax', label: `💰 ${minText}–${maxText}` })
+    activeChips.push({ key: 'rentMax', label: `KES ${minText}–${maxText}` })
   }
   if (filters.waterRating)
-    activeChips.push({ key: 'waterRating', label: `💧 Water: ${filters.waterRating}` })
+    activeChips.push({ key: 'waterRating', label: `Water: ${filters.waterRating}` })
   if (filters.electricityRating)
-    activeChips.push({ key: 'electricityRating', label: `⚡ Power: ${filters.electricityRating}` })
+    activeChips.push({ key: 'electricityRating', label: `Power: ${filters.electricityRating}` })
   if (filters.internetType)
-    activeChips.push({ key: 'internetType', label: `🌐 ${filters.internetType.split(' ')[0]}` })
+    activeChips.push({ key: 'internetType', label: filters.internetType.split(' ')[0] })
   if (filters.securityRating)
-    activeChips.push({ key: 'securityRating', label: `🛡️ Security: ${filters.securityRating}` })
-  if (filters.parking) activeChips.push({ key: 'parking', label: `🚗 Parking: ${filters.parking}` })
-  if (filters.roadType) activeChips.push({ key: 'roadType', label: `🛣️ Road: ${filters.roadType}` })
+    activeChips.push({ key: 'securityRating', label: `Security: ${filters.securityRating}` })
+  if (filters.parking) activeChips.push({ key: 'parking', label: `Parking: ${filters.parking}` })
+  if (filters.roadType) activeChips.push({ key: 'roadType', label: `Road: ${filters.roadType}` })
   if (filters.garbageReliability)
     activeChips.push({
       key: 'garbageReliability',
-      label: `🗑️ Garbage: ${filters.garbageReliability}`,
+      label: `Garbage: ${filters.garbageReliability}`,
     })
-  if (filters.verifiedOnly) activeChips.push({ key: 'verifiedOnly', label: `⭐ Verified Owner` })
+  if (filters.verifiedOnly) activeChips.push({ key: 'verifiedOnly', label: 'Verified Owner' })
   if (filters.communityListedOnly)
-    activeChips.push({ key: 'communityListedOnly', label: `👥 Community Listed` })
-  if (filters.vacancyOnly) activeChips.push({ key: 'vacancyOnly', label: `🔑 Vacancy Available` })
+    activeChips.push({ key: 'communityListedOnly', label: 'Community Listed' })
+  if (filters.vacancyOnly) activeChips.push({ key: 'vacancyOnly', label: 'Vacancy Available' })
   if (filters.recentlyUpdated)
-    activeChips.push({ key: 'recentlyUpdated', label: `📅 Recently Updated` })
+    activeChips.push({ key: 'recentlyUpdated', label: 'Recently Updated' })
 
   const removeChip = (key: keyof FilterState) => {
     const defaults = {
@@ -145,8 +146,8 @@ export function SearchPageContentClient({
 
       <main className="flex-1 py-md">
         <Container className="max-w-6xl flex flex-col gap-md">
-          {/* Header search bar overlay controller (Spotlight-style Shadow container) */}
-          <div className="w-full max-w-xl mx-auto shadow-md rounded-symmetric mb-xs">
+          {/* Search bar — integrated into layout, not hero-centered */}
+          <div className="w-full shadow-md rounded-symmetric mb-xs">
             <SearchBar initialQuery={filters.neighborhood} />
           </div>
 
@@ -173,12 +174,12 @@ export function SearchPageContentClient({
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.8, opacity: 0 }}
                         transition={SPRING_SUBTLE}
-                        className="inline-flex items-center gap-[4px] px-sm py-[6px] bg-brand-indigo/10 text-brand-indigo border border-brand-indigo/20 rounded-pill text-[13px] font-semibold select-none shadow-sm"
+                        className="inline-flex items-center gap-[4px] px-sm py-[6px] bg-brand-primary/10 text-brand-primary border border-brand-primary/20 rounded-pill text-[13px] font-semibold select-none"
                       >
                         {chip.label}
                         <button
                           onClick={() => removeChip(chip.key)}
-                          className="hover:bg-brand-indigo/20 p-[2px] rounded-pill cursor-pointer transition-colors"
+                          className="hover:bg-brand-primary/20 p-[2px] rounded-pill cursor-pointer transition-colors"
                         >
                           <X size={13} />
                         </button>
@@ -205,7 +206,7 @@ export function SearchPageContentClient({
                           recentlyUpdated: false,
                         })
                       }
-                      className="text-[13px] font-bold text-text-muted hover:text-text-primary transition-colors cursor-pointer select-none ml-xxs"
+                      className="text-[13px] font-medium text-text-muted hover:text-text-primary transition-colors cursor-pointer select-none ml-xxs"
                     >
                       Clear All
                     </button>
@@ -213,19 +214,18 @@ export function SearchPageContentClient({
                 )}
               </AnimatePresence>
 
-              {/* Sorting HUD Bar */}
-              <div className="flex justify-between items-center bg-bg-secondary border border-border-subtle px-sm py-xs rounded-symmetric shadow-sm">
-                <span className="text-[14px] font-semibold text-text-muted">
-                  Showing {isPending ? '...' : properties.length} homes
+              {/* Sorting bar — hairline separator, no icon (label carries intent) */}
+              <div className="flex justify-between items-center pb-xs border-b border-border-subtle">
+                <span className="text-[14px] font-medium text-text-muted">
+                  {isPending ? 'Searching...' : `${properties.length} homes`}
                 </span>
 
                 <div className="flex items-center gap-xxs text-[14px] text-text-primary">
-                  <ArrowUpDown size={15} className="text-text-muted shrink-0" />
-                  <span className="font-semibold text-text-muted">Sort:</span>
+                  <span className="font-medium text-text-muted">Sort:</span>
                   <select
                     value={sortState}
                     onChange={handleSortChange}
-                    className="bg-transparent border-none font-bold text-brand-indigo focus:outline-none cursor-pointer pr-xxs"
+                    className="bg-transparent border-none font-semibold text-brand-primary focus:outline-none cursor-pointer pr-xxs"
                   >
                     <option value="match">Best Match</option>
                     <option value="rent-low">Lowest Rent</option>
@@ -246,16 +246,13 @@ export function SearchPageContentClient({
                     onRetry={() => router.push('/search')}
                   />
                 ) : isPending ? (
-                  // Loading skeletons grid matching new aspect ratios
+                  // Loading skeletons — clean, no one-off borders
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
                     {Array.from({ length: 4 }).map((_, idx) => (
-                      <div
-                        key={idx}
-                        className="border border-border-subtle rounded-symmetric p-xs flex flex-col gap-xs bg-bg-secondary"
-                      >
-                        <Skeleton className="w-full aspect-[16/10]" />
-                        <Skeleton className="h-4 w-2/3" />
-                        <Skeleton className="h-4 w-1/2" />
+                      <div key={idx} className="flex flex-col gap-xs">
+                        <Skeleton className="w-full aspect-[16/10] rounded-symmetric" />
+                        <Skeleton className="h-4 w-2/3 rounded-soft" />
+                        <Skeleton className="h-3 w-1/2 rounded-soft" />
                       </div>
                     ))}
                   </div>
@@ -268,10 +265,10 @@ export function SearchPageContentClient({
                       icon={<AlertOctagon size={36} className="text-text-muted" />}
                     />
 
-                    {/* Nearby suggestions HUD */}
-                    <div className="p-md bg-bg-secondary border border-border-subtle rounded-symmetric shadow-sm">
-                      <h4 className="font-bold text-[14px] text-text-primary mb-sm">
-                        Explore Nearby Neighborhoods:
+                    {/* Nearby suggestions — plain text, no wrapper card */}
+                    <div className="flex flex-col gap-sm">
+                      <h4 className="font-semibold text-[14px] text-text-primary">
+                        Explore nearby neighborhoods
                       </h4>
                       <div className="flex flex-wrap gap-xs">
                         {nearbySuggestions.map((hood) => (
@@ -283,9 +280,9 @@ export function SearchPageContentClient({
                                 neighborhood: hood,
                               })
                             }
-                            className="px-sm py-xs bg-bg-primary border border-border-subtle text-text-primary rounded-soft text-[13px] font-bold hover:border-brand-indigo transition-colors cursor-pointer"
+                            className="px-sm py-xs bg-bg-secondary border border-border-subtle text-text-primary rounded-soft text-[13px] font-medium hover:border-brand-primary transition-colors cursor-pointer"
                           >
-                            📍 {hood}
+                            {hood}
                           </button>
                         ))}
                       </div>
@@ -324,7 +321,6 @@ export function SearchPageContentClient({
                                 ? 4
                                 : 3
                           }
-                          caretakerRating={prop.healthScore >= 4 ? 4.5 : 3.5}
                           onClick={() => handlePropertySelect(prop.slug)}
                         />
                       </motion.div>

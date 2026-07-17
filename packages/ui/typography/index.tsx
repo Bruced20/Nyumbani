@@ -18,7 +18,7 @@ export const Display: React.FC<TypographyProps> = ({
   return (
     <Component
       className={cn(
-        'text-[2.5rem] md:text-[4.5rem] leading-[1.1] font-bold tracking-tight text-text-primary',
+        'text-[2.5rem] md:text-[4.5rem] leading-[1.1] font-semibold tracking-tight text-text-primary text-balance',
         className
       )}
       {...props}
@@ -40,7 +40,7 @@ export const H1: React.FC<TypographyProps> = ({
   return (
     <Component
       className={cn(
-        'text-[1.75rem] md:text-[2.5rem] leading-[1.2] font-bold tracking-tight text-text-primary',
+        'text-[1.75rem] md:text-[2.5rem] leading-[1.2] font-semibold tracking-tight text-text-primary text-balance',
         className
       )}
       {...props}
@@ -62,7 +62,7 @@ export const H2: React.FC<TypographyProps> = ({
   return (
     <Component
       className={cn(
-        'text-[1.5rem] leading-[1.3] font-semibold tracking-tight text-text-primary',
+        'text-[1.5rem] leading-[1.3] font-medium tracking-tight text-text-primary',
         className
       )}
       {...props}
@@ -124,7 +124,7 @@ export const Body: React.FC<TypographyProps> = ({
 }) => {
   return (
     <Component
-      className={cn('text-[1.125rem] leading-[1.65] font-normal text-text-primary', className)}
+      className={cn('text-[1.125rem] leading-[1.65] font-normal text-text-primary/95', className)}
       {...props}
     >
       {children}
@@ -143,7 +143,7 @@ export const Small: React.FC<TypographyProps> = ({
 }) => {
   return (
     <Component
-      className={cn('text-[0.875rem] leading-[1.4] font-medium text-text-muted', className)}
+      className={cn('text-[0.875rem] leading-[1.4] font-normal text-text-muted/90', className)}
       {...props}
     >
       {children}
@@ -162,10 +162,7 @@ export const Caption: React.FC<TypographyProps> = ({
 }) => {
   return (
     <Component
-      className={cn(
-        'text-[0.75rem] leading-[1.3] font-medium tracking-wider uppercase text-text-muted',
-        className
-      )}
+      className={cn('text-[0.75rem] leading-[1.3] font-medium text-text-muted/80', className)}
       {...props}
     >
       {children}

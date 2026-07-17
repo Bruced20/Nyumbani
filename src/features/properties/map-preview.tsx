@@ -76,7 +76,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({ properties, onSelectProp
             </div>
 
             <div className="z-10 flex flex-col items-center gap-xs max-w-xs">
-              <div className="h-10 w-10 bg-brand-indigo/10 text-brand-indigo rounded-pill flex items-center justify-center">
+              <div className="h-10 w-10 bg-brand-primary/10 text-brand-primary rounded-pill flex items-center justify-center">
                 <MapPin size={22} />
               </div>
               <h3 className="font-semibold text-[15px] text-text-primary">Nairobi Map View</h3>
@@ -86,7 +86,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({ properties, onSelectProp
               </p>
               <button
                 onClick={() => setIsInteractive(true)}
-                className="px-sm py-xxs bg-brand-indigo text-white font-medium rounded-soft text-[13px] hover:bg-opacity-95 transition-all cursor-pointer shadow-sm"
+                className="px-sm py-xxs bg-brand-primary text-white font-medium rounded-soft text-[13px] hover:bg-opacity-95 transition-all cursor-pointer shadow-sm"
               >
                 Open Interactive Map
               </button>
@@ -135,7 +135,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({ properties, onSelectProp
                 >
                   <motion.div
                     whileHover={{ scale: 1.2 }}
-                    className="p-[6px] bg-brand-indigo text-white rounded-pill shadow-md flex items-center justify-center border-2 border-white"
+                    className="p-[6px] bg-brand-primary text-white rounded-pill shadow-md flex items-center justify-center border-2 border-white"
                   >
                     <MapPin size={15} />
                   </motion.div>
@@ -145,7 +145,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({ properties, onSelectProp
 
             {/* HUD Status Bar */}
             <div className="absolute top-xs left-xs bg-bg-primary border border-border-subtle px-xs py-[4px] rounded-soft text-[11px] font-semibold text-text-primary shadow-sm flex items-center gap-[4px] z-10">
-              <Sparkles size={12} className="text-brand-indigo animate-pulse" />
+              <Sparkles size={12} className="text-brand-primary animate-pulse" />
               Interactive Map Simulator
               <button
                 onClick={() => setIsInteractive(false)}

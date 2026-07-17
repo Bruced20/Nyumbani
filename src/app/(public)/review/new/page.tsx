@@ -23,7 +23,7 @@ export default async function NewReviewPage() {
       <Navbar />
 
       <main className="flex-1 flex items-center justify-center py-xl px-sm">
-        <Container className="max-w-md">
+        <Container className="max-w-2xl">
           <ReviewWizard properties={properties} />
         </Container>
       </main>

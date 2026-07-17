@@ -4,8 +4,9 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/features/auth/auth-provider'
 import { Button } from '@ui/button'
-import { Star, ShieldAlert } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { TextInput, Textarea } from '@ui/input'
+import { Star } from 'lucide-react'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { SPRING_SUBTLE } from '@ui/animations'
 import { submitReviewAction } from '@/app/(public)/review/new/actions'
 
@@ -19,10 +20,42 @@ interface ReviewWizardProps {
   properties: PropertyBrief[]
 }
 
+// Star rating component — single motion system, no CSS scale mixing.
+// Hoisted to module scope so React preserves its identity across renders
+// (defining it inside the wizard remounted it on every state change).
+const StarRating = ({ value, onChange }: { value: number; onChange: (v: number) => void }) => {
+  const shouldReduceMotion = useReducedMotion()
+
+  return (
+    <div className="flex gap-sm justify-center py-xs">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <motion.button
+          key={star}
+          onClick={() => onChange(star)}
+          whileHover={shouldReduceMotion ? undefined : { scale: 1.15 }}
+          whileTap={shouldReduceMotion ? undefined : { scale: 0.95 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+          className="cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brand-primary/20 rounded-soft"
+          aria-label={`Rate ${star} star${star > 1 ? 's' : ''}`}
+        >
+          <Star
+            size={32}
+            className={
+              star <= value ? 'fill-status-warning text-status-warning' : 'text-border-subtle'
+            }
+          />
+        </motion.button>
+      ))}
+    </div>
+  )
+}
+
 /**
  * Conversational Review Submission Wizard.
- * Guides the user through a 7-step review submission funnel.
- * Intercepts submission with AuthProvider guards.
+ * Sprint D3: Removed outer card container, replaced emoji with text labels,
+ * replaced inline raw inputs with design system components, softened heading weights,
+ * replaced boxed error with plain text treatment, replaced CSS hover scale with
+ * a single motion system on star buttons.
  */
 export const ReviewWizard: React.FC<ReviewWizardProps> = ({ properties }) => {
   const router = useRouter()
@@ -32,7 +65,15 @@ export const ReviewWizard: React.FC<ReviewWizardProps> = ({ properties }) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  // Review Form States
+  // Step transition: horizontal slide collapses to a pure cross-fade when the
+  // user prefers reduced motion.
+  const shouldReduceMotion = useReducedMotion()
+  const stepMotion = {
+    initial: { opacity: 0, x: shouldReduceMotion ? 0 : 20 },
+    animate: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: shouldReduceMotion ? 0 : -20 },
+  }
+
   const [selectedProperty, setSelectedProperty] = useState<PropertyBrief | null>(() => {
     if (typeof window !== 'undefined') {
       const param = new URLSearchParams(window.location.search).get('propertyId')
@@ -79,11 +120,10 @@ export const ReviewWizard: React.FC<ReviewWizardProps> = ({ properties }) => {
       !comment ||
       !roleTag
     ) {
-      setErrorMessage('Please complete all stages of the review wizard.')
+      setErrorMessage('Please complete all stages before publishing.')
       return
     }
 
-    // Wrap the review submission action in the triggerProtectedAction auth guard!
     triggerProtectedAction(async () => {
       setIsSubmitting(true)
       setErrorMessage(null)
@@ -105,7 +145,7 @@ export const ReviewWizard: React.FC<ReviewWizardProps> = ({ properties }) => {
           setErrorMessage(result.error || 'Failed to submit review.')
         }
       } catch {
-        setErrorMessage('An unexpected error occurred during submission.')
+        setErrorMessage('An unexpected error occurred. Please try again.')
       } finally {
         setIsSubmitting(false)
       }
@@ -113,42 +153,44 @@ export const ReviewWizard: React.FC<ReviewWizardProps> = ({ properties }) => {
   }
 
   return (
-    <div className="border border-border-subtle p-lg rounded-symmetric bg-bg-secondary shadow-md w-full">
-      {/* Header Indicator */}
-      <header className="flex justify-between items-center mb-md border-b border-border-subtle pb-xs">
-        <span className="text-metadata text-text-muted">Step {step} of 7</span>
-        <span className="text-metadata text-brand-indigo font-semibold">Conversational Review</span>
+    <div className="w-full">
+      {/* Typographic step indicator — no decorative progress bar */}
+      <header className="flex justify-between items-center mb-lg pb-xs border-b border-border-subtle">
+        <span className="text-[13px] font-medium text-text-muted">
+          Step {step} <span className="text-text-muted/50">of 7</span>
+        </span>
+        <span className="text-[13px] font-medium text-text-muted">Write a Review</span>
       </header>
 
-      {/* Screen Container */}
-      <div className="min-h-[220px] flex flex-col justify-center">
+      {/* Step Content */}
+      <div className="min-h-[240px] flex flex-col justify-center">
         <AnimatePresence mode="wait">
           {step === 1 && (
             <motion.div
               key="step1"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
+              initial={stepMotion.initial}
+              animate={stepMotion.animate}
+              exit={stepMotion.exit}
               transition={SPRING_SUBTLE}
             >
-              <h2 className="text-subtitle font-bold mb-xxs text-text-primary">
-                Select your building
+              <h2 className="text-subtitle font-semibold mb-xxs text-text-primary">
+                Which building are you reviewing?
               </h2>
-              <p className="text-metadata text-text-muted mb-xs">
-                Search for the building name to attach your review.
+              <p className="text-[14px] text-text-muted mb-sm">
+                Search by building name or neighborhood.
               </p>
 
               {selectedProperty ? (
-                <div className="p-xs bg-bg-primary border border-brand-indigo/30 rounded-soft flex justify-between items-center">
+                <div className="p-sm bg-bg-secondary border border-brand-primary/20 rounded-soft flex justify-between items-center">
                   <div>
-                    <span className="font-bold text-[14px] text-text-primary">
+                    <span className="font-semibold text-[14px] text-text-primary">
                       {selectedProperty.name}
                     </span>
-                    <p className="text-[11px] text-text-muted">{selectedProperty.neighborhood}</p>
+                    <p className="text-[12px] text-text-muted">{selectedProperty.neighborhood}</p>
                   </div>
                   <Button
                     variant="ghost"
-                    className="text-metadata p-xxs h-auto"
+                    className="text-[13px] px-sm py-xxs h-auto"
                     onClick={() => setSelectedProperty(null)}
                   >
                     Change
@@ -156,12 +198,10 @@ export const ReviewWizard: React.FC<ReviewWizardProps> = ({ properties }) => {
                 </div>
               ) : (
                 <div className="relative">
-                  <input
-                    type="text"
+                  <TextInput
                     placeholder="Search building..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full p-xs bg-bg-primary border border-border-subtle rounded-soft focus:outline-none focus:border-brand-indigo text-[14px] text-text-primary"
                   />
                   {filteredProperties.length > 0 && (
                     <ul className="absolute top-full left-0 right-0 mt-xxs bg-bg-primary border border-border-subtle rounded-soft shadow-lg max-h-[160px] overflow-y-auto z-20">
@@ -172,9 +212,10 @@ export const ReviewWizard: React.FC<ReviewWizardProps> = ({ properties }) => {
                             setSelectedProperty(p)
                             setSearchQuery('')
                           }}
-                          className="p-xs hover:bg-bg-secondary cursor-pointer text-[13px] text-text-primary border-b border-border-subtle last:border-0"
+                          className="px-sm py-xs hover:bg-bg-secondary cursor-pointer text-[13px] text-text-primary border-b border-border-subtle last:border-0"
                         >
-                          <span className="font-semibold">{p.name}</span> — {p.neighborhood}
+                          <span className="font-semibold">{p.name}</span>
+                          <span className="text-text-muted"> — {p.neighborhood}</span>
                         </li>
                       ))}
                     </ul>
@@ -187,136 +228,85 @@ export const ReviewWizard: React.FC<ReviewWizardProps> = ({ properties }) => {
           {step === 2 && (
             <motion.div
               key="step2"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
+              initial={stepMotion.initial}
+              animate={stepMotion.animate}
+              exit={stepMotion.exit}
               transition={SPRING_SUBTLE}
             >
-              <h2 className="text-subtitle font-bold mb-xxs text-text-primary">
+              <h2 className="text-subtitle font-semibold mb-xxs text-text-primary">
                 Water Reliability
               </h2>
-              <p className="text-metadata text-text-muted mb-sm">
+              <p className="text-[14px] text-text-muted mb-sm">
                 Rate water consistency, pressure, and source safety.
               </p>
-              <div className="flex gap-xs justify-center py-xs">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <button
-                    key={star}
-                    onClick={() => setWaterRating(star)}
-                    className="hover:scale-110 transition-transform cursor-pointer"
-                  >
-                    <Star
-                      size={32}
-                      className={
-                        star <= waterRating
-                          ? 'fill-accent-warning text-accent-warning'
-                          : 'text-border-subtle'
-                      }
-                    />
-                  </button>
-                ))}
-              </div>
+              <StarRating value={waterRating} onChange={setWaterRating} />
             </motion.div>
           )}
 
           {step === 3 && (
             <motion.div
               key="step3"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
+              initial={stepMotion.initial}
+              animate={stepMotion.animate}
+              exit={stepMotion.exit}
               transition={SPRING_SUBTLE}
             >
-              <h2 className="text-subtitle font-bold mb-xxs text-text-primary">
-                Security & Safety
+              <h2 className="text-subtitle font-semibold mb-xxs text-text-primary">
+                Security &amp; Safety
               </h2>
-              <p className="text-metadata text-text-muted mb-sm">
+              <p className="text-[14px] text-text-muted mb-sm">
                 Rate gates, perimeter fences, and neighborhood safety.
               </p>
-              <div className="flex gap-xs justify-center py-xs">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <button
-                    key={star}
-                    onClick={() => setSecurityRating(star)}
-                    className="hover:scale-110 transition-transform cursor-pointer"
-                  >
-                    <Star
-                      size={32}
-                      className={
-                        star <= securityRating
-                          ? 'fill-accent-warning text-accent-warning'
-                          : 'text-border-subtle'
-                      }
-                    />
-                  </button>
-                ))}
-              </div>
+              <StarRating value={securityRating} onChange={setSecurityRating} />
             </motion.div>
           )}
 
           {step === 4 && (
             <motion.div
               key="step4"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
+              initial={stepMotion.initial}
+              animate={stepMotion.animate}
+              exit={stepMotion.exit}
               transition={SPRING_SUBTLE}
             >
-              <h2 className="text-subtitle font-bold mb-xxs text-text-primary">
-                Caretaker & Management
+              <h2 className="text-subtitle font-semibold mb-xxs text-text-primary">
+                Caretaker &amp; Management
               </h2>
-              <p className="text-metadata text-text-muted mb-sm">
+              <p className="text-[14px] text-text-muted mb-sm">
                 Rate response time, fairness, and garbage collection.
               </p>
-              <div className="flex gap-xs justify-center py-xs">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <button
-                    key={star}
-                    onClick={() => setCaretakerRating(star)}
-                    className="hover:scale-110 transition-transform cursor-pointer"
-                  >
-                    <Star
-                      size={32}
-                      className={
-                        star <= caretakerRating
-                          ? 'fill-accent-warning text-accent-warning'
-                          : 'text-border-subtle'
-                      }
-                    />
-                  </button>
-                ))}
-              </div>
+              <StarRating value={caretakerRating} onChange={setCaretakerRating} />
             </motion.div>
           )}
 
           {step === 5 && (
             <motion.div
               key="step5"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
+              initial={stepMotion.initial}
+              animate={stepMotion.animate}
+              exit={stepMotion.exit}
               transition={SPRING_SUBTLE}
             >
-              <h2 className="text-subtitle font-bold mb-xxs text-text-primary">
+              <h2 className="text-subtitle font-semibold mb-xxs text-text-primary">
                 Would you recommend it?
               </h2>
-              <p className="text-metadata text-text-muted mb-sm">
-                Would you recommend this building to friends or family?
+              <p className="text-[14px] text-text-muted mb-sm">
+                Would you recommend this building to a friend or family member?
               </p>
               <div className="flex flex-col gap-xs py-xxs">
                 {(['Yes', 'No', 'Maybe'] as const).map((option) => (
                   <button
                     key={option}
                     onClick={() => setRecommend(option)}
-                    className={`p-xs border rounded-soft text-left font-medium text-[13px] transition-colors cursor-pointer ${
+                    className={`p-sm border rounded-soft text-left font-medium text-[14px] transition-colors cursor-pointer ${
                       recommend === option
-                        ? 'border-brand-indigo bg-brand-indigo/5 text-brand-indigo'
-                        : 'border-border-subtle hover:bg-bg-primary'
+                        ? 'border-brand-primary bg-brand-primary/5 text-brand-primary'
+                        : 'border-border-subtle text-text-primary hover:bg-bg-secondary'
                     }`}
                   >
-                    {option === 'Yes' && '👍 Yes, absolutely'}
-                    {option === 'No' && '👎 No, avoid it'}
-                    {option === 'Maybe' && '🤔 Maybe, with reservations'}
+                    {option === 'Yes' && 'Yes, absolutely'}
+                    {option === 'No' && 'No, I would avoid it'}
+                    {option === 'Maybe' && 'Maybe, with reservations'}
                   </button>
                 ))}
               </div>
@@ -326,23 +316,22 @@ export const ReviewWizard: React.FC<ReviewWizardProps> = ({ properties }) => {
           {step === 6 && (
             <motion.div
               key="step6"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
+              initial={stepMotion.initial}
+              animate={stepMotion.animate}
+              exit={stepMotion.exit}
               transition={SPRING_SUBTLE}
             >
-              <h2 className="text-subtitle font-bold mb-xxs text-text-primary">
-                What is your comment?
+              <h2 className="text-subtitle font-semibold mb-xxs text-text-primary">
+                Tell us about your experience
               </h2>
-              <p className="text-metadata text-text-muted mb-sm">
-                Provide objective facts about water, power, landlord, or security issues.
+              <p className="text-[14px] text-text-muted mb-sm">
+                Share objective facts about water, power, the landlord, or security.
               </p>
-              <textarea
-                placeholder="Type your review details here..."
-                rows={4}
+              <Textarea
+                placeholder="Describe what living here is actually like..."
+                rows={5}
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                className="w-full p-xs bg-bg-primary border border-border-subtle rounded-soft focus:outline-none focus:border-brand-indigo text-[13px] text-text-primary"
               />
             </motion.div>
           )}
@@ -350,14 +339,16 @@ export const ReviewWizard: React.FC<ReviewWizardProps> = ({ properties }) => {
           {step === 7 && (
             <motion.div
               key="step7"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
+              initial={stepMotion.initial}
+              animate={stepMotion.animate}
+              exit={stepMotion.exit}
               transition={SPRING_SUBTLE}
             >
-              <h2 className="text-subtitle font-bold mb-xxs text-text-primary">Community Tag</h2>
-              <p className="text-metadata text-text-muted mb-xs">
-                Select your anonymous label. Your real name will never appear.
+              <h2 className="text-subtitle font-semibold mb-xxs text-text-primary">
+                Your community label
+              </h2>
+              <p className="text-[14px] text-text-muted mb-sm">
+                Your real name will never appear. Choose an anonymous role.
               </p>
               <div className="grid grid-cols-2 gap-xs mb-sm">
                 {(
@@ -371,10 +362,10 @@ export const ReviewWizard: React.FC<ReviewWizardProps> = ({ properties }) => {
                   <button
                     key={tag}
                     onClick={() => setRoleTag(tag)}
-                    className={`p-xs border rounded-soft text-center font-bold text-[11px] transition-colors cursor-pointer ${
+                    className={`p-sm border rounded-soft text-center font-semibold text-[13px] transition-colors cursor-pointer ${
                       roleTag === tag
-                        ? 'border-brand-indigo bg-brand-indigo/5 text-brand-indigo'
-                        : 'border-border-subtle hover:bg-bg-primary text-text-muted'
+                        ? 'border-brand-primary bg-brand-primary/5 text-brand-primary'
+                        : 'border-border-subtle hover:bg-bg-secondary text-text-muted'
                     }`}
                   >
                     {tag}
@@ -382,11 +373,9 @@ export const ReviewWizard: React.FC<ReviewWizardProps> = ({ properties }) => {
                 ))}
               </div>
 
+              {/* Error — plain text treatment, no bordered alert box */}
               {errorMessage && (
-                <div className="p-xs bg-accent-coral/10 text-accent-coral border border-accent-coral/25 rounded-soft text-[12px] mb-xs flex items-center gap-xxs">
-                  <ShieldAlert size={14} />
-                  {errorMessage}
-                </div>
+                <p className="text-[13px] font-medium text-status-error mt-xs">{errorMessage}</p>
               )}
             </motion.div>
           )}
@@ -394,11 +383,11 @@ export const ReviewWizard: React.FC<ReviewWizardProps> = ({ properties }) => {
       </div>
 
       {/* Navigation Footer */}
-      <footer className="flex justify-between items-center mt-md pt-sm border-t border-border-subtle">
+      <footer className="flex justify-between items-center mt-xl pt-sm border-t border-border-subtle">
         <Button
           onClick={prevStep}
           variant="outline"
-          className="text-metadata px-sm py-xxs h-auto"
+          className="px-sm py-xxs h-auto text-[14px]"
           disabled={step === 1 || isSubmitting}
         >
           Back
@@ -408,7 +397,7 @@ export const ReviewWizard: React.FC<ReviewWizardProps> = ({ properties }) => {
           <Button
             onClick={nextStep}
             variant="primary"
-            className="text-metadata px-sm py-xxs h-auto"
+            className="px-sm py-xxs h-auto text-[14px]"
             disabled={
               (step === 1 && !selectedProperty) ||
               (step === 2 && !waterRating) ||
@@ -418,13 +407,13 @@ export const ReviewWizard: React.FC<ReviewWizardProps> = ({ properties }) => {
               (step === 6 && !comment.trim())
             }
           >
-            Next
+            Continue
           </Button>
         ) : (
           <Button
             onClick={handlePublish}
             variant="primary"
-            className="text-metadata px-sm py-xxs h-auto"
+            className="px-sm py-xxs h-auto text-[14px]"
             disabled={!roleTag || isSubmitting}
           >
             {isSubmitting ? 'Publishing...' : user ? 'Publish Review' : 'Sign in to Publish'}

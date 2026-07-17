@@ -26,10 +26,10 @@ export default function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
       <Container className="max-w-md">
         <Section className="p-lg bg-bg-secondary border border-border-subtle rounded-symmetric shadow-sm text-center">
           <Stack gap="sm" className="items-center">
-            <div className="h-12 w-12 bg-accent-coral/10 text-accent-coral rounded-pill flex items-center justify-center mb-xxs">
+            <div className="h-12 w-12 bg-status-error/10 text-status-error rounded-pill flex items-center justify-center mb-xxs">
               <AlertOctagon size={24} />
             </div>
-            <H2 className="font-bold">Something went wrong</H2>
+            <H2>Something went wrong</H2>
             <Body className="text-text-muted text-[14px] leading-relaxed">
               A temporary runtime error occurred while processing page data. Our observability
               diagnostics have logged the details.

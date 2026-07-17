@@ -1,77 +1,109 @@
-# Nyumbani Product Roadmap
+# Nyumbani Product Experience Roadmap
 
-Nyumbani is a modern rental intelligence platform for Kenya. This roadmap details completed milestones and upcoming product goals.
+Nyumbani is a Kenyan rental intelligence and trust platform. This roadmap tracks the program
+from engineering foundation through product experience transformation to launch.
 
----
-
-## 🏁 Completed Milestones
-
-### **Sprint 1 — Initialize Project Foundation**
-
-- Supabase integration configuration.
-- Path aliasing setups and TypeScript strict mode configurations.
-- ESLint configurations.
-
-### **Sprint 2 — Reusable Design System Package**
-
-- Decoupled core buttons, cards, selections, badges, and layout components into `packages/ui` using Tailwind CSS v4.
-- Integrated Framer Motion spring physics.
-
-### **Sprint 3A — Public Discovery Experience**
-
-- Engineered responsive homepage landing hero blocks and featured cards list.
-- Created layout sitemap footers.
-
-### **Sprint 3B — Intelligent Search Experience**
-
-- Upgraded Arrow-key selection and autocompletes.
-- Introduced removable filter chips and nearby suggestions for empty states.
-- Configured URL state-driven query transitions.
-
-### **Sprint 3C — Property Experience**
-
-- Implemented `property/[slug]` dynamic routes.
-- Added image lightbox carousels and health rating progress bars.
-- Prerendered dynamic slugs at build-time.
-
-### **Sprint 4A — Production Data Layer**
-
-- Replaced mock datasets with typed Supabase database connections.
-- Introduced clean Repository-Service-Mapper architecture.
-
-### **Sprint 4A.5 — Production Hardening & Developer Experience** (Current)
-
-- Centralized structured logging with recursive redactions and request correlation.
-- Diagnostics check endpoint `/api/health`.
-- Vitest test coverage reports.
-- Branded design system error layouts and dynamic sitemaps.
-- GitHub Actions CI/CD workflows.
+**Guiding principle:** the product should communicate trust through restraint — clarity,
+confidence, and calm, not visual spectacle. References: Airbnb, Apple, Stripe, Linear,
+Notion, Google Maps, Zillow (information architecture only).
 
 ---
 
-## 🏃 In Progress
+## ✅ PHASE A — Engineering Foundation (Complete)
 
-### **Sprint 4B — User Authentication**
+| Sprint | Scope                                                                                                                  |
+| ------ | ---------------------------------------------------------------------------------------------------------------------- |
+| 1      | Project foundation: Supabase config, path aliases, strict TypeScript, ESLint                                           |
+| 2      | Reusable design system package (`packages/ui`), Tailwind v4, Framer Motion                                             |
+| 3A–3C  | Public discovery: homepage, intelligent search (URL state, autocomplete), property pages (galleries, health bars, SSG) |
+| 4A     | Production data layer: typed Supabase, Repository–Service–Mapper architecture                                          |
+| 4A.5   | Production hardening: structured logging, health checks, Vitest coverage, CI/CD, SEO                                   |
+| 5A     | Production authentication: Google OAuth, anonymous identity layer, RLS policies                                        |
 
-- Implement Google OAuth login redirect boundaries.
-- Protect moderator paths.
+## ✅ PHASE B — Design Language (Complete)
+
+| Sprint | Scope                                                                                                        |
+| ------ | ------------------------------------------------------------------------------------------------------------ |
+| D1     | Design System v2: calm-trust principles, warm neutral palette, semantic tokens (`brand-primary`, `status-*`) |
+| D2     | Shared component refinement: motion discipline, focus rings, touch targets, reduced motion                   |
+| D3     | Page experience & information hierarchy: whitespace over containers, editorial reviews, quieter typography   |
 
 ---
 
-## 🔮 Upcoming Milestones
+## 🏃 PHASE C — Product Experience (Current)
 
-### **Sprint 5 — Conversational Review Wizard**
+Only a handful of pages determine whether someone trusts Nyumbani: **Homepage, Search,
+Property page, Review flow, Owner Hub, Admin Dashboard.** They receive the majority of
+design effort. Each phase concludes with a full review before the next begins.
 
-- Multi-screen evaluation funnel (1 question per page).
-- Anti-spam rate limit tokens.
+### P0 — Layout & Responsive Foundation
 
-### **Sprint 6 — Landlord Ownership Verification**
+Audit every page. Correct container widths, grid systems, responsive behavior, overflow,
+typography wrapping, spacing rhythm, alignment, and reading lengths across desktop, tablet,
+and mobile. Objective: eliminate every broken or awkward layout.
+_Prerequisite engineering fixes (StarRating hoist, truthful review presentation,
+reduced-motion consistency, focus-trap hook, doc/token sync) land before P0._
 
-- Bills upload claims queue.
+### P1 — Homepage
+
+Full redesign, not refinement. Search becomes the hero. Storytelling, hierarchy, trust,
+whitespace, first impressions.
+
+### P2 — Search Experience
+
+Search is the flagship feature. Redesign search bar, autocomplete, filters, results, map
+interaction, loading, empty states, sorting, and the mobile experience.
+
+### P3 — Property Experience
+
+Redesign the entire property page: gallery, health score (key visual anchor), editorial
+reviews, owner responses, location, amenities, trust indicators, information hierarchy.
+
+### P4 — Owner Experience
+
+Redesign every owner-facing screen: Owner Hub, claim flow, verification, dashboard,
+property management, analytics, response tools. Should feel like professional software.
+
+### P5 — Admin Console
+
+A first-class internal product: moderation, verification, fraud reports, users, audit
+logs, analytics, property approvals, spam detection, community health.
+
+### P6 — Mobile Experience
+
+Review every screen on mobile: navigation, bottom sheets, touch targets, spacing,
+scrolling, gestures, typography, responsiveness.
+
+### P7 — Final Polish
+
+Complete product review: remove visual noise, consistency pass, remaining bugs,
+transitions, empty states, loading states. The application must feel cohesive.
 
 ---
+
+## 🔮 PHASE D — Platform Maturity & Launch
+
+- Moderator tools (censor text / preserve vector ratings policy)
+- Spam detection & anti-fraud
+- Landlord ownership verification (bills upload claims queue)
+- Analytics
+- Performance
+- Launch
 
 ## 📥 Product Backlog
 
-- Push WhatsApp notification reports.
-- Real-time chat messages between tenants and owners.
+- WhatsApp notification reports
+- Real-time tenant ↔ owner chat
+
+---
+
+## Success Criteria (Phase C exit)
+
+1. The product feels intentionally designed rather than assembled.
+2. Every major user journey is clear and effortless.
+3. Layouts are robust across all breakpoints.
+4. Visual hierarchy naturally guides attention; the interface inspires trust.
+5. The design system is applied consistently; every page belongs to the same product.
+6. Public experience and internal dashboards share the same craftsmanship.
+7. No feature is redesigned at the expense of existing functionality.
+8. Engineering quality and product quality are finally at the same level.

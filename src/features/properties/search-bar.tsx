@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { SearchInput } from '@ui/input'
 import { Button } from '@ui/button'
 import { KENYAN_LOCATIONS } from '@/lib/mock-data'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { scaleVariants } from '@ui/animations'
 import { Search, Clock, MapPin, X } from 'lucide-react'
 
@@ -19,7 +19,7 @@ const LOCAL_STORAGE_KEY = 'nyumbani_recent_searches'
 /**
  * Upgraded SearchBar component with autocomplete, Kenyan location suggestions,
  * keyboard navigation (arrows, Enter, Escape), and local storage recent searches.
- * Completely optimized to eliminate synchronous setStates in useEffect.
+ * Optimized for Sprint D1: quieted labels, mapped brand-primary and status-error.
  */
 export const SearchBar: React.FC<SearchBarProps> = ({
   initialQuery = '',
@@ -181,12 +181,12 @@ export const SearchBar: React.FC<SearchBarProps> = ({
             initial="initial"
             animate="animate"
             exit="exit"
-            className="absolute top-full left-0 right-0 mt-xxs bg-bg-primary border border-border-subtle rounded-symmetric shadow-xl z-50 overflow-hidden max-h-[350px] overflow-y-auto"
+            className="absolute top-full left-0 right-0 mt-xxs bg-bg-secondary border border-border-subtle rounded-symmetric shadow-xl z-50 overflow-hidden max-h-[350px] overflow-y-auto"
           >
             {/* 1. Autocomplete Hits */}
             {query.trim() && suggestions.length > 0 && (
               <div className="p-xxs flex flex-col">
-                <span className="px-xs py-xxs text-[11px] font-bold text-text-muted uppercase tracking-wider select-none">
+                <span className="px-xs py-xxs text-[11px] font-semibold text-text-muted/80 select-none">
                   Matching Locations
                 </span>
                 {suggestions.map((item, index) => (
@@ -199,7 +199,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
                     }}
                     className={`flex items-center gap-xs w-full px-xs py-[10px] text-left text-[14px] font-medium rounded-soft transition-colors cursor-pointer ${
                       index === activeIndex
-                        ? 'bg-neutral-100 text-brand-indigo font-semibold'
+                        ? 'bg-neutral-100 text-brand-primary font-semibold'
                         : 'text-text-primary hover:bg-neutral-50'
                     }`}
                   >
@@ -210,10 +210,10 @@ export const SearchBar: React.FC<SearchBarProps> = ({
               </div>
             )}
 
-            {/* 2. Recent Searches (shown when input is blank or no recommendations match) */}
+            {/* 2. Recent Searches */}
             {recentSearches.length > 0 && (!query.trim() || suggestions.length === 0) && (
               <div className="p-xxs flex flex-col">
-                <span className="px-xs py-xxs text-[11px] font-bold text-text-muted uppercase tracking-wider select-none">
+                <span className="px-xs py-xxs text-[11px] font-semibold text-text-muted/80 select-none">
                   Recent Searches
                 </span>
                 {recentSearches.map((item, index) => (
@@ -235,7 +235,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
                     <button
                       type="button"
                       onClick={(e) => clearRecentSearch(e, item)}
-                      className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-accent-coral p-[2px] rounded-pill hover:bg-neutral-100 cursor-pointer transition-opacity"
+                      className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-status-error p-[2px] rounded-pill hover:bg-neutral-100 cursor-pointer transition-opacity"
                     >
                       <X size={14} />
                     </button>

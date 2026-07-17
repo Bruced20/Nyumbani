@@ -8,11 +8,12 @@
   --text-muted: #6b7280;
   --border-subtle: #e7e5e4;
 
-  --accent-emerald: #3f7d58;
-  --accent-amber: #b7791f;
-  --accent-coral: #b91c1c;
+  /* Semantic Status Tokens */
+  --status-success: #3f7d58;
+  --status-warning: #b7791f;
+  --status-error: #b91c1c;
 
-  --brand-indigo: #1f5e4a;
+  --brand-primary: #1f5e4a;
 
   /* Base next/font typography config */
   --font-sans: var(--font-geist-sans), sans-serif;
@@ -27,11 +28,11 @@
   --text-muted: #9ca3af;
   --border-subtle: #374151;
 
-  --accent-emerald: #10b981;
-  --accent-amber: #f59e0b;
-  --accent-coral: #ef4444;
+  --status-success: #10b981;
+  --status-warning: #f59e0b;
+  --status-error: #ef4444;
 
-  --brand-indigo: #34d399;
+  --brand-primary: #34d399;
 }
 
 @theme {
@@ -42,11 +43,11 @@
   --color-text-muted: var(--text-muted);
   --color-border-subtle: var(--border-subtle);
 
-  --color-accent-emerald: var(--accent-emerald);
-  --color-accent-amber: var(--accent-amber);
-  --color-accent-coral: var(--accent-coral);
+  --color-status-success: var(--status-success);
+  --color-status-warning: var(--status-warning);
+  --color-status-error: var(--status-error);
 
-  --color-brand-indigo: var(--brand-indigo);
+  --color-brand-primary: var(--brand-primary);
 
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);

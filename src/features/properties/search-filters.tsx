@@ -41,7 +41,9 @@ interface SearchFiltersProps {
 
 /**
  * Advanced Filters Panel.
- * Redesigned to support Product Design System v2 (Premium Experience).
+ * Redesigned against the calm-trust principles: one accent color reserved
+ * for "this is selected," neutral gray everywhere else, and section labels
+ * that don't shout.
  */
 export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFiltersChange }) => {
   const [showAdvanced, setShowAdvanced] = React.useState(false)
@@ -64,7 +66,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
 
   const ratingOptions = ['Excellent', 'Good', 'Fair', 'Poor']
 
-  const activeBtnClass = 'bg-brand-indigo text-white border-transparent shadow-sm'
+  const sectionLabel = 'text-[12px] font-semibold text-text-muted flex items-center gap-[4px]'
+  const activeBtnClass = 'bg-brand-primary text-white border-transparent shadow-sm'
   const inactiveBtnClass =
     'bg-bg-primary text-text-primary border-border-subtle hover:bg-bg-primary/50 hover:border-text-muted/30'
 
@@ -72,9 +75,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
     <div className="bg-bg-secondary border border-border-subtle p-md rounded-symmetric flex flex-col gap-md w-full shadow-sm">
       {/* Header controls */}
       <div className="flex justify-between items-center border-b border-border-subtle pb-xs">
-        <h4 className="font-extrabold text-[15px] text-text-primary tracking-tight">
-          Search Filters
-        </h4>
+        <h4 className="font-bold text-[15px] text-text-primary tracking-tight">Search Filters</h4>
         <button
           onClick={() =>
             onFiltersChange({
@@ -95,7 +96,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
               recentlyUpdated: false,
             })
           }
-          className="text-[13px] font-bold text-text-muted hover:text-text-primary transition-colors cursor-pointer"
+          className="text-[13px] font-semibold text-text-muted hover:text-text-primary transition-colors cursor-pointer"
         >
           Clear All
         </button>
@@ -103,9 +104,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
 
       {/* 1. Property Type Selector */}
       <div className="flex flex-col gap-xs">
-        <span className="text-[12px] font-extrabold text-text-muted uppercase tracking-wider select-none">
-          Property Type
-        </span>
+        <span className={sectionLabel}>Property Type</span>
         <div className="flex flex-wrap gap-xs mt-xxs">
           {propertyTypes.map((type) => {
             const isSelected = filters.houseType === type
@@ -127,9 +126,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
 
       {/* 2. Rent Range Bounds & Quick Price Chips */}
       <div className="flex flex-col gap-xs border-t border-border-subtle pt-sm">
-        <span className="text-[12px] font-extrabold text-text-muted uppercase tracking-wider select-none">
-          KES Monthly Rent
-        </span>
+        <span className={sectionLabel}>KES Monthly Rent</span>
 
         {/* Quick price chips */}
         <div className="flex flex-wrap gap-xs">
@@ -148,7 +145,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
                 }
                 className={`px-sm py-[6px] border text-[13px] font-semibold rounded-soft cursor-pointer transition-all ${
                   isActive
-                    ? 'bg-brand-indigo/10 text-brand-indigo border-brand-indigo/25'
+                    ? 'bg-brand-primary/10 text-brand-primary border-brand-primary/25'
                     : 'bg-bg-primary text-text-primary border-border-subtle hover:bg-bg-primary/50'
                 }`}
               >
@@ -169,7 +166,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
             }
             className="w-full text-center"
           />
-          <span className="text-text-muted text-[14px] font-bold">—</span>
+          <span className="text-text-muted text-[14px] font-semibold">—</span>
           <TextInput
             placeholder="Max Rent"
             type="number"
@@ -187,7 +184,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
         <button
           type="button"
           onClick={() => setShowAdvanced(!showAdvanced)}
-          className="flex items-center justify-between w-full text-left text-[14px] font-bold text-text-primary cursor-pointer hover:text-brand-indigo transition-colors"
+          className="flex items-center justify-between w-full text-left text-[14px] font-semibold text-text-primary cursor-pointer hover:text-brand-primary transition-colors"
         >
           <span>Community Quality & Verification Filters</span>
           {showAdvanced ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
@@ -197,8 +194,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
           <div className="flex flex-col gap-md mt-md">
             {/* Water Reliability Filter */}
             <div className="flex flex-col gap-xs">
-              <span className="text-[12px] font-extrabold text-text-muted flex items-center gap-[4px] uppercase tracking-wider">
-                <Droplet size={13} className="text-brand-indigo" />
+              <span className={sectionLabel}>
+                <Droplet size={13} className="text-text-muted" />
                 Water Reliability
               </span>
               <div className="grid grid-cols-4 gap-xs mt-xxs">
@@ -221,8 +218,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
 
             {/* Power Reliability Filter */}
             <div className="flex flex-col gap-xs">
-              <span className="text-[12px] font-extrabold text-text-muted flex items-center gap-[4px] uppercase tracking-wider">
-                <Zap size={13} className="text-accent-amber" />
+              <span className={sectionLabel}>
+                <Zap size={13} className="text-text-muted" />
                 Power / Electricity
               </span>
               <div className="grid grid-cols-4 gap-xs mt-xxs">
@@ -247,8 +244,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
 
             {/* Internet Type Filter */}
             <div className="flex flex-col gap-xs">
-              <span className="text-[12px] font-extrabold text-text-muted flex items-center gap-[4px] uppercase tracking-wider">
-                <Wifi size={13} className="text-text-primary" />
+              <span className={sectionLabel}>
+                <Wifi size={13} className="text-text-muted" />
                 Internet Type
               </span>
               <div className="grid grid-cols-3 gap-xs mt-xxs">
@@ -273,8 +270,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
 
             {/* Security Level Filter */}
             <div className="flex flex-col gap-xs">
-              <span className="text-[12px] font-extrabold text-text-muted flex items-center gap-[4px] uppercase tracking-wider">
-                <Shield size={13} className="text-accent-emerald" />
+              <span className={sectionLabel}>
+                <Shield size={13} className="text-text-muted" />
                 Security Standards
               </span>
               <div className="grid grid-cols-4 gap-xs mt-xxs">
@@ -299,8 +296,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
 
             {/* Parking space availability */}
             <div className="flex flex-col gap-xs">
-              <span className="text-[12px] font-extrabold text-text-muted flex items-center gap-[4px] uppercase tracking-wider">
-                <Car size={13} className="text-text-primary" />
+              <span className={sectionLabel}>
+                <Car size={13} className="text-text-muted" />
                 Parking Space
               </span>
               <div className="grid grid-cols-3 gap-xs mt-xxs">
@@ -323,7 +320,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
 
             {/* Road Access type */}
             <div className="flex flex-col gap-xs">
-              <span className="text-[12px] font-extrabold text-text-muted flex items-center gap-[4px] uppercase tracking-wider">
+              <span className={sectionLabel}>
                 <Road size={13} className="text-text-muted" />
                 Road Access
               </span>
@@ -347,8 +344,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
 
             {/* Waste Collection */}
             <div className="flex flex-col gap-xs">
-              <span className="text-[12px] font-extrabold text-text-muted flex items-center gap-[4px] uppercase tracking-wider">
-                <Trash2 size={13} className="text-text-primary" />
+              <span className={sectionLabel}>
+                <Trash2 size={13} className="text-text-muted" />
                 Garbage Collection
               </span>
               <div className="grid grid-cols-3 gap-xs mt-xxs">
@@ -373,15 +370,15 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
 
             {/* Owner Verifications Toggles */}
             <div className="flex flex-col gap-sm border-t border-border-subtle pt-md">
-              <span className="text-[12px] font-extrabold text-text-muted uppercase tracking-wider flex items-center gap-[4px]">
-                <UserCheck size={13} className="text-brand-indigo" />
+              <span className={sectionLabel}>
+                <UserCheck size={13} className="text-text-muted" />
                 Owner & Listing Badges
               </span>
 
               {/* Verified Owner Only */}
               <div className="flex items-center justify-between py-xs">
                 <div className="flex flex-col">
-                  <span className="text-[14px] font-bold text-text-primary">
+                  <span className="text-[14px] font-semibold text-text-primary">
                     Verified Owner Only
                   </span>
                   <span className="text-[12px] text-text-muted">
@@ -399,7 +396,9 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
               {/* Community Listed */}
               <div className="flex items-center justify-between py-xs border-t border-border-subtle/40">
                 <div className="flex flex-col">
-                  <span className="text-[14px] font-bold text-text-primary">Community Listed</span>
+                  <span className="text-[14px] font-semibold text-text-primary">
+                    Community Listed
+                  </span>
                   <span className="text-[12px] text-text-muted">
                     Display crowd-sourced renter evaluations
                   </span>
@@ -415,7 +414,9 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
               {/* Vacancy Available */}
               <div className="flex items-center justify-between py-xs border-t border-border-subtle/40">
                 <div className="flex flex-col">
-                  <span className="text-[14px] font-bold text-text-primary">Vacancy Available</span>
+                  <span className="text-[14px] font-semibold text-text-primary">
+                    Vacancy Available
+                  </span>
                   <span className="text-[12px] text-text-muted">
                     Show apartments with open listing vacancies
                   </span>
@@ -431,7 +432,9 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ filters, onFilters
               {/* Recently Updated */}
               <div className="flex items-center justify-between py-xs border-t border-border-subtle/40">
                 <div className="flex flex-col">
-                  <span className="text-[14px] font-bold text-text-primary">Recently Updated</span>
+                  <span className="text-[14px] font-semibold text-text-primary">
+                    Recently Updated
+                  </span>
                   <span className="text-[12px] text-text-muted">
                     Show properties updated in the last 14 days
                   </span>

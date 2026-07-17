@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Droplet, Shield, Wifi, Zap, User, Car, Road } from 'lucide-react'
 
 interface HealthBarsProps {
   ratings: {
@@ -19,6 +18,7 @@ interface HealthBarsProps {
 /**
  * HealthBars Component.
  * Animates category progress bars representing community ratings.
+ * Refined for Sprint D1: removed Lucide icons next to category labels to prune visual noise.
  */
 export const HealthBars: React.FC<HealthBarsProps> = ({ ratings }) => {
   // Helper to map rating string values to percentages out of 100
@@ -50,43 +50,36 @@ export const HealthBars: React.FC<HealthBarsProps> = ({ ratings }) => {
       label: 'Water Reliability',
       value: ratings.water,
       percent: getPercentage(ratings.water, 'standard'),
-      icon: <Droplet size={14} className="text-brand-indigo" />,
     },
     {
       label: 'Electricity Stability',
       value: ratings.electricity,
       percent: getPercentage(ratings.electricity, 'standard'),
-      icon: <Zap size={14} className="text-accent-amber" />,
     },
     {
       label: 'Internet Quality',
       value: ratings.internet,
       percent: getPercentage(ratings.internet, 'internet'),
-      icon: <Wifi size={14} className="text-text-primary" />,
     },
     {
       label: 'Security & Safety',
       value: ratings.security,
       percent: getPercentage(ratings.security, 'standard'),
-      icon: <Shield size={14} className="text-accent-emerald" />,
     },
     {
       label: 'Parking Adequacy',
       value: ratings.parking,
       percent: getPercentage(ratings.parking, 'parking'),
-      icon: <Car size={14} className="text-text-muted" />,
     },
     {
       label: 'Road Access Quality',
       value: ratings.road,
       percent: getPercentage(ratings.road, 'road'),
-      icon: <Road size={14} className="text-text-primary" />,
     },
     {
       label: 'Garbage Collection',
       value: ratings.garbage,
       percent: getPercentage(ratings.garbage, 'standard'),
-      icon: <User size={14} className="text-brand-indigo" />,
     },
   ]
 
@@ -95,10 +88,7 @@ export const HealthBars: React.FC<HealthBarsProps> = ({ ratings }) => {
       {categories.map((cat) => (
         <div key={cat.label} className="flex flex-col gap-xxs">
           <div className="flex justify-between items-center text-[13px] font-medium text-text-primary">
-            <span className="flex items-center gap-xxs">
-              {cat.icon}
-              {cat.label}
-            </span>
+            <span>{cat.label}</span>
             <span className="text-text-muted">{cat.value}</span>
           </div>
 
@@ -109,7 +99,7 @@ export const HealthBars: React.FC<HealthBarsProps> = ({ ratings }) => {
               whileInView={{ width: `${cat.percent}%` }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
-              className="h-full bg-brand-indigo rounded-pill"
+              className="h-full bg-brand-primary rounded-pill"
             />
           </div>
         </div>

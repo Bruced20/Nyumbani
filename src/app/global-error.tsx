@@ -22,10 +22,10 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
     <html lang="en">
       <body className="bg-bg-primary min-h-screen flex items-center justify-center font-sans antialiased p-sm">
         <div className="max-w-md w-full p-lg bg-bg-secondary border border-border-subtle rounded-symmetric shadow-sm text-center flex flex-col gap-sm items-center">
-          <div className="h-12 w-12 bg-accent-coral/10 text-accent-coral rounded-pill flex items-center justify-center mb-xxs">
+          <div className="h-12 w-12 bg-status-error/10 text-status-error rounded-pill flex items-center justify-center mb-xxs">
             <AlertOctagon size={24} />
           </div>
-          <h2 className="text-[20px] font-bold text-text-primary">System Crash Detected</h2>
+          <h2 className="text-[20px] font-semibold text-text-primary">System Crash Detected</h2>
           <p className="text-[13px] text-text-muted leading-relaxed">
             A critical server-side initialization mismatch occurred. All diagnostics have been
             transmitted to the monitoring provider.

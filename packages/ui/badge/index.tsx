@@ -9,12 +9,13 @@ interface BadgeProps {
 
 /**
  * Atomic Base Badge Component.
+ * Restyled to mixed-case, quieter semibold font for a calm, premium visual.
  */
 export const Badge: React.FC<BadgeProps> = ({ className, children }) => {
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-[4px] px-xs py-[2px] rounded-pill text-[11px] font-bold uppercase tracking-wider border',
+        'inline-flex items-center gap-[4px] px-[8px] py-[2px] rounded-pill text-[11px] font-semibold border select-none',
         className
       )}
     >
@@ -28,7 +29,7 @@ export const Badge: React.FC<BadgeProps> = ({ className, children }) => {
  */
 export const VerifiedOwnerBadge: React.FC = () => {
   return (
-    <Badge className="bg-accent-emerald/5 text-accent-emerald border-accent-emerald/20">
+    <Badge className="bg-status-success/5 text-status-success border-status-success/20">
       <ShieldCheck size={12} className="shrink-0" />
       Verified Owner
     </Badge>
@@ -40,7 +41,7 @@ export const VerifiedOwnerBadge: React.FC = () => {
  */
 export const VerifiedResidentBadge: React.FC = () => {
   return (
-    <Badge className="bg-brand-indigo/5 text-brand-indigo border-brand-indigo/20">
+    <Badge className="bg-brand-primary/5 text-brand-primary border-brand-primary/20">
       <UserCheck size={12} className="shrink-0" />
       Verified Resident
     </Badge>
@@ -64,7 +65,7 @@ export const CommunityListingBadge: React.FC = () => {
  */
 export const AISummaryBadge: React.FC = () => {
   return (
-    <Badge className="bg-brand-indigo text-white border-transparent">
+    <Badge className="bg-brand-primary text-white border-transparent">
       <Sparkles size={11} className="shrink-0" />
       AI Insight
     </Badge>
@@ -72,7 +73,7 @@ export const AISummaryBadge: React.FC = () => {
 }
 
 /**
- * HealthScore Badge: Rendered as circular color tag (Green, Amber, Coral).
+ * HealthScore Badge: Rendered as circular color tag (Success, Warning, Error).
  */
 export const HealthScore: React.FC<{ score: number; className?: string }> = ({
   score,
@@ -84,10 +85,10 @@ export const HealthScore: React.FC<{ score: number; className?: string }> = ({
   return (
     <span
       className={cn(
-        'inline-flex items-center justify-center font-bold px-[8px] py-[3px] rounded-soft text-[12px] text-white shadow-sm border border-transparent select-none',
-        isHigh && 'bg-accent-emerald',
-        isMid && 'bg-accent-amber',
-        !isHigh && !isMid && 'bg-accent-coral',
+        'inline-flex items-center justify-center font-semibold px-[8px] py-[3px] rounded-soft text-[12px] text-white shadow-sm border border-transparent select-none',
+        isHigh && 'bg-status-success',
+        isMid && 'bg-status-warning',
+        !isHigh && !isMid && 'bg-status-error',
         className
       )}
     >
@@ -105,9 +106,9 @@ interface StatusBadgeProps {
  */
 export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
   const styles = {
-    Pending: 'bg-accent-amber/5 text-accent-amber border-accent-amber/20',
-    Approved: 'bg-accent-emerald/5 text-accent-emerald border-accent-emerald/20',
-    Rejected: 'bg-accent-coral/5 text-accent-coral border-accent-coral/20',
+    Pending: 'bg-status-warning/5 text-status-warning border-status-warning/20',
+    Approved: 'bg-status-success/5 text-status-success border-status-success/20',
+    Rejected: 'bg-status-error/5 text-status-error border-status-error/20',
   }
 
   return <Badge className={styles[status]}>{status}</Badge>

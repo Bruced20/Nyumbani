@@ -1,8 +1,19 @@
 # Nyumbani Design Bible: A Complete Design System
 
-**Version:** 1.0.0  
-**Author:** Head of Product Design  
+**Version:** 2.0.0 (Premium Experience / Calm-Trust Principles)
+**Author:** Head of Product Design
 **Target Platform:** Mobile-first Web & Desktop Web
+
+> **Changelog note:** v2.0 replaces the original indigo-based palette with a
+> warm, calm neutral system and rebalances spacing/radius toward a more
+> premium feel. It also codifies ten design principles (trust over
+> excitement, whitespace over containers, one focal point per screen, color
+> has meaning, motion supports understanding, typography creates hierarchy,
+> real homes/real people, progressive disclosure, consistency beats novelty,
+> calm is the brand) that every future UI change should be checked against.
+> Section 34 (Search Filters) still describes an aspirational horizontal
+> pill carousel that does not match the current vertical panel implementation
+> — flagged there as an open item rather than silently resolved.
 
 ---
 
@@ -27,17 +38,22 @@ Nyumbani is a **rental intelligence network**, not a listing board. The brand vo
 
 To launch quickly and cleanly, Nyumbani V1 features **one carefully designed Calm Light Theme**. However, the stylesheet must utilize semantic tokens to support dark mode in V2 without a layout refactor.
 
-### Light Mode Semantic Tokens (V1 Production)
+Color is applied under one rule: **neutral by default, accent only where it
+should influence a decision.** The brand color is not used decoratively —
+it appears on the two vectors renters actually decide on (water, security),
+on the Health Score, and on primary actions.
 
-- `--bg-primary`: `hsl(0, 0%, 100%)` (Page background)
-- `--bg-secondary`: `hsl(210, 40%, 98%)` (Cards, inputs, sidebars)
-- `--text-primary`: `hsl(220, 20%, 10%)` (Headings, primary body copy)
-- `--text-muted`: `hsl(215, 15%, 50%)` (Labels, secondary meta-text)
-- `--border-subtle`: `hsl(214, 32%, 91%)` (Dividers, card outlines)
-- `--accent-emerald`: `hsl(150, 60%, 35%)` (Success indicators, positive scores, verified badges)
-- `--accent-amber`: `hsl(38, 92%, 50%)` (Moderate scores, warning labels)
-- `--accent-coral`: `hsl(6, 78%, 57%)` (Critical warnings, errors)
-- `--brand-indigo`: `hsl(250, 84%, 54%)` (Interactions, focus bounds)
+### Light Mode Semantic Tokens (Current Production)
+
+- `--bg-primary`: `#faf9f7` (Page background — warm off-white, not pure white)
+- `--bg-secondary`: `#ffffff` (Cards, inputs, sidebars)
+- `--text-primary`: `#1f2937` (Headings, primary body copy)
+- `--text-muted`: `#6b7280` (Labels, secondary meta-text)
+- `--border-subtle`: `#e7e5e4` (Dividers, card outlines — warm gray to match the background undertone)
+- `--status-success`: `#3f7d58` (Success indicators, positive scores, verified badges)
+- `--status-warning`: `#b7791f` (Moderate scores, warning labels)
+- `--status-error`: `#b91c1c` (Critical warnings, errors)
+- `--brand-primary`: `#1f5e4a` (Interactions, focus rings, primary actions — a deep forest green. Named `brand-primary`, not `brand-indigo`: it is not indigo, and using an accurate name avoids future misuse.)
 
 ### Dark Mode Semantic Tokens (V2 Roadmap)
 
@@ -46,10 +62,10 @@ To launch quickly and cleanly, Nyumbani V1 features **one carefully designed Cal
 - `--text-primary`: `hsl(210, 40%, 98%)`
 - `--text-muted`: `hsl(215, 15%, 65%)`
 - `--border-subtle`: `hsl(217, 19%, 20%)`
-- `--accent-emerald`: `hsl(150, 65%, 45%)`
-- `--accent-amber`: `hsl(38, 95%, 48%)`
-- `--accent-coral`: `hsl(6, 85%, 60%)`
-- `--brand-indigo`: `hsl(250, 90%, 65%)`
+- `--status-success`: `#10b981`
+- `--status-warning`: `#f59e0b`
+- `--status-error`: `#ef4444`
+- `--brand-primary`: `#34d399` (brighter emerald-green for dark backgrounds)
 
 ---
 
@@ -72,14 +88,14 @@ We specify font sizes in `rem` using `Inter` or `Geist Sans` as the primary fami
 
 ## 5. Spacing System
 
-Built on a strict **8px grid** to ensure consistency across responsive break-points:
+Built on a spacing scale tuned toward more breathing room than a strict 8px grid would give:
 
 - `4px` (xxs) — Label-to-input gap, icon-to-text gap.
 - `8px` (xs) — Inner badge padding, grid item micro-spacing.
-- `16px` (sm) — Button padding, review card inner padding.
-- `24px` (md) — Main page gutters (mobile), property card padding.
-- `48px` (lg) — Section gap (mobile), desktop layout margins.
-- `80px` (xl) — Section gap (desktop).
+- `16px` (sm) — Button padding, review row inner padding.
+- `28px` (md) — Main page gutters (mobile), property card padding.
+- `56px` (lg) — Section gap (mobile), desktop layout margins.
+- `96px` (xl) — Section gap (desktop).
 
 ---
 
@@ -87,17 +103,23 @@ Built on a strict **8px grid** to ensure consistency across responsive break-poi
 
 We utilize structural rounding to evoke a friendly yet premium aesthetic.
 
-- `4px` (Sharp) — Small badges, tooltips.
-- `8px` (Soft) — Form input fields, buttons, small image thumbnails.
-- `16px` (Symmetric) — Property cards, modals, review cards, search bars.
+- `6px` (Sharp) — Small badges, tooltips.
+- `12px` (Soft) — Form input fields, buttons, small image thumbnails.
+- `20px` (Symmetric) — Property cards, modals, sticky sidebars, search bars.
 - `9999px` (Pill) — Status tags, rating pills, tag filters.
 
 ---
 
 ## 7. Elevation and Shadows
 
-- `shadow-sm` (Border substitute): `0 1px 2px 0 rgba(0, 0, 0, 0.05)`
-- `shadow-md` (Property Cards): `0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05)`
+Elevation is reserved for genuinely floating or interactive surfaces — sticky
+sidebars, control panels, dropdowns, and modals. Ordinary content sections
+(quick facts, amenities, review lists) are separated with whitespace and
+hairline dividers instead of a border-and-shadow box; if every section is
+elevated, none of them read as elevated.
+
+- `shadow-sm` (Sidebars, control panels, primary property cards): `0 1px 2px 0 rgba(0, 0, 0, 0.05)`
+- `shadow-md` (Search bar, floating overlays): `0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05)`
 - `shadow-lg` (Dropdowns & Modals): `0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)`
 
 ---
@@ -217,7 +239,7 @@ We utilize structural rounding to evoke a friendly yet premium aesthetic.
 ## 22. Accessibility Standards
 
 - **Contrast Ratio**: All text must achieve WCAG AA contrast standards (minimum `4.5:1` for regular text).
-- **Keyboard Navigation**: Every interactive element must be reachable via `Tab` and show a visible focus ring (`--brand-indigo`).
+- **Keyboard Navigation**: Every interactive element must be reachable via `Tab` and show a visible focus ring (`--brand-primary`).
 - **Screen Readers**: Use detailed `aria-label` tags on icons and rating grids (e.g., `aria-label="Water reliability rating: 4 stars out of 5"`).
 
 ---
@@ -233,14 +255,14 @@ We utilize structural rounding to evoke a friendly yet premium aesthetic.
 ## 24. Form Design
 
 - **Floating Labels**: Input fields use modern floating labels that scale down when the input is active.
-- **Focus Ring**: On active selection, the input border shifts to `--brand-indigo` with a 2px outer outline.
+- **Focus Ring**: On active selection, the input border shifts to `--brand-primary` with a 2px outer outline.
 - **Error Messaging**: Always display validation errors instantly (on-blur) in red text below the field.
 
 ---
 
 ## 25. Button Hierarchy
 
-1.  **Primary Button**: Filled block color (`--brand-indigo` or `--text-primary`), high contrast, rounded `8px`.
+1.  **Primary Button**: Filled block color (`--brand-primary` or `--text-primary`), high contrast, rounded `12px`.
 2.  **Secondary Button**: Bordered with muted border (`--border-subtle`) and thin text, or soft gray background.
 3.  **Tertiary Button**: Text-only link with subtle hover underline.
 
@@ -341,7 +363,7 @@ Badges must be small, capitalized, and use rounded pill corners (`9999px`). They
   8.  Community Ratings
   9.  Resident Reviews
   10. Owner Responses
-- **Visual Styling**: A card with a subtle gradient border matching `--brand-indigo` and a sparkles icon.
+- **Visual Styling**: A quiet block with a single left accent rule in `--brand-primary` — no dashed border, no badge, no sparkle icon. The summary is written to read as editorial synthesis ("What residents say"), not as a UI widget calling attention to itself. The less a summary of AI-derived content visually announces "AI," the more it reads as trustworthy.
 
 ---
 

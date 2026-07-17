@@ -1,4 +1,9 @@
 import { Metadata } from 'next'
+import { Navbar } from '@/components/navbar-wrapper'
+import { Footer } from '@ui/navigation'
+import { Container, Stack, Grid } from '@ui/layout'
+import { H1, H4, Body } from '@ui/typography'
+import { Button } from '@ui/button'
 
 export const metadata: Metadata = {
   title: 'Landlord Dashboard | Nyumbani',
@@ -8,48 +13,58 @@ export const metadata: Metadata = {
 /**
  * Verified Landlords Dashboard.
  * Restricted to authenticated owner accounts.
+ * Sprint P0: standard Navbar/Footer page shell and plain panel containers
+ * (Section was injecting page-band padding).
  */
 export default function OwnerDashboardPage() {
   return (
-    <main className="max-w-5xl mx-auto p-md bg-bg-primary text-text-primary min-h-screen">
-      <header className="flex justify-between items-center mb-md border-b border-border-subtle pb-sm">
-        <div>
-          <h1 className="text-title font-semibold">Owner Dashboard</h1>
-          <p className="text-metadata text-text-muted">Manage your properties and engagement</p>
-        </div>
+    <div className="flex flex-col min-h-screen bg-bg-primary text-text-primary">
+      <Navbar />
 
-        {/* TODO: Add property creation action trigger */}
-        <button className="px-sm py-xxs bg-brand-indigo text-white font-medium rounded-soft text-[14px]">
-          Add New Property
-        </button>
-      </header>
+      <main className="flex-1 py-lg">
+        <Container className="max-w-5xl">
+          <header className="flex justify-between items-center mb-lg border-b border-border-subtle pb-sm flex-wrap gap-sm">
+            <Stack gap="xxs">
+              <H1 className="leading-tight">Owner Dashboard</H1>
+              <Body className="text-text-muted text-[15px]">
+                Manage your properties and engagement
+              </Body>
+            </Stack>
 
-      {/* Dashboard sections layout */}
-      <div className="grid md:grid-cols-3 gap-md">
-        {/* Side Panel: Claim status */}
-        <section className="md:col-span-1 p-sm bg-bg-secondary border border-border-subtle rounded-symmetric">
-          <h3 className="font-semibold text-subtitle mb-xs">Claim Status</h3>
-          {/* TODO: Render a list of pending/approved claims here */}
-          <p className="text-metadata text-text-muted">No pending claims found.</p>
-        </section>
+            <Button variant="primary" className="text-[14px] px-sm py-xs h-auto">
+              Add New Property
+            </Button>
+          </header>
 
-        {/* Main Panel: Claimed Properties */}
-        <section className="md:col-span-2 flex flex-col gap-sm">
-          <div className="p-sm bg-bg-secondary border border-border-subtle rounded-symmetric">
-            <h3 className="font-semibold text-subtitle mb-xs">Your Properties</h3>
-            {/* TODO: Render a list of claimed properties with vacancy status editing triggers */}
-            <p className="text-metadata text-text-muted">
-              You have not claimed any properties yet.
-            </p>
-          </div>
+          {/* Dashboard sections layout */}
+          <Grid cols={3} gap="lg">
+            {/* Side Panel: Claim status */}
+            <div className="md:col-span-1 flex flex-col gap-xs">
+              <H4 className="text-text-muted font-semibold">Claim Status</H4>
+              <Body className="text-[14px] text-text-muted mt-xxs">No pending claims found.</Body>
+            </div>
 
-          <div className="p-sm bg-bg-secondary border border-border-subtle rounded-symmetric">
-            <h3 className="font-semibold text-subtitle mb-xs">Recent Reviews</h3>
-            {/* TODO: Render reviews matching owned properties to write replies */}
-            <p className="text-metadata text-text-muted">No recent reviews received.</p>
-          </div>
-        </section>
-      </div>
-    </main>
+            {/* Main Panel: Claimed Properties */}
+            <div className="md:col-span-2 flex flex-col gap-lg">
+              <div className="flex flex-col gap-xs">
+                <H4 className="text-text-muted font-semibold">Your Properties</H4>
+                <Body className="text-[14px] text-text-muted mt-xxs">
+                  You have not claimed any properties yet.
+                </Body>
+              </div>
+
+              <div className="flex flex-col gap-xs pt-sm border-t border-border-subtle">
+                <H4 className="text-text-muted font-semibold">Recent Reviews</H4>
+                <Body className="text-[14px] text-text-muted mt-xxs">
+                  No recent reviews received.
+                </Body>
+              </div>
+            </div>
+          </Grid>
+        </Container>
+      </main>
+
+      <Footer />
+    </div>
   )
 }

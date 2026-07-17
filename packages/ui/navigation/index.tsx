@@ -4,6 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { Search, PenSquare, Building2, ChevronRight, Menu } from 'lucide-react'
+import { Button } from '../button'
 
 interface NavbarProps {
   className?: string
@@ -16,7 +17,7 @@ interface NavbarProps {
 
 /**
  * Main Application Navigation Header.
- * Redesigned for Product Design System v2 (Premium Experience).
+ * Refactored for Sprint D2: logo scale, link weights, and standard Button components.
  */
 export const Navbar: React.FC<NavbarProps> = ({
   className,
@@ -37,16 +38,16 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Brand Logo */}
         <Link
           href="/"
-          className="font-bold text-[20px] tracking-tight text-text-primary flex items-center gap-xs"
+          className="font-semibold text-[20px] tracking-tight text-text-primary flex items-center gap-xs"
         >
-          <span className="h-7 w-7 rounded-soft bg-brand-indigo flex items-center justify-center text-white text-[13px] font-extrabold shadow-sm">
+          <span className="h-7 w-7 rounded-soft bg-brand-primary flex items-center justify-center text-white text-[13px] font-semibold shadow-sm">
             N
           </span>
           Nyumbani
         </Link>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-lg text-[15px] font-semibold text-text-muted">
+        <nav className="hidden md:flex items-center gap-lg text-[15px] font-medium text-text-muted">
           <Link href="/search" className="hover:text-text-primary transition-colors py-xxs">
             Find Rentals
           </Link>
@@ -76,24 +77,25 @@ export const Navbar: React.FC<NavbarProps> = ({
                   className="h-9 w-9 rounded-pill object-cover border border-border-subtle"
                 />
               ) : (
-                <div className="h-9 w-9 rounded-pill bg-bg-secondary border border-border-subtle flex items-center justify-center font-bold text-[13px] text-brand-indigo">
+                <div className="h-9 w-9 rounded-pill bg-bg-secondary border border-border-subtle flex items-center justify-center font-semibold text-[13px] text-brand-primary">
                   {userName?.[0]}
                 </div>
               )}
               <button
                 onClick={onSignOut}
-                className="text-[14px] font-semibold text-text-muted hover:text-text-primary cursor-pointer transition-colors"
+                className="text-[14px] font-medium text-text-muted hover:text-text-primary cursor-pointer transition-colors"
               >
                 Sign Out
               </button>
             </div>
           ) : (
-            <button
+            <Button
               onClick={onSignOpen}
-              className="px-sm py-[8px] bg-text-primary text-bg-primary text-[14px] font-semibold rounded-soft hover:bg-opacity-90 transition-all cursor-pointer shadow-sm"
+              variant="primary"
+              className="h-9 px-sm text-[14px] font-semibold rounded-soft py-[8px]"
             >
               Sign In
-            </button>
+            </Button>
           )}
 
           {/* Mobile Menu Icon */}
@@ -120,10 +122,10 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ currentPath })
         href="/search"
         className={cn(
           'flex flex-col items-center justify-center gap-[4px] text-[11px] font-medium text-text-muted select-none w-16 h-full transition-colors',
-          currentPath === '/search' && 'text-brand-indigo font-bold'
+          currentPath === '/search' && 'text-brand-primary font-semibold'
         )}
       >
-        <Search size={18} className={currentPath === '/search' ? 'stroke-[2.5px]' : ''} />
+        <Search size={18} className={currentPath === '/search' ? 'stroke-[2px]' : ''} />
         Search
       </Link>
 
@@ -131,10 +133,10 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ currentPath })
         href="/review/new"
         className={cn(
           'flex flex-col items-center justify-center gap-[4px] text-[11px] font-medium text-text-muted select-none w-16 h-full transition-colors',
-          currentPath === '/review/new' && 'text-brand-indigo font-bold'
+          currentPath === '/review/new' && 'text-brand-primary font-semibold'
         )}
       >
-        <PenSquare size={18} className={currentPath === '/review/new' ? 'stroke-[2.5px]' : ''} />
+        <PenSquare size={18} className={currentPath === '/review/new' ? 'stroke-[2px]' : ''} />
         Review
       </Link>
 
@@ -142,13 +144,10 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ currentPath })
         href="/owners"
         className={cn(
           'flex flex-col items-center justify-center gap-[4px] text-[11px] font-medium text-text-muted select-none w-16 h-full transition-colors',
-          currentPath?.startsWith('/owners') && 'text-brand-indigo font-bold'
+          currentPath?.startsWith('/owners') && 'text-brand-primary font-semibold'
         )}
       >
-        <Building2
-          size={18}
-          className={currentPath?.startsWith('/owners') ? 'stroke-[2.5px]' : ''}
-        />
+        <Building2 size={18} className={currentPath?.startsWith('/owners') ? 'stroke-[2px]' : ''} />
         Owner Hub
       </Link>
     </nav>
@@ -174,7 +173,7 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({ items }) => {
                 {item.label}
               </Link>
             ) : (
-              <span className={isLast ? 'text-text-primary font-bold' : ''}>{item.label}</span>
+              <span className={isLast ? 'text-text-primary font-semibold' : ''}>{item.label}</span>
             )}
             {!isLast && <ChevronRight size={14} className="shrink-0 text-text-muted/60" />}
           </React.Fragment>
@@ -210,7 +209,7 @@ export const Pagination: React.FC<PaginationProps> = ({
         Previous
       </button>
 
-      <span className="text-[14px] font-bold text-text-muted select-none px-xs">
+      <span className="text-[14px] font-semibold text-text-muted select-none px-xs">
         Page {currentPage} of {totalPages}
       </span>
 
@@ -233,7 +232,7 @@ export const Footer: React.FC = () => {
     <footer className="w-full bg-bg-secondary border-t border-border-subtle py-xl mt-auto">
       <div className="max-w-6xl mx-auto px-md grid grid-cols-1 md:grid-cols-4 gap-lg text-text-muted text-[14px]">
         <div className="flex flex-col gap-sm pr-md">
-          <span className="font-extrabold text-[16px] text-text-primary tracking-tight">
+          <span className="font-semibold text-[16px] text-text-primary tracking-tight">
             Nyumbani
           </span>
           <p className="leading-relaxed">
@@ -242,7 +241,7 @@ export const Footer: React.FC = () => {
           </p>
         </div>
         <div className="flex flex-col gap-xs">
-          <span className="font-bold text-text-primary mb-xxs">Platform</span>
+          <span className="font-semibold text-text-primary mb-xxs">Platform</span>
           <Link href="/search" className="hover:text-text-primary transition-colors py-[2px]">
             Search Listings
           </Link>
@@ -251,7 +250,7 @@ export const Footer: React.FC = () => {
           </Link>
         </div>
         <div className="flex flex-col gap-xs">
-          <span className="font-bold text-text-primary mb-xxs">Landlords</span>
+          <span className="font-semibold text-text-primary mb-xxs">Landlords</span>
           <Link href="/owners" className="hover:text-text-primary transition-colors py-[2px]">
             Owner Portal
           </Link>
@@ -263,7 +262,7 @@ export const Footer: React.FC = () => {
           </Link>
         </div>
         <div className="flex flex-col gap-xs">
-          <span className="font-bold text-text-primary mb-xxs">Legal & Safety</span>
+          <span className="font-semibold text-text-primary mb-xxs">Legal & Safety</span>
           <Link href="/about" className="hover:text-text-primary transition-colors py-[2px]">
             Scoring Methodology
           </Link>
@@ -274,7 +273,7 @@ export const Footer: React.FC = () => {
       </div>
       <div className="max-w-6xl mx-auto px-md border-t border-border-subtle pt-md mt-lg flex justify-between items-center text-[13px] text-text-muted flex-wrap gap-sm">
         <span>© {new Date().getFullYear()} Nyumbani Rental Intelligence. All rights reserved.</span>
-        <span className="font-semibold">Made for Kenya 🇰🇪</span>
+        <span className="font-medium">Made for Kenya 🇰🇪</span>
       </div>
     </footer>
   )

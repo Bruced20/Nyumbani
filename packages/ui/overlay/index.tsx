@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { motion, AnimatePresence, Variants } from 'framer-motion'
+import { motion, AnimatePresence, Variants, useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { X } from 'lucide-react'
 import {
@@ -12,6 +12,7 @@ import {
   slideLeftVariants,
   fadeVariants,
 } from '../animations'
+import { useFocusTrap } from '../hooks/use-focus-trap'
 
 interface ModalProps {
   isOpen: boolean
@@ -22,8 +23,12 @@ interface ModalProps {
 
 /**
  * Custom Modal dialog with animated overlay and content cards.
+ * Refactored for Sprint D2: floating paper style, focus trapping accessibility, and touch target adjustments.
  */
 export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
+  const modalRef = React.useRef<HTMLDivElement>(null)
+  const shouldReduceMotion = useReducedMotion()
+
   React.useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -35,6 +40,8 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }
     }
   }, [isOpen])
 
+  useFocusTrap(modalRef, isOpen, onClose)
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -42,28 +49,30 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }
           {/* Backdrop */}
           <motion.div
             variants={backdropVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
+            initial={shouldReduceMotion ? { opacity: 0 } : 'initial'}
+            animate={shouldReduceMotion ? { opacity: 1 } : 'animate'}
+            exit={shouldReduceMotion ? { opacity: 0 } : 'exit'}
             onClick={onClose}
             className="fixed inset-0 bg-black/40 backdrop-blur-[2px]"
           />
 
           {/* Dialog Container */}
           <motion.div
+            ref={modalRef}
             variants={modalVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
+            initial={shouldReduceMotion ? { opacity: 0, scale: 1, y: 0 } : 'initial'}
+            animate={shouldReduceMotion ? { opacity: 1, scale: 1, y: 0 } : 'animate'}
+            exit={shouldReduceMotion ? { opacity: 0, scale: 1, y: 0 } : 'exit'}
             role="dialog"
             aria-modal="true"
-            className="bg-bg-primary border border-border-subtle rounded-symmetric w-full max-w-md p-sm relative shadow-xl z-10"
+            tabIndex={-1}
+            className="bg-bg-secondary border border-border-subtle rounded-symmetric w-full max-w-md p-sm relative shadow-xl z-10 outline-none"
           >
             <header className="flex justify-between items-center mb-xs">
               <h3 className="font-semibold text-subtitle text-text-primary">{title}</h3>
               <button
                 onClick={onClose}
-                className="text-text-muted hover:text-text-primary transition-colors cursor-pointer"
+                className="text-text-muted hover:text-text-primary transition-colors cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center"
               >
                 <X size={18} />
               </button>
@@ -85,7 +94,8 @@ interface DrawerProps {
 }
 
 /**
- * Drawer Component: Slide-in panel (usually for menus or settings sidebar).
+ * Drawer Component: Slide-in panel.
+ * Refactored for Sprint D2: focus trapping accessibility and target sizes.
  */
 export const Drawer: React.FC<DrawerProps> = ({
   isOpen,
@@ -94,6 +104,9 @@ export const Drawer: React.FC<DrawerProps> = ({
   children,
   position = 'right',
 }) => {
+  const drawerRef = React.useRef<HTMLDivElement>(null)
+  const shouldReduceMotion = useReducedMotion()
+
   React.useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -104,6 +117,8 @@ export const Drawer: React.FC<DrawerProps> = ({
       document.body.style.overflow = 'unset'
     }
   }, [isOpen])
+
+  useFocusTrap(drawerRef, isOpen, onClose)
 
   const transitionVariants: Variants =
     position === 'right'
@@ -125,21 +140,23 @@ export const Drawer: React.FC<DrawerProps> = ({
           {/* Backdrop */}
           <motion.div
             variants={backdropVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
+            initial={shouldReduceMotion ? { opacity: 0 } : 'initial'}
+            animate={shouldReduceMotion ? { opacity: 1 } : 'animate'}
+            exit={shouldReduceMotion ? { opacity: 0 } : 'exit'}
             onClick={onClose}
             className="fixed inset-0 bg-black/40 backdrop-blur-[2px]"
           />
 
           {/* Drawer Body */}
           <motion.div
+            ref={drawerRef}
             variants={transitionVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
+            initial={shouldReduceMotion ? { opacity: 0 } : 'initial'}
+            animate={shouldReduceMotion ? { opacity: 1 } : 'animate'}
+            exit={shouldReduceMotion ? { opacity: 0 } : 'exit'}
+            tabIndex={-1}
             className={cn(
-              'bg-bg-primary border-l border-border-subtle h-full w-80 max-w-full p-sm relative shadow-2xl z-10 flex flex-col',
+              'bg-bg-secondary border-l border-border-subtle h-full w-80 max-w-full p-sm relative shadow-2xl z-10 flex flex-col outline-none',
               position === 'left' && 'left-0 right-auto border-r border-l-0'
             )}
           >
@@ -147,7 +164,7 @@ export const Drawer: React.FC<DrawerProps> = ({
               <h3 className="font-semibold text-subtitle text-text-primary">{title}</h3>
               <button
                 onClick={onClose}
-                className="text-text-muted hover:text-text-primary transition-colors cursor-pointer"
+                className="text-text-muted hover:text-text-primary transition-colors cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center"
               >
                 <X size={18} />
               </button>
@@ -170,9 +187,11 @@ interface BottomSheetProps {
 }
 
 /**
- * BottomSheet: Standard mobile slide-up sheet (Design Bible Section 16).
+ * BottomSheet: Standard mobile slide-up sheet.
  */
 export const BottomSheet: React.FC<BottomSheetProps> = ({ isOpen, onClose, title, children }) => {
+  const shouldReduceMotion = useReducedMotion()
+
   React.useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -191,9 +210,9 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({ isOpen, onClose, title
           {/* Backdrop */}
           <motion.div
             variants={backdropVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
+            initial={shouldReduceMotion ? { opacity: 0 } : 'initial'}
+            animate={shouldReduceMotion ? { opacity: 1 } : 'animate'}
+            exit={shouldReduceMotion ? { opacity: 0 } : 'exit'}
             onClick={onClose}
             className="fixed inset-0 bg-black/40 backdrop-blur-[2px]"
           />
@@ -201,10 +220,10 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({ isOpen, onClose, title
           {/* Bottom Sheet Body */}
           <motion.div
             variants={slideUpVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            className="bg-bg-primary border-t border-border-subtle rounded-t-symmetric w-full max-w-lg p-sm relative shadow-2xl z-10 pb-[calc(env(safe-area-inset-bottom)+16px)]"
+            initial={shouldReduceMotion ? { opacity: 0 } : 'initial'}
+            animate={shouldReduceMotion ? { opacity: 1 } : 'animate'}
+            exit={shouldReduceMotion ? { opacity: 0 } : 'exit'}
+            className="bg-bg-secondary border-t border-border-subtle rounded-t-symmetric w-full max-w-lg p-sm relative shadow-2xl z-10 pb-[calc(env(safe-area-inset-bottom)+16px)]"
           >
             {/* Grab Handle Bar */}
             <div className="w-12 h-1 bg-border-subtle rounded-pill mx-auto mb-sm" />
@@ -213,7 +232,7 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({ isOpen, onClose, title
               <h3 className="font-semibold text-subtitle text-text-primary">{title}</h3>
               <button
                 onClick={onClose}
-                className="text-text-muted hover:text-text-primary transition-colors cursor-pointer"
+                className="text-text-muted hover:text-text-primary transition-colors cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center"
               >
                 <X size={18} />
               </button>
@@ -247,6 +266,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
   setIsOpen,
   align = 'right',
 }) => {
+  const shouldReduceMotion = useReducedMotion()
+
   return (
     <div className="relative inline-block text-left">
       <div onClick={() => setIsOpen(!isOpen)}>{trigger}</div>
@@ -259,11 +280,11 @@ export const Dropdown: React.FC<DropdownProps> = ({
 
             <motion.div
               variants={scaleVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
+              initial={shouldReduceMotion ? { opacity: 0, scale: 1 } : 'initial'}
+              animate={shouldReduceMotion ? { opacity: 1, scale: 1 } : 'animate'}
+              exit={shouldReduceMotion ? { opacity: 0, scale: 1 } : 'exit'}
               className={cn(
-                'absolute mt-xxs w-48 rounded-soft bg-bg-primary border border-border-subtle shadow-lg z-20 overflow-hidden py-xxs',
+                'absolute mt-xxs w-48 rounded-soft bg-bg-secondary border border-border-subtle shadow-lg z-20 overflow-hidden py-xxs',
                 align === 'right' ? 'right-0' : 'left-0'
               )}
             >
@@ -286,6 +307,7 @@ interface TooltipProps {
  */
 export const Tooltip: React.FC<TooltipProps> = ({ content, children }) => {
   const [show, setShow] = React.useState(false)
+  const shouldReduceMotion = useReducedMotion()
 
   return (
     <div
@@ -298,9 +320,9 @@ export const Tooltip: React.FC<TooltipProps> = ({ content, children }) => {
         {show && (
           <motion.div
             variants={fadeVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
+            initial={shouldReduceMotion ? { opacity: 0 } : 'initial'}
+            animate={shouldReduceMotion ? { opacity: 1 } : 'animate'}
+            exit={shouldReduceMotion ? { opacity: 0 } : 'exit'}
             className="absolute bottom-full left-1/2 -translate-x-1/2 mb-xxs px-xs py-[4px] bg-text-primary text-bg-primary text-[11px] font-medium rounded-soft shadow-md z-30 whitespace-nowrap pointer-events-none"
           >
             {content}
