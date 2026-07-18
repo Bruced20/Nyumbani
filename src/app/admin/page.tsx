@@ -1,18 +1,27 @@
 import { Metadata } from 'next'
 import { Navbar } from '@/components/navbar-wrapper'
 import { Container } from '@ui/layout'
+import { ModerationQueue } from '@/features/admin/moderation-queue'
+import { ModerationService } from '@/lib/services/moderation'
 
 export const metadata: Metadata = {
   title: 'Moderator Dashboard | Nyumbani',
   description: 'Internal administration and moderation console.',
 }
 
+// Queues must always reflect live data — never a stale prerender.
+export const dynamic = 'force-dynamic'
+
 /**
  * Moderator and Admin Dashboard.
- * Protected by Admin user role checks.
- * Sprint P0: standard Navbar shell (no marketing footer on internal console).
+ * Access control is 3-layered: middleware guards the route (Admin role),
+ * every action re-verifies the role server-side, and RLS backs both. The
+ * queues are real data — flagged reviews from the reports table and pending
+ * landlord claims — with reversible, logged moderation actions.
  */
-export default function AdminDashboardPage() {
+export default async function AdminDashboardPage() {
+  const { flaggedReviews, pendingClaims } = await ModerationService.getQueues()
+
   return (
     <div className="flex flex-col min-h-screen bg-bg-primary text-text-primary">
       <Navbar />
@@ -22,26 +31,12 @@ export default function AdminDashboardPage() {
           <header className="mb-lg border-b border-border-subtle pb-sm">
             <h1 className="text-title font-semibold">Moderator Console</h1>
             <p className="text-metadata text-text-muted">
-              Review verification claims and flagged abuse reports
+              Review verification claims and flagged abuse reports. All actions are reversible and
+              recorded in the moderation log.
             </p>
           </header>
 
-          {/* Admin Queues */}
-          <div className="grid md:grid-cols-2 gap-lg">
-            {/* Verification Claims Queue */}
-            <section className="flex flex-col gap-xs">
-              <h3 className="font-semibold text-[14px] text-text-muted">Landlord Claims (0)</h3>
-              {/* TODO: Implement claim verification check and approval action call */}
-              <p className="text-metadata text-text-muted">No pending claims in the queue.</p>
-            </section>
-
-            {/* Flagged Reviews Queue */}
-            <section className="flex flex-col gap-xs md:border-l md:border-border-subtle md:pl-lg">
-              <h3 className="font-semibold text-[14px] text-text-muted">Abuse Reports (0)</h3>
-              {/* TODO: Implement review censoring or dismissal logic */}
-              <p className="text-metadata text-text-muted">No pending abuse reports.</p>
-            </section>
-          </div>
+          <ModerationQueue flaggedReviews={flaggedReviews} pendingClaims={pendingClaims} />
         </Container>
       </main>
     </div>

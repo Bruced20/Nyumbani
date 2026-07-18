@@ -124,6 +124,8 @@ export type Database = {
           comment: string | null
           is_moderated: boolean
           moderated_at: string | null
+          moderated_by: string | null
+          moderation_reason: string | null
           created_at: string
           updated_at: string
         }
@@ -139,6 +141,8 @@ export type Database = {
           comment?: string | null
           is_moderated?: boolean
           moderated_at?: string | null
+          moderated_by?: string | null
+          moderation_reason?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -154,6 +158,8 @@ export type Database = {
           comment?: string | null
           is_moderated?: boolean
           moderated_at?: string | null
+          moderated_by?: string | null
+          moderation_reason?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -335,6 +341,39 @@ export type Database = {
           id?: string
           review_id?: string
           user_id?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+      moderation_logs: {
+        Row: {
+          id: string
+          actor_id: string | null
+          action: string
+          entity: string
+          entity_id: string
+          reason: string | null
+          metadata: Json | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          actor_id?: string | null
+          action: string
+          entity: string
+          entity_id: string
+          reason?: string | null
+          metadata?: Json | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          actor_id?: string | null
+          action?: string
+          entity?: string
+          entity_id?: string
+          reason?: string | null
+          metadata?: Json | null
           created_at?: string
         }
         Relationships: []
