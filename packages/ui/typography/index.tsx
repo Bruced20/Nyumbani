@@ -7,8 +7,8 @@ interface TypographyProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 /**
- * Display Typography: For massive homepage hero headers (72px desktop / 40px mobile).
- * Serif display face for editorial warmth and brand personality.
+ * Display Typography: Hero headline only (34px mobile / 44px desktop).
+ * Sans, tight and confident — hierarchy from weight + spacing, not size.
  */
 export const Display: React.FC<TypographyProps> = ({
   children,
@@ -19,7 +19,7 @@ export const Display: React.FC<TypographyProps> = ({
   return (
     <Component
       className={cn(
-        'font-serif text-[2.5rem] md:text-[4.5rem] leading-[1.1] font-medium tracking-tight text-text-primary text-balance',
+        'text-[2.125rem] md:text-[2.75rem] leading-[1.1] font-bold tracking-tight text-text-primary text-balance',
         className
       )}
       {...props}
@@ -30,8 +30,7 @@ export const Display: React.FC<TypographyProps> = ({
 }
 
 /**
- * H1 Typography: For primary page headers (40px desktop / 28px mobile).
- * Serif face for editorial structure and visual hierarchy.
+ * H1 Typography: Primary page headers (26px mobile / 30px desktop).
  */
 export const H1: React.FC<TypographyProps> = ({
   children,
@@ -42,7 +41,7 @@ export const H1: React.FC<TypographyProps> = ({
   return (
     <Component
       className={cn(
-        'font-serif text-[1.75rem] md:text-[2.5rem] leading-[1.2] font-semibold tracking-tight text-text-primary text-balance',
+        'text-[1.625rem] md:text-[1.875rem] leading-[1.2] font-semibold tracking-tight text-text-primary text-balance',
         className
       )}
       {...props}
@@ -53,8 +52,7 @@ export const H1: React.FC<TypographyProps> = ({
 }
 
 /**
- * H2 Typography: For cards and major section titles (24px).
- * Serif for editorial section headers, can be overridden to sans for card titles.
+ * H2 Typography: Section titles (22px). Semibold, calm — stops shouting.
  */
 export const H2: React.FC<TypographyProps> = ({
   children,
@@ -65,7 +63,7 @@ export const H2: React.FC<TypographyProps> = ({
   return (
     <Component
       className={cn(
-        'font-serif text-[1.5rem] leading-[1.3] font-medium tracking-tight text-text-primary',
+        'text-[1.375rem] leading-[1.3] font-semibold tracking-tight text-text-primary',
         className
       )}
       {...props}
@@ -76,8 +74,7 @@ export const H2: React.FC<TypographyProps> = ({
 }
 
 /**
- * H3 Typography: For smaller card subtitles and subheadings (20px).
- * Serif for editorial flow, overrideable to sans for tight card contexts.
+ * H3 Typography: Card subtitles and subheadings (18px).
  */
 export const H3: React.FC<TypographyProps> = ({
   children,
@@ -88,7 +85,7 @@ export const H3: React.FC<TypographyProps> = ({
   return (
     <Component
       className={cn(
-        'font-serif text-[1.25rem] leading-[1.35] font-medium tracking-tight text-text-primary',
+        'text-[1.125rem] leading-[1.35] font-semibold tracking-tight text-text-primary',
         className
       )}
       {...props}
@@ -99,7 +96,7 @@ export const H3: React.FC<TypographyProps> = ({
 }
 
 /**
- * H4 Typography: For micro section headers and category items (16px).
+ * H4 Typography: Micro section headers and category items (16px).
  */
 export const H4: React.FC<TypographyProps> = ({
   children,
@@ -109,7 +106,7 @@ export const H4: React.FC<TypographyProps> = ({
 }) => {
   return (
     <Component
-      className={cn('text-[1rem] leading-[1.4] font-medium text-text-primary', className)}
+      className={cn('text-[1rem] leading-[1.4] font-semibold text-text-primary', className)}
       {...props}
     >
       {children}
@@ -118,7 +115,7 @@ export const H4: React.FC<TypographyProps> = ({
 }
 
 /**
- * Body Typography: Standard text block copy (18px).
+ * Body Typography: Standard text block copy (16px).
  */
 export const Body: React.FC<TypographyProps> = ({
   children,
@@ -128,7 +125,7 @@ export const Body: React.FC<TypographyProps> = ({
 }) => {
   return (
     <Component
-      className={cn('text-[1.125rem] leading-[1.65] font-normal text-text-primary/95', className)}
+      className={cn('text-[1rem] leading-[1.6] font-normal text-text-primary/95', className)}
       {...props}
     >
       {children}

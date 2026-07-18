@@ -27,10 +27,10 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       primary:
         'bg-brand-primary text-white hover:bg-brand-primary/90 shadow-sm border border-transparent',
       secondary:
-        'bg-bg-primary text-text-primary border border-border-subtle hover:bg-bg-primary/50 shadow-sm',
+        'bg-bg-secondary text-text-primary border border-border-subtle hover:bg-border-subtle/40 shadow-sm',
       outline:
-        'bg-transparent text-text-primary border border-border-subtle hover:bg-bg-primary shadow-sm',
-      ghost: 'bg-transparent text-text-primary hover:bg-bg-primary border border-transparent',
+        'bg-transparent text-text-primary border border-border-subtle hover:bg-bg-secondary shadow-sm',
+      ghost: 'bg-transparent text-text-primary hover:bg-bg-secondary border border-transparent',
       destructive:
         'bg-status-error text-white hover:bg-status-error/95 shadow-sm border border-transparent',
     }

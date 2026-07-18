@@ -26,13 +26,14 @@ export const Badge: React.FC<BadgeProps> = ({ className, children }) => {
 
 /**
  * VerifiedOwnerBadge: Represents verified landlord-owned property listings.
+ * Quiet text+icon — no tinted fill, calmer at card scale.
  */
 export const VerifiedOwnerBadge: React.FC = () => {
   return (
-    <Badge className="bg-status-success/5 text-status-success border-status-success/20">
-      <ShieldCheck size={12} className="shrink-0" />
+    <span className="inline-flex items-center gap-[4px] text-[12px] font-medium text-brand-primary select-none">
+      <ShieldCheck size={13} className="shrink-0" />
       Verified Owner
-    </Badge>
+    </span>
   )
 }
 
@@ -41,10 +42,10 @@ export const VerifiedOwnerBadge: React.FC = () => {
  */
 export const VerifiedResidentBadge: React.FC = () => {
   return (
-    <Badge className="bg-brand-primary/5 text-brand-primary border-brand-primary/20">
-      <UserCheck size={12} className="shrink-0" />
+    <span className="inline-flex items-center gap-[4px] text-[12px] font-medium text-brand-primary select-none">
+      <UserCheck size={13} className="shrink-0" />
       Verified Resident
-    </Badge>
+    </span>
   )
 }
 
@@ -53,10 +54,10 @@ export const VerifiedResidentBadge: React.FC = () => {
  */
 export const CommunityListingBadge: React.FC = () => {
   return (
-    <Badge className="bg-bg-secondary text-text-muted border-border-subtle">
-      <Eye size={12} className="shrink-0" />
+    <span className="inline-flex items-center gap-[4px] text-[12px] font-medium text-text-muted select-none">
+      <Eye size={13} className="shrink-0" />
       Community Listing
-    </Badge>
+    </span>
   )
 }
 
@@ -73,7 +74,8 @@ export const AISummaryBadge: React.FC = () => {
 }
 
 /**
- * HealthScore Badge: Rendered as circular color tag (Success, Warning, Error).
+ * HealthScore Badge: Airbnb-style white pill — white background, charcoal text,
+ * a small colored tier dot (green/amber/red). Calm over photography.
  */
 export const HealthScore: React.FC<{ score: number; className?: string }> = ({
   score,
@@ -85,13 +87,18 @@ export const HealthScore: React.FC<{ score: number; className?: string }> = ({
   return (
     <span
       className={cn(
-        'inline-flex items-center justify-center font-semibold px-[8px] py-[3px] rounded-soft text-[12px] text-white shadow-sm border border-transparent select-none',
-        isHigh && 'bg-status-success',
-        isMid && 'bg-status-warning',
-        !isHigh && !isMid && 'bg-status-error',
+        'inline-flex items-center gap-[5px] font-semibold px-[8px] py-[4px] rounded-pill text-[12px] bg-white text-[#222222] shadow-sm select-none',
         className
       )}
     >
+      <span
+        className={cn(
+          'h-[7px] w-[7px] rounded-pill shrink-0',
+          isHigh && 'bg-status-success',
+          isMid && 'bg-status-warning',
+          !isHigh && !isMid && 'bg-status-error'
+        )}
+      />
       {score.toFixed(1)}
     </span>
   )

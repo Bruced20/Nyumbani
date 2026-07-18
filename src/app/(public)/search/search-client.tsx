@@ -375,8 +375,8 @@ export function SearchPageContentClient({
                           onMouseEnter={() => setSelectedSlug(prop.slug)}
                           className={
                             selectedSlug === prop.slug
-                              ? 'rounded-symmetric ring-2 ring-brand-primary/40 transition-shadow'
-                              : 'transition-shadow'
+                              ? 'rounded-soft ring-2 ring-brand-primary/50 ring-offset-2 ring-offset-bg-primary transition-all'
+                              : 'transition-all'
                           }
                         >
                           <PropertyCard

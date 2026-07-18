@@ -6,46 +6,47 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  /* Brand Theme Tokens (v2 Premium Calm Light Theme) */
-  --bg-primary: #faf9f7;
-  --bg-secondary: #ffffff;
-  --text-primary: #1f2937;
-  --text-muted: #6b7280;
-  --border-subtle: #e7e5e4;
+  /* Quiet Confidence palette — white carries the interface, color is an event.
+     Page is pure white; the gray fill is for chips/inputs/secondary surfaces. */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f7f7f6;
+  --text-primary: #222222;
+  --text-muted: #6f6f6f;
+  --border-subtle: #ebebeb;
 
-  /* Semantic Status Tokens */
+  /* Semantic Status Tokens (slightly desaturated — signals, not decorations) */
   --status-success: #3f7d58;
-  --status-warning: #b7791f;
-  --status-error: #b91c1c;
+  --status-warning: #a97a24;
+  --status-error: #b3352c;
 
+  /* The single accent: muted emerald. Reserved for primary CTAs + active states. */
   --brand-primary: #1f5e4a;
 
-  /* Warm Editorial Accent (clay terracotta) */
+  /* Clay demoted to small editorial accents (step numbers) only. */
   --accent-clay: #c2703d;
   --accent-clay-soft: #e8d5c4;
 
   /* Base next/font typography config */
-  --font-sans: var(--font-geist-sans), sans-serif;
-  --font-serif: var(--font-serif), georgia, serif;
+  --font-sans: var(--font-jakarta), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), monospace;
 }
 
-/* Prepared Dark Mode Tokens (Inactive in V1 - Available for V2) */
 .dark {
-  --bg-primary: #111827;
-  --bg-secondary: #1f2937;
-  --text-primary: #f9fafb;
-  --text-muted: #9ca3af;
-  --border-subtle: #374151;
+  --bg-primary: #191919;
+  --bg-secondary: #242424;
+  --text-primary: #ebebeb;
+  --text-muted: #a3a3a3;
+  --border-subtle: #3a3a3a;
 
-  --status-success: #10b981;
-  --status-warning: #f59e0b;
-  --status-error: #ef4444;
+  --status-success: #4caf7d;
+  --status-warning: #d19b3d;
+  --status-error: #e05d52;
 
-  --brand-primary: #34d399;
+  /* Emerald lifted for contrast on dark surfaces. */
+  --brand-primary: #4caf8d;
 
-  --accent-clay: #d97706;
-  --accent-clay-soft: #78350f;
+  --accent-clay: #d98d5f;
+  --accent-clay-soft: #4a3020;
 }
 
 @theme {
@@ -65,7 +66,6 @@
   --color-accent-clay-soft: var(--accent-clay-soft);
 
   --font-sans: var(--font-sans);
-  --font-serif: var(--font-serif);
   --font-mono: var(--font-mono);
 
   /* Spacing Grid (Refined for v2 spacing rhythm) */

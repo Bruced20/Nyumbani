@@ -1,16 +1,10 @@
 'use client'
 
 import React from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { cardHoverPreset } from '../animations'
-import { MapPin } from 'lucide-react'
-import {
-  HealthScore,
-  VerifiedOwnerBadge,
-  VerifiedResidentBadge,
-  CommunityListingBadge,
-} from '../badge'
+import { ShieldCheck } from 'lucide-react'
+import { HealthScore, VerifiedResidentBadge } from '../badge'
 
 interface PropertyCardProps {
   name: string
@@ -57,64 +51,60 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
   ].filter(Boolean) as string[]
 
   return (
-    <motion.div
-      variants={shouldReduceMotion ? undefined : cardHoverPreset}
-      whileHover={shouldReduceMotion ? undefined : 'hover'}
-      whileTap={shouldReduceMotion ? undefined : 'tap'}
-      onClick={onClick}
-      className="flex flex-col bg-bg-secondary border border-border-subtle rounded-symmetric overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 cursor-pointer select-none"
-    >
-      {/* Property Widescreen Image Cover (16:10 aspect ratio) */}
-      <div className="w-full aspect-[16/10] bg-bg-primary relative overflow-hidden flex items-center justify-center border-b border-border-subtle">
+    <div onClick={onClick} className="group flex flex-col cursor-pointer select-none">
+      {/* Image-first: rounded photo, no box/border/shadow — the card IS the image */}
+      <div className="w-full aspect-[4/3] bg-bg-secondary relative overflow-hidden rounded-soft">
         {imageUrl ? (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img
             src={imageUrl}
             alt={name}
-            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+            className={cn(
+              'w-full h-full object-cover transition-transform duration-500',
+              shouldReduceMotion ? '' : 'group-hover:scale-105'
+            )}
           />
         ) : (
-          <span className="text-text-muted text-[13px] font-medium">No image provided</span>
+          <span className="absolute inset-0 flex items-center justify-center text-text-muted text-[13px] font-medium">
+            No image provided
+          </span>
         )}
 
-        {/* Floating Health Score Badge */}
+        {/* Floating Health Score — white pill reads calmly over photography */}
         <div className="absolute top-xs right-xs z-10">
           <HealthScore score={healthScore} />
         </div>
       </div>
 
-      {/* Property Details */}
-      <div className="p-sm flex flex-col gap-xxs">
-        <div className="flex items-center justify-between gap-xxs flex-wrap mb-xxs">
-          <h3 className="font-semibold text-[16px] text-text-primary leading-snug truncate max-w-[70%]">
+      {/* Property Details — text hangs beneath the image, no footer box */}
+      <div className="pt-xs flex flex-col gap-[2px]">
+        <div className="flex items-center justify-between gap-xxs">
+          <h3 className="font-semibold text-[15px] text-text-primary leading-snug truncate">
             {name}
           </h3>
-          {isVerified ? <VerifiedOwnerBadge /> : <CommunityListingBadge />}
+          {isVerified && (
+            <ShieldCheck
+              size={14}
+              className="shrink-0 text-brand-primary"
+              aria-label="Verified owner"
+            />
+          )}
         </div>
 
-        <p className="text-[13px] text-text-muted flex items-center gap-[4px]">
-          <MapPin size={13} className="shrink-0 text-text-muted/70" />
-          {neighborhood} • {houseType}
+        <p className="text-[14px] text-text-muted truncate">
+          {neighborhood} · {houseType}
         </p>
 
-        <p className="text-[15px] font-semibold text-text-primary mt-xs">
-          {rentMin.toLocaleString()} - {rentMax.toLocaleString()} KES{' '}
+        {vectors.length > 0 && (
+          <p className="text-[13px] text-text-muted truncate">{vectors.join('  ·  ')}</p>
+        )}
+
+        <p className="text-[15px] font-semibold text-text-primary mt-[2px]">
+          {rentMin.toLocaleString()} – {rentMax.toLocaleString()} KES{' '}
           <span className="text-text-muted font-normal text-[13px]">/ month</span>
         </p>
-
-        {/* Simplified Typographic Quick Indicator Bar (Removed redundant icons) */}
-        {vectors.length > 0 && (
-          <div className="flex flex-wrap border-t border-border-subtle pt-xs mt-sm text-text-muted text-[12px] font-medium items-center gap-x-sm gap-y-xxs">
-            {vectors.map((v, i) => (
-              <React.Fragment key={v}>
-                {i > 0 && <span className="text-border-subtle/50 font-normal">•</span>}
-                <span>{v}</span>
-              </React.Fragment>
-            ))}
-          </div>
-        )}
       </div>
-    </motion.div>
+    </div>
   )
 }
 
