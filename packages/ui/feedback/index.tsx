@@ -168,10 +168,13 @@ interface ToastProps {
   isOpen: boolean
   onClose: () => void
   duration?: number
+  variant?: 'info' | 'success' | 'warning' | 'error'
 }
 
 /**
- * Standard Toast pop-up component.
+ * Standard Toast pop-up component (controlled).
+ * For app-wide firing, prefer the ToastProvider + useToast() delivery system
+ * in ./toast-context, which renders stacked toasts from a queue.
  */
 export const Toast: React.FC<ToastProps> = ({
   message,
@@ -179,6 +182,7 @@ export const Toast: React.FC<ToastProps> = ({
   isOpen,
   onClose,
   duration = 3000,
+  variant = 'info',
 }) => {
   const shouldReduceMotion = useReducedMotion()
 
@@ -201,6 +205,7 @@ export const Toast: React.FC<ToastProps> = ({
           exit={shouldReduceMotion ? { opacity: 0 } : 'exit'}
           className="fixed bottom-sm right-sm z-50 flex max-w-sm gap-xs p-sm bg-text-primary text-bg-primary rounded-symmetric shadow-lg border border-border-subtle"
         >
+          <ToastAccent variant={variant} />
           <div className="flex-1 flex flex-col gap-xxs">
             <span className="font-semibold text-[14px]">{message}</span>
             {description && <span className="text-[12px] opacity-80">{description}</span>}
@@ -215,4 +220,20 @@ export const Toast: React.FC<ToastProps> = ({
       )}
     </AnimatePresence>
   )
+}
+
+/**
+ * Small leading accent icon for toasts, colored by variant.
+ * Shared by the controlled Toast and the ToastProvider viewport.
+ */
+export const ToastAccent: React.FC<{ variant?: 'info' | 'success' | 'warning' | 'error' }> = ({
+  variant = 'info',
+}) => {
+  const map = {
+    info: <Info size={18} className="shrink-0 text-brand-primary" />,
+    success: <CheckCircle2 size={18} className="shrink-0 text-status-success" />,
+    warning: <AlertCircle size={18} className="shrink-0 text-status-warning" />,
+    error: <AlertCircle size={18} className="shrink-0 text-status-error" />,
+  }
+  return map[variant]
 }

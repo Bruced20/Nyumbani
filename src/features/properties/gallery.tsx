@@ -40,7 +40,7 @@ export const Gallery: React.FC<GalleryProps> = ({ images }) => {
   return (
     <div className="w-full flex flex-col gap-xs">
       {/* 1. Gallery Layout Grid (Responsive Apple/Airbnb Style) */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-xs h-[250px] md:h-[400px] rounded-symmetric overflow-hidden border border-border-subtle relative group shadow-sm bg-neutral-100">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-xs h-[250px] md:h-[400px] rounded-symmetric overflow-hidden border border-border-subtle relative group shadow-sm bg-bg-secondary">
         {/* Main Cover Image */}
         <div className="md:col-span-3 relative h-full w-full overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}

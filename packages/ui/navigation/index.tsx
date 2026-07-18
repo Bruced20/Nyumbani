@@ -3,7 +3,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
-import { Search, PenSquare, Building2, ChevronRight, Menu } from 'lucide-react'
+import { Search, PenSquare, Building2, ChevronRight, Menu, Sun, Moon } from 'lucide-react'
 import { Button } from '../button'
 
 interface NavbarProps {
@@ -13,6 +13,32 @@ interface NavbarProps {
   avatarUrl?: string
   onSignOut?: () => void
   onSignOpen?: () => void
+  /** Currently applied theme; when provided, a theme toggle renders. */
+  resolvedTheme?: 'light' | 'dark'
+  onToggleTheme?: () => void
+}
+
+/**
+ * Presentational theme toggle. Wiring lives in the app (navbar-wrapper).
+ */
+export const ThemeToggle: React.FC<{
+  resolvedTheme: 'light' | 'dark'
+  onToggle: () => void
+  className?: string
+}> = ({ resolvedTheme, onToggle, className }) => {
+  const isDark = resolvedTheme === 'dark'
+  return (
+    <button
+      onClick={onToggle}
+      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+      className={cn(
+        'h-9 w-9 rounded-pill flex items-center justify-center text-text-muted hover:text-text-primary hover:bg-bg-secondary border border-transparent hover:border-border-subtle transition-colors cursor-pointer',
+        className
+      )}
+    >
+      {isDark ? <Sun size={18} /> : <Moon size={18} />}
+    </button>
+  )
 }
 
 /**
@@ -26,6 +52,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   avatarUrl,
   onSignOut,
   onSignOpen,
+  resolvedTheme,
+  onToggleTheme,
 }) => {
   return (
     <header
@@ -64,6 +92,9 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* User Session CTA */}
         <div className="flex items-center gap-sm">
+          {resolvedTheme && onToggleTheme && (
+            <ThemeToggle resolvedTheme={resolvedTheme} onToggle={onToggleTheme} />
+          )}
           {isAuthenticated ? (
             <div className="flex items-center gap-sm">
               <span className="hidden sm:inline-block text-[14px] text-text-muted font-medium">

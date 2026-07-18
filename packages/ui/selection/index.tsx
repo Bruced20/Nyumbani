@@ -154,7 +154,7 @@ export const Toggle: React.FC<ToggleProps> = ({
         'px-sm py-xxs border border-border-subtle rounded-pill text-[13px] font-medium transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none min-h-[44px] md:min-h-[40px]',
         pressed
           ? 'bg-brand-primary/5 text-brand-primary border-brand-primary/20 font-semibold'
-          : 'bg-bg-secondary text-text-primary hover:bg-neutral-100',
+          : 'bg-bg-secondary text-text-primary hover:bg-bg-primary',
         className
       )}
     >

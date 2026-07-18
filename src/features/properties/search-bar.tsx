@@ -199,8 +199,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({
                     }}
                     className={`flex items-center gap-xs w-full px-xs py-[10px] text-left text-[14px] font-medium rounded-soft transition-colors cursor-pointer ${
                       index === activeIndex
-                        ? 'bg-neutral-100 text-brand-primary font-semibold'
-                        : 'text-text-primary hover:bg-neutral-50'
+                        ? 'bg-bg-primary text-brand-primary font-semibold'
+                        : 'text-text-primary hover:bg-bg-primary'
                     }`}
                   >
                     <MapPin size={16} className="text-text-muted shrink-0" />
@@ -225,7 +225,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
                       triggerSearch(item)
                     }}
                     className={`group flex items-center justify-between w-full px-xs py-[10px] rounded-soft transition-colors cursor-pointer ${
-                      index === activeIndex ? 'bg-neutral-100' : 'hover:bg-neutral-50'
+                      index === activeIndex ? 'bg-bg-primary' : 'hover:bg-bg-primary'
                     }`}
                   >
                     <div className="flex items-center gap-xs text-[14px] font-medium text-text-primary">
@@ -235,7 +235,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
                     <button
                       type="button"
                       onClick={(e) => clearRecentSearch(e, item)}
-                      className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-status-error p-[2px] rounded-pill hover:bg-neutral-100 cursor-pointer transition-opacity"
+                      className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-status-error p-[2px] rounded-pill hover:bg-bg-secondary cursor-pointer transition-opacity"
                     >
                       <X size={14} />
                     </button>

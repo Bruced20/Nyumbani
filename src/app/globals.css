@@ -1,5 +1,10 @@
 @import 'tailwindcss';
 
+/* Class-based dark mode: `dark:` utilities activate when a `.dark` ancestor
+   exists (toggled on <html> by the theme script + ThemeProvider), instead of
+   following the OS media query. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   /* Brand Theme Tokens (v2 Premium Calm Light Theme) */
   --bg-primary: #faf9f7;
