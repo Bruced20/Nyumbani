@@ -15,8 +15,13 @@
 
   --brand-primary: #1f5e4a;
 
+  /* Warm Editorial Accent (clay terracotta) */
+  --accent-clay: #c2703d;
+  --accent-clay-soft: #e8d5c4;
+
   /* Base next/font typography config */
   --font-sans: var(--font-geist-sans), sans-serif;
+  --font-serif: var(--font-serif), georgia, serif;
   --font-mono: var(--font-geist-mono), monospace;
 }
 
@@ -33,6 +38,9 @@
   --status-error: #ef4444;
 
   --brand-primary: #34d399;
+
+  --accent-clay: #d97706;
+  --accent-clay-soft: #78350f;
 }
 
 @theme {
@@ -48,8 +56,11 @@
   --color-status-error: var(--status-error);
 
   --color-brand-primary: var(--brand-primary);
+  --color-accent-clay: var(--accent-clay);
+  --color-accent-clay-soft: var(--accent-clay-soft);
 
   --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
   --font-mono: var(--font-mono);
 
   /* Spacing Grid (Refined for v2 spacing rhythm) */
@@ -69,10 +80,10 @@
   /* Spring Animations */
   --animate-spring-subtle: spring-subtle 200ms cubic-bezier(0.16, 1, 0.3, 1);
 
-  /* Custom Premium Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(31, 41, 55, 0.02);
-  --shadow-md: 0 4px 12px -2px rgba(31, 41, 55, 0.03), 0 2px 4px -1px rgba(31, 41, 55, 0.02);
-  --shadow-lg: 0 12px 30px -4px rgba(31, 41, 55, 0.04), 0 4px 12px -2px rgba(31, 41, 55, 0.02);
+  /* Custom Premium Shadows — soft but visible for tactile elevation */
+  --shadow-sm: 0 1px 3px 0 rgba(31, 41, 55, 0.05);
+  --shadow-md: 0 4px 12px -2px rgba(31, 41, 55, 0.08), 0 2px 4px -1px rgba(31, 41, 55, 0.05);
+  --shadow-lg: 0 12px 30px -4px rgba(31, 41, 55, 0.1), 0 4px 12px -2px rgba(31, 41, 55, 0.08);
 }
 
 @keyframes spring-subtle {

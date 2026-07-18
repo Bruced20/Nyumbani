@@ -8,6 +8,7 @@ interface TypographyProps extends React.HTMLAttributes<HTMLElement> {
 
 /**
  * Display Typography: For massive homepage hero headers (72px desktop / 40px mobile).
+ * Serif display face for editorial warmth and brand personality.
  */
 export const Display: React.FC<TypographyProps> = ({
   children,
@@ -18,7 +19,7 @@ export const Display: React.FC<TypographyProps> = ({
   return (
     <Component
       className={cn(
-        'text-[2.5rem] md:text-[4.5rem] leading-[1.1] font-semibold tracking-tight text-text-primary text-balance',
+        'font-serif text-[2.5rem] md:text-[4.5rem] leading-[1.1] font-medium tracking-tight text-text-primary text-balance',
         className
       )}
       {...props}
@@ -30,6 +31,7 @@ export const Display: React.FC<TypographyProps> = ({
 
 /**
  * H1 Typography: For primary page headers (40px desktop / 28px mobile).
+ * Serif face for editorial structure and visual hierarchy.
  */
 export const H1: React.FC<TypographyProps> = ({
   children,
@@ -40,7 +42,7 @@ export const H1: React.FC<TypographyProps> = ({
   return (
     <Component
       className={cn(
-        'text-[1.75rem] md:text-[2.5rem] leading-[1.2] font-semibold tracking-tight text-text-primary text-balance',
+        'font-serif text-[1.75rem] md:text-[2.5rem] leading-[1.2] font-semibold tracking-tight text-text-primary text-balance',
         className
       )}
       {...props}
@@ -52,6 +54,7 @@ export const H1: React.FC<TypographyProps> = ({
 
 /**
  * H2 Typography: For cards and major section titles (24px).
+ * Serif for editorial section headers, can be overridden to sans for card titles.
  */
 export const H2: React.FC<TypographyProps> = ({
   children,
@@ -62,7 +65,7 @@ export const H2: React.FC<TypographyProps> = ({
   return (
     <Component
       className={cn(
-        'text-[1.5rem] leading-[1.3] font-medium tracking-tight text-text-primary',
+        'font-serif text-[1.5rem] leading-[1.3] font-medium tracking-tight text-text-primary',
         className
       )}
       {...props}
@@ -74,6 +77,7 @@ export const H2: React.FC<TypographyProps> = ({
 
 /**
  * H3 Typography: For smaller card subtitles and subheadings (20px).
+ * Serif for editorial flow, overrideable to sans for tight card contexts.
  */
 export const H3: React.FC<TypographyProps> = ({
   children,
@@ -84,7 +88,7 @@ export const H3: React.FC<TypographyProps> = ({
   return (
     <Component
       className={cn(
-        'text-[1.25rem] leading-[1.35] font-medium tracking-tight text-text-primary',
+        'font-serif text-[1.25rem] leading-[1.35] font-medium tracking-tight text-text-primary',
         className
       )}
       {...props}
