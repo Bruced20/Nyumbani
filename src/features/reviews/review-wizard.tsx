@@ -9,9 +9,11 @@ import { Star } from 'lucide-react'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { SPRING_SUBTLE } from '@ui/animations'
 import { submitReviewAction } from '@/app/(public)/review/new/actions'
+import { useToast } from '@ui/feedback/toast-context'
 
 interface PropertyBrief {
   id: string
+  slug: string
   name: string
   neighborhood: string
 }
@@ -60,6 +62,7 @@ const StarRating = ({ value, onChange }: { value: number; onChange: (v: number) 
 export const ReviewWizard: React.FC<ReviewWizardProps> = ({ properties }) => {
   const router = useRouter()
   const { user, triggerProtectedAction } = useAuth()
+  const toast = useToast()
 
   const [step, setStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -139,13 +142,25 @@ export const ReviewWizard: React.FC<ReviewWizardProps> = ({ properties }) => {
         })
 
         if (result.success) {
-          router.push(`/property/${selectedProperty.id}`)
+          toast.success({
+            message: 'Review published',
+            description: 'Thank you for helping the community.',
+          })
+          // Property pages are keyed by slug, not id.
+          router.push(`/property/${selectedProperty.slug}`)
           router.refresh()
+        } else if (result.alreadyReviewed) {
+          setErrorMessage(
+            'You have already reviewed this property. You can edit it from the property page.'
+          )
+          toast.info('You have already reviewed this property')
         } else {
           setErrorMessage(result.error || 'Failed to submit review.')
+          toast.error(result.error || 'Failed to submit review.')
         }
       } catch {
         setErrorMessage('An unexpected error occurred. Please try again.')
+        toast.error('An unexpected error occurred. Please try again.')
       } finally {
         setIsSubmitting(false)
       }

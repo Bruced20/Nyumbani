@@ -41,6 +41,15 @@ export interface OwnerClaim {
   updatedAt: string
 }
 
+export interface Report {
+  id: string
+  reviewId: string
+  reporterId: string
+  reason: string
+  isResolved: boolean
+  createdAt: string
+}
+
 export interface NearbyPlace {
   name: string
   type: string
@@ -123,6 +132,17 @@ export const mapReviewRow = (row: Database['public']['Tables']['reviews']['Row']
     isModerated: row.is_moderated,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+  }
+}
+
+export const mapReportRow = (row: Database['public']['Tables']['reports']['Row']): Report => {
+  return {
+    id: row.id,
+    reviewId: row.review_id,
+    reporterId: row.reporter_id,
+    reason: row.reason,
+    isResolved: row.is_resolved,
+    createdAt: row.created_at,
   }
 }
 

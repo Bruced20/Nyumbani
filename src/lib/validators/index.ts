@@ -51,7 +51,37 @@ export const claimSubmissionSchema = z.object({
   document_url: z.string().url('Invalid verification document storage URL.'),
 })
 
+// 4. Review Report Validator
+// Reports capture WHY a review is problematic so admins can triage. Reason is a
+// small fixed taxonomy plus an optional free-text detail.
+export const REPORT_REASONS = [
+  'Spam or advertising',
+  'Offensive or abusive',
+  'False or misleading',
+  'Personal information',
+  'Not about this property',
+  'Other',
+] as const
+
+export const reportSubmissionSchema = z.object({
+  review_id: z.string().uuid('Invalid review ID format.'),
+  reason: z.enum(REPORT_REASONS, { error: 'Please choose a reason for reporting.' }),
+  detail: z.string().max(500, 'Details must not exceed 500 characters.').optional(),
+})
+
+/**
+ * Sanitize free-text review/report content before persistence:
+ * trim, strip control characters, and collapse runs of whitespace. Pure.
+ * The control-char class is built from a string literal so no raw control
+ * bytes appear in this source file.
+ */
+export function sanitizeComment(input: string): string {
+  const controlChars = new RegExp('[\\u0000-\\u001F\\u007F]', 'g')
+  return input.replace(controlChars, ' ').replace(/\s+/g, ' ').trim()
+}
+
 // TypeScript inferred interfaces
 export type PropertyCreateInput = z.infer<typeof propertyCreateSchema>
 export type ReviewSubmissionInput = z.infer<typeof reviewSubmissionSchema>
 export type ClaimSubmissionInput = z.infer<typeof claimSubmissionSchema>
+export type ReportSubmissionInput = z.infer<typeof reportSubmissionSchema>

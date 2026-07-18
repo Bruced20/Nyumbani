@@ -39,3 +39,12 @@ export class AuthorizationError extends AppError {
     super(message, 'UNAUTHORIZED', 403)
   }
 }
+
+export class DuplicateError extends AppError {
+  constructor(message: string = 'This record already exists.') {
+    super(message, 'DUPLICATE', 409)
+  }
+}
+
+/** Postgres unique-violation SQLSTATE. */
+export const PG_UNIQUE_VIOLATION = '23505'

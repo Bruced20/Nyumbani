@@ -1,6 +1,6 @@
 import { createClient, createStaticClient } from '../supabase/server'
 import { Database } from '@/types/database.types'
-import { DatabaseError } from '../errors'
+import { DatabaseError, DuplicateError, PG_UNIQUE_VIOLATION } from '../errors'
 
 type ReviewRow = Database['public']['Tables']['reviews']['Row']
 type ReviewInsert = Database['public']['Tables']['reviews']['Insert']
@@ -41,6 +41,11 @@ export const ReviewRepository = {
     const { data, error } = await supabase.from('reviews').insert(review).select('*').single()
 
     if (error) {
+      // The reviews table has unique(property_id, user_id); surface that as a
+      // typed duplicate so callers can show a friendly "already reviewed" message.
+      if (error.code === PG_UNIQUE_VIOLATION) {
+        throw new DuplicateError('You have already reviewed this property.')
+      }
       throw new DatabaseError('Failed to insert new review.', { rawError: error })
     }
     return data
