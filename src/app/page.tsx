@@ -3,78 +3,162 @@ import Link from 'next/link'
 import { Footer } from '@ui/navigation'
 import { Navbar } from '@/components/navbar-wrapper'
 import { Container, Section, Grid, Stack } from '@ui/layout'
-import { Display, H2, H4, Body, Small } from '@ui/typography'
+import { H1, H2, H4, Body, Small, Caption } from '@ui/typography'
 import { PropertyCard } from '@ui/card'
+import { VerifiedResidentBadge } from '@ui/badge'
 import { SearchBar } from '@/features/properties/search-bar'
 import { PropertyService } from '@/lib/services/properties'
-import { KENYAN_LOCATIONS } from '@/lib/mock-data'
+import { MapPin, ShieldCheck, Building2, MessagesSquare } from 'lucide-react'
 
+/**
+ * Public Discovery Homepage — product-first, not marketing.
+ * Compact hero whose job is to start a search, a trust band of REAL aggregates,
+ * then content: neighborhoods, properties, latest reviews. Every above-the-fold
+ * element either helps the user search or builds trust in the reviews.
+ */
 export default async function Home() {
-  const featuredProperties = await PropertyService.getFeaturedProperties()
-  const popularAreas = KENYAN_LOCATIONS.slice(0, 5)
-  const heroImage =
-    featuredProperties[0]?.images?.[0] ||
-    'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&auto=format&fit=crop&q=80'
+  const [featuredProperties, stats] = await Promise.all([
+    PropertyService.getFeaturedProperties(),
+    PropertyService.getPlatformStats(),
+  ])
+
+  // Real neighborhoods, ranked by how many featured listings sit in each.
+  const neighborhoodCounts = new Map<string, number>()
+  for (const p of featuredProperties) {
+    const hood = p.neighborhood.split(',')[0].trim()
+    neighborhoodCounts.set(hood, (neighborhoodCounts.get(hood) || 0) + 1)
+  }
+  const topNeighborhoods = Array.from(neighborhoodCounts.keys()).slice(0, 6)
+
+  // Real reviews only — flatten from featured properties, newest first.
+  const latestReviews = featuredProperties
+    .flatMap((p) => p.reviews.map((r) => ({ review: r, propertyName: p.name, slug: p.slug })))
+    .filter((x) => x.review.comment)
+    .sort((a, b) => new Date(b.review.createdAt).getTime() - new Date(a.review.createdAt).getTime())
+    .slice(0, 3)
+
+  // Trust metrics — only render values that are real and non-zero.
+  const trustMetrics = [
+    stats.totalProperties > 0 && {
+      icon: <Building2 size={18} />,
+      value: stats.totalProperties.toLocaleString(),
+      label: stats.totalProperties === 1 ? 'Property listed' : 'Properties listed',
+    },
+    stats.totalReviews > 0 && {
+      icon: <MessagesSquare size={18} />,
+      value: stats.totalReviews.toLocaleString(),
+      label: stats.totalReviews === 1 ? 'Tenant review' : 'Tenant reviews',
+    },
+    stats.verifiedProperties > 0 && {
+      icon: <ShieldCheck size={18} />,
+      value: stats.verifiedProperties.toLocaleString(),
+      label: 'Verified buildings',
+    },
+    stats.neighborhoods > 0 && {
+      icon: <MapPin size={18} />,
+      value: stats.neighborhoods.toLocaleString(),
+      label: 'Neighbourhoods covered',
+    },
+  ].filter(Boolean) as { icon: React.ReactNode; value: string; label: string }[]
 
   return (
     <div className="flex flex-col min-h-screen bg-bg-primary text-text-primary">
       <Navbar />
+
       <main className="flex-1">
-        <Section className="relative bg-bg-primary py-0 overflow-hidden">
-          <div className="absolute inset-0 h-[600px] w-full">
-            <img
-              src={heroImage}
-              alt="Nyumbani communities"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/10 to-transparent" />
-          </div>
-          <Container className="relative z-10 max-w-3xl pt-xl pb-md md:pt-[96px] md:pb-lg flex flex-col items-start gap-md">
-            <div className="max-w-2xl">
-              <Display className="text-white max-w-2xl md:text-[3.75rem]">
-                What is it actually like to live here?
-              </Display>
-              <Body className="text-white/90 text-[16px] md:text-[18px] leading-relaxed mt-sm max-w-xl">
-                Real reviews from real residents — water reliability, security, and deposit refunds,
-                before you sign a lease.
+        {/* 1. Compact hero — its only job is to start a search */}
+        <Section className="bg-bg-primary pt-lg pb-md md:pt-xl md:pb-lg border-b border-border-subtle">
+          <Container className="flex flex-col gap-md">
+            <div className="flex flex-col gap-xs max-w-2xl">
+              <H1 className="leading-tight">Find a home you&apos;ll actually enjoy living in.</H1>
+              <Body className="text-text-muted text-[16px] leading-relaxed">
+                Read honest tenant reviews — water, security, deposits — before you sign a lease.
               </Body>
             </div>
-            <p className="text-white/70 text-[13px] select-none">
-              Free for renters · Anonymous by default · Landlords verified by municipal bills
-            </p>
-          </Container>
-          <div className="relative z-20 -mx-md md:mx-auto max-w-2xl px-md md:px-0">
-            <div className="shadow-lg rounded-symmetric overflow-hidden">
+
+            {/* Search — the primary action */}
+            <div className="w-full max-w-2xl shadow-md rounded-symmetric">
               <SearchBar />
             </div>
-          </div>
-          <Container className="relative z-10 max-w-3xl flex flex-wrap items-center justify-start gap-xs mt-md pb-xl md:pb-xl">
-            <span className="text-[13px] text-text-muted select-none">Popular:</span>
-            {popularAreas.map((area) => (
-              <Link
-                key={area}
-                href={`/search?location=${encodeURIComponent(area)}`}
-                className="px-sm py-xxs border border-border-subtle rounded-pill text-[13px] font-medium text-text-primary hover:border-brand-primary hover:text-brand-primary transition-colors"
-              >
-                {area}
-              </Link>
-            ))}
+
+            {/* Popular areas — real shortcuts into search */}
+            {topNeighborhoods.length > 0 && (
+              <div className="flex flex-wrap items-center gap-xs">
+                <Caption className="text-text-muted">Popular:</Caption>
+                {topNeighborhoods.map((area) => (
+                  <Link
+                    key={area}
+                    href={`/search?location=${encodeURIComponent(area)}`}
+                    className="px-sm py-xxs border border-border-subtle rounded-pill text-[13px] font-medium text-text-primary hover:border-brand-primary hover:text-brand-primary transition-colors"
+                  >
+                    {area}
+                  </Link>
+                ))}
+              </div>
+            )}
+
+            {/* Trust band — REAL aggregates, computed from data, never fabricated */}
+            {trustMetrics.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-sm md:gap-md pt-sm mt-xxs border-t border-border-subtle">
+                {trustMetrics.map((m) => (
+                  <div key={m.label} className="flex items-center gap-sm">
+                    <span className="h-10 w-10 shrink-0 rounded-soft bg-brand-primary/10 text-brand-primary flex items-center justify-center">
+                      {m.icon}
+                    </span>
+                    <div className="flex flex-col leading-none gap-xxs">
+                      <span className="text-[20px] font-semibold text-text-primary tracking-tight">
+                        {m.value}
+                      </span>
+                      <Caption className="text-text-muted">{m.label}</Caption>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </Container>
         </Section>
-        <Section className="py-xl bg-bg-primary">
-          <Container>
-            <div className="flex items-end justify-between flex-wrap gap-sm mb-lg">
-              <div className="flex flex-col gap-xxs">
-                <H2>Featured Properties</H2>
-                <Body className="text-text-muted text-[15px]">
-                  Highly-rated Kenyan listings with active tenant reviews
-                </Body>
+
+        {/* 2. Featured neighborhoods */}
+        {topNeighborhoods.length > 0 && (
+          <Section className="py-lg bg-bg-primary">
+            <Container className="flex flex-col gap-md">
+              <div className="flex items-end justify-between gap-sm">
+                <H2>Explore neighbourhoods</H2>
+                <Link
+                  href="/search"
+                  className="text-[14px] font-semibold text-brand-primary hover:underline underline-offset-4 shrink-0"
+                >
+                  All areas →
+                </Link>
               </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-sm">
+                {topNeighborhoods.map((area) => (
+                  <Link
+                    key={area}
+                    href={`/search?location=${encodeURIComponent(area)}`}
+                    className="flex items-center gap-xs px-sm py-sm bg-bg-secondary border border-border-subtle rounded-soft hover:border-brand-primary hover:shadow-sm transition-all"
+                  >
+                    <MapPin size={16} className="text-brand-primary shrink-0" />
+                    <span className="text-[14px] font-medium text-text-primary truncate">
+                      {area}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </Container>
+          </Section>
+        )}
+
+        {/* 3. Featured properties */}
+        <Section className="py-lg bg-bg-primary">
+          <Container className="flex flex-col gap-md">
+            <div className="flex items-end justify-between gap-sm">
+              <H2>Recently reviewed</H2>
               <Link
                 href="/search"
-                className="text-[14px] font-semibold text-brand-primary hover:underline underline-offset-4 pb-xxs"
+                className="text-[14px] font-semibold text-brand-primary hover:underline underline-offset-4 shrink-0"
               >
-                View all properties →
+                View all →
               </Link>
             </div>
             <Grid cols={3} gap="md">
@@ -100,64 +184,83 @@ export default async function Home() {
             </Grid>
           </Container>
         </Section>
-        <Section className="bg-bg-secondary border-t border-border-subtle py-xl">
-          <Container>
-            <div className="flex flex-col gap-xxs mb-xl max-w-xl">
-              <H2>How Nyumbani Works</H2>
+
+        {/* 4. Latest tenant reviews — real submissions only */}
+        {latestReviews.length > 0 && (
+          <Section className="py-lg bg-bg-secondary border-y border-border-subtle">
+            <Container className="flex flex-col gap-md">
+              <H2>What residents are saying</H2>
+              <Grid cols={3} gap="md">
+                {latestReviews.map(({ review, propertyName, slug }) => (
+                  <Link
+                    key={review.id}
+                    href={`/property/${slug}`}
+                    className="flex flex-col gap-sm p-md bg-bg-primary border border-border-subtle rounded-symmetric hover:shadow-sm transition-shadow"
+                  >
+                    <div className="flex items-center justify-between gap-xs">
+                      <span className="text-[13px] font-semibold text-text-primary">
+                        {review.rating.toFixed(1)}
+                        <span className="text-text-muted font-normal"> / 5</span>
+                      </span>
+                      {review.isModerated && <VerifiedResidentBadge />}
+                    </div>
+                    <p className="text-[14px] text-text-primary leading-relaxed line-clamp-3">
+                      &ldquo;{review.comment}&rdquo;
+                    </p>
+                    <div className="flex flex-col gap-xxs mt-auto">
+                      <Small className="font-medium text-text-primary">{review.roleTag}</Small>
+                      <Caption className="text-text-muted truncate">{propertyName}</Caption>
+                    </div>
+                  </Link>
+                ))}
+              </Grid>
+            </Container>
+          </Section>
+        )}
+
+        {/* 5. How Nyumbani works — context, recessive */}
+        <Section className="py-lg bg-bg-primary">
+          <Container className="flex flex-col gap-md">
+            <div className="flex flex-col gap-xxs max-w-xl">
+              <H2>How Nyumbani works</H2>
               <Body className="text-text-muted text-[15px] leading-relaxed">
                 Built on transparency, anonymity, and manual verification to guarantee renter trust.
               </Body>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-xl items-start">
-              <Stack gap="xs" className="items-start text-left px-0">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-lg items-start">
+              <Stack gap="xs" className="items-start">
                 <span className="text-[13px] font-semibold text-accent-clay tracking-widest">
                   01
                 </span>
-                <H4 className="font-semibold font-sans mt-xxs">Search Anonymously</H4>
-                <Small className="leading-relaxed mt-xxs text-left">
-                  Browse apartment metrics and resident evaluations without ever needing to create
-                  an account. No SMS paywalls.
+                <H4 className="font-semibold font-sans">Search anonymously</H4>
+                <Small className="leading-relaxed">
+                  Browse metrics and resident reviews without creating an account. No SMS paywalls.
                 </Small>
               </Stack>
-              <Stack gap="xs" className="items-start text-left px-0">
+              <Stack gap="xs" className="items-start">
                 <span className="text-[13px] font-semibold text-accent-clay tracking-widest">
                   02
                 </span>
-                <H4 className="font-semibold font-sans mt-xxs">Verified Landlords</H4>
-                <Small className="leading-relaxed mt-xxs text-left">
-                  Property owners submit municipal bills to verify ownership. Verified badges prove
-                  listing authenticity.
+                <H4 className="font-semibold font-sans">Verified landlords</H4>
+                <Small className="leading-relaxed">
+                  Owners submit municipal bills to verify ownership. Badges prove listing
+                  authenticity.
                 </Small>
               </Stack>
-              <Stack gap="xs" className="items-start text-left px-0">
+              <Stack gap="xs" className="items-start">
                 <span className="text-[13px] font-semibold text-accent-clay tracking-widest">
                   03
                 </span>
-                <H4 className="font-semibold font-sans mt-xxs">Community Driven</H4>
-                <Small className="leading-relaxed mt-xxs text-left">
-                  Reviews are evaluated across five vectors. Scores update automatically whenever
-                  new tenant feedback is submitted.
+                <H4 className="font-semibold font-sans">Community driven</H4>
+                <Small className="leading-relaxed">
+                  Reviews are evaluated across five vectors. Scores update as new feedback arrives.
                 </Small>
               </Stack>
             </div>
           </Container>
         </Section>
-        <Section className="py-xl bg-bg-primary">
-          <Container className="max-w-2xl flex flex-col items-start gap-xs">
-            <H2>Own or manage a building?</H2>
-            <Body className="text-text-muted text-[15px] leading-relaxed">
-              Claim your listing to respond to resident reviews, update vacancy status, and earn a
-              verified badge.
-            </Body>
-            <Link
-              href="/owners"
-              className="text-[14px] font-semibold text-brand-primary hover:underline underline-offset-4 mt-xs"
-            >
-              Visit the Owner Hub →
-            </Link>
-          </Container>
-        </Section>
       </main>
+
       <Footer />
     </div>
   )
