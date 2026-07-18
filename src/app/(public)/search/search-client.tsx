@@ -9,7 +9,7 @@ import { PropertyCard } from '@ui/card'
 import { EmptyState, ErrorState, Skeleton } from '@ui/feedback'
 import { SearchBar } from '@/features/properties/search-bar'
 import { SearchFilters, FilterState } from '@/features/properties/search-filters'
-import { MapPreview } from '@/features/properties/map-preview'
+import { PropertyMapLoader } from '@/features/properties/map-loader'
 import { Property } from '@/lib/mappers'
 import { NEARBY_NEIGHBORHOODS } from '@/lib/mock-data'
 import { AlertOctagon, X } from 'lucide-react'
@@ -35,6 +35,9 @@ export function SearchPageContentClient({
 }: SearchPageContentClientProps) {
   const router = useRouter()
   const [isPending, startTransition] = React.useTransition()
+  // Shared selection between the results list and the map: hovering/selecting a
+  // card highlights + centers its marker, and tapping a marker highlights here.
+  const [selectedSlug, setSelectedSlug] = React.useState<string | null>(null)
 
   // 1. Sync local changes back to the URL parameters
   const updateURLParams = (newFilters: FilterState, newSort: string) => {
@@ -297,7 +300,16 @@ export function SearchPageContentClient({
                     className="grid grid-cols-1 md:grid-cols-2 gap-md"
                   >
                     {properties.map((prop) => (
-                      <motion.div key={prop.id} variants={listItemVariants}>
+                      <motion.div
+                        key={prop.id}
+                        variants={listItemVariants}
+                        onMouseEnter={() => setSelectedSlug(prop.slug)}
+                        className={
+                          selectedSlug === prop.slug
+                            ? 'rounded-symmetric ring-2 ring-brand-primary/40 transition-shadow'
+                            : 'transition-shadow'
+                        }
+                      >
                         <PropertyCard
                           name={prop.name}
                           neighborhood={prop.neighborhood}
@@ -330,9 +342,13 @@ export function SearchPageContentClient({
               </div>
             </div>
 
-            {/* Right Pane: Sticky Map Preview Simulator */}
-            <div className="w-full lg:w-[40%] lg:sticky lg:top-[96px] shadow-sm rounded-symmetric overflow-hidden">
-              <MapPreview properties={properties} onSelectProperty={handlePropertySelect} />
+            {/* Right Pane: Sticky interactive map with trust-aware price markers */}
+            <div className="w-full lg:w-[40%] lg:sticky lg:top-[96px] h-[420px] lg:h-[calc(100vh-120px)] shadow-sm rounded-symmetric overflow-hidden border border-border-subtle">
+              <PropertyMapLoader
+                properties={properties}
+                selectedSlug={selectedSlug}
+                onSelect={setSelectedSlug}
+              />
             </div>
           </div>
         </Container>

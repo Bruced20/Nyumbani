@@ -110,3 +110,18 @@ body {
   margin: 0;
   padding: 0;
 }
+
+/* Leaflet divIcon reset: our price pills and clusters provide their own
+   background/border, so strip Leaflet's default white box + border. */
+.nyumbani-marker,
+.nyumbani-cluster {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Cluster fade/zoom animations already ship with markercluster; keep the map
+   controls above our floating cards but below modals. */
+.leaflet-container {
+  font-family: var(--font-sans);
+  background: var(--bg-secondary);
+}
