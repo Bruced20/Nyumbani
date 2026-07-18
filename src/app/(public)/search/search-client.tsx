@@ -10,9 +10,14 @@ import { EmptyState, ErrorState, Skeleton } from '@ui/feedback'
 import { SearchBar } from '@/features/properties/search-bar'
 import { SearchFilters, FilterState } from '@/features/properties/search-filters'
 import { PropertyMapLoader } from '@/features/properties/map-loader'
+import { useInfiniteList } from '@/features/properties/use-infinite-list'
+import { useSavedSearches } from '@/features/properties/use-saved-searches'
+import { hasActiveFilters } from '@/features/properties/saved-search-utils'
+import { useToast } from '@ui/feedback/toast-context'
+import { LoadingSpinner } from '@ui/feedback'
 import { Property } from '@/lib/mappers'
 import { NEARBY_NEIGHBORHOODS } from '@/lib/mock-data'
-import { AlertOctagon, X } from 'lucide-react'
+import { AlertOctagon, X, Bookmark, BookmarkCheck } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { listContainerVariants, listItemVariants, SPRING_SUBTLE } from '@ui/animations'
 
@@ -38,6 +43,26 @@ export function SearchPageContentClient({
   // Shared selection between the results list and the map: hovering/selecting a
   // card highlights + centers its marker, and tapping a marker highlights here.
   const [selectedSlug, setSelectedSlug] = React.useState<string | null>(null)
+
+  // Infinite scroll: window the rendered list (data is already fully loaded).
+  const { visible, hasMore, sentinelRef } = useInfiniteList(properties, 12)
+
+  // Saved searches (localStorage) + toast feedback.
+  const { searches: savedSearches, save: saveSearch, remove: removeSearch } = useSavedSearches()
+  const toast = useToast()
+  const filtersActive = hasActiveFilters(filters)
+
+  const handleSaveSearch = () => {
+    const added = saveSearch(filters)
+    if (added) {
+      toast.success({
+        message: 'Search saved',
+        description: 'Find it below the sort bar anytime.',
+      })
+    } else {
+      toast.info('You already saved this search')
+    }
+  }
 
   // 1. Sync local changes back to the URL parameters
   const updateURLParams = (newFilters: FilterState, newSort: string) => {
@@ -223,23 +248,64 @@ export function SearchPageContentClient({
                   {isPending ? 'Searching...' : `${properties.length} homes`}
                 </span>
 
-                <div className="flex items-center gap-xxs text-[14px] text-text-primary">
-                  <span className="font-medium text-text-muted">Sort:</span>
-                  <select
-                    value={sortState}
-                    onChange={handleSortChange}
-                    className="bg-transparent border-none font-semibold text-brand-primary focus:outline-none cursor-pointer pr-xxs"
-                  >
-                    <option value="match">Best Match</option>
-                    <option value="rent-low">Lowest Rent</option>
-                    <option value="rent-high">Highest Rent</option>
-                    <option value="health">Health Score</option>
-                    <option value="reviews">Most Reviewed</option>
-                    <option value="recent">Recently Updated</option>
-                    <option value="alpha">Alphabetical</option>
-                  </select>
+                <div className="flex items-center gap-sm text-[14px] text-text-primary">
+                  {filtersActive && (
+                    <button
+                      onClick={handleSaveSearch}
+                      className="inline-flex items-center gap-[4px] text-[13px] font-semibold text-brand-primary hover:underline underline-offset-4 cursor-pointer"
+                    >
+                      <Bookmark size={14} />
+                      Save search
+                    </button>
+                  )}
+                  <div className="flex items-center gap-xxs">
+                    <span className="font-medium text-text-muted">Sort:</span>
+                    <select
+                      value={sortState}
+                      onChange={handleSortChange}
+                      className="bg-transparent border-none font-semibold text-brand-primary focus:outline-none cursor-pointer pr-xxs"
+                    >
+                      <option value="match">Best Match</option>
+                      <option value="rent-low">Lowest Rent</option>
+                      <option value="rent-high">Highest Rent</option>
+                      <option value="health">Health Score</option>
+                      <option value="reviews">Most Reviewed</option>
+                      <option value="recent">Recently Updated</option>
+                      <option value="alpha">Alphabetical</option>
+                    </select>
+                  </div>
                 </div>
               </div>
+
+              {/* Saved searches — restore or remove */}
+              {savedSearches.length > 0 && (
+                <div className="flex flex-wrap items-center gap-xs">
+                  <span className="inline-flex items-center gap-[4px] text-[12px] font-semibold text-text-muted select-none">
+                    <BookmarkCheck size={13} /> Saved:
+                  </span>
+                  {savedSearches.map((s) => (
+                    <span
+                      key={s.id}
+                      className="inline-flex items-center gap-[6px] pl-sm pr-xxs py-[5px] bg-bg-secondary border border-border-subtle rounded-pill text-[13px] font-medium text-text-primary"
+                    >
+                      <button
+                        onClick={() => updateURLParams(s.filters, sortState)}
+                        className="hover:text-brand-primary transition-colors cursor-pointer max-w-[220px] truncate"
+                        title={`Restore: ${s.label}`}
+                      >
+                        {s.label}
+                      </button>
+                      <button
+                        onClick={() => removeSearch(s.id)}
+                        aria-label="Remove saved search"
+                        className="hover:bg-status-error/10 hover:text-status-error p-[2px] rounded-pill cursor-pointer transition-colors"
+                      >
+                        <X size={13} />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
 
               {/* Content Grid results layout */}
               <div className="flex flex-col gap-md">
@@ -292,52 +358,67 @@ export function SearchPageContentClient({
                     </div>
                   </div>
                 ) : (
-                  // Properties List (using staggered spring motion)
-                  <motion.div
-                    variants={listContainerVariants}
-                    initial="initial"
-                    animate="animate"
-                    className="grid grid-cols-1 md:grid-cols-2 gap-md"
-                  >
-                    {properties.map((prop) => (
-                      <motion.div
-                        key={prop.id}
-                        variants={listItemVariants}
-                        onMouseEnter={() => setSelectedSlug(prop.slug)}
-                        className={
-                          selectedSlug === prop.slug
-                            ? 'rounded-symmetric ring-2 ring-brand-primary/40 transition-shadow'
-                            : 'transition-shadow'
-                        }
+                  // Properties List (staggered spring motion). Windowed by
+                  // useInfiniteList — only `visible` renders; the map receives
+                  // the FULL set so markers are never gated by scroll.
+                  <>
+                    <motion.div
+                      variants={listContainerVariants}
+                      initial="initial"
+                      animate="animate"
+                      className="grid grid-cols-1 md:grid-cols-2 gap-md"
+                    >
+                      {visible.map((prop) => (
+                        <motion.div
+                          key={prop.id}
+                          variants={listItemVariants}
+                          onMouseEnter={() => setSelectedSlug(prop.slug)}
+                          className={
+                            selectedSlug === prop.slug
+                              ? 'rounded-symmetric ring-2 ring-brand-primary/40 transition-shadow'
+                              : 'transition-shadow'
+                          }
+                        >
+                          <PropertyCard
+                            name={prop.name}
+                            neighborhood={prop.neighborhood}
+                            rentMin={prop.rentMin}
+                            rentMax={prop.rentMax}
+                            houseType={prop.houseType}
+                            healthScore={prop.healthScore}
+                            isVerified={prop.isVerified}
+                            imageUrl={prop.images?.[0]}
+                            waterRating={
+                              prop.waterRating === 'Excellent'
+                                ? 5
+                                : prop.waterRating === 'Good'
+                                  ? 4
+                                  : 3
+                            }
+                            securityRating={
+                              prop.securityRating === 'Excellent'
+                                ? 5
+                                : prop.securityRating === 'Good'
+                                  ? 4
+                                  : 3
+                            }
+                            onClick={() => handlePropertySelect(prop.slug)}
+                          />
+                        </motion.div>
+                      ))}
+                    </motion.div>
+
+                    {/* Infinite-scroll sentinel — grows the window as it enters view */}
+                    {hasMore && (
+                      <div
+                        ref={sentinelRef}
+                        className="flex items-center justify-center py-md"
+                        aria-hidden="true"
                       >
-                        <PropertyCard
-                          name={prop.name}
-                          neighborhood={prop.neighborhood}
-                          rentMin={prop.rentMin}
-                          rentMax={prop.rentMax}
-                          houseType={prop.houseType}
-                          healthScore={prop.healthScore}
-                          isVerified={prop.isVerified}
-                          imageUrl={prop.images?.[0]}
-                          waterRating={
-                            prop.waterRating === 'Excellent'
-                              ? 5
-                              : prop.waterRating === 'Good'
-                                ? 4
-                                : 3
-                          }
-                          securityRating={
-                            prop.securityRating === 'Excellent'
-                              ? 5
-                              : prop.securityRating === 'Good'
-                                ? 4
-                                : 3
-                          }
-                          onClick={() => handlePropertySelect(prop.slug)}
-                        />
-                      </motion.div>
-                    ))}
-                  </motion.div>
+                        <LoadingSpinner size="sm" />
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </div>

@@ -13,6 +13,7 @@ import { Gallery } from '@/features/properties/gallery'
 import { ActionButtons } from '@/features/properties/action-buttons'
 import { HealthBars } from '@/features/properties/health-bars'
 import { ReviewCardActions } from '@/features/reviews/review-card-actions'
+import { PropertyMapLoader } from '@/features/properties/map-loader'
 import { PropertyService } from '@/lib/services/properties'
 import { MapPin } from 'lucide-react'
 
@@ -252,24 +253,9 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
               <div className="flex flex-col gap-sm">
                 <h2 className={sectionLabel}>Location & Nearby Areas</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-                  {/* Left Side: Mock Static map — kept bordered since it is a
-                      functional bounded canvas, not a decorative card */}
-                  <div className="h-[220px] bg-bg-secondary rounded-symmetric border border-border-subtle relative overflow-hidden flex flex-col items-center justify-center">
-                    <div className="absolute inset-0 opacity-10 pointer-events-none grid grid-cols-4 grid-rows-4 border border-slate-300">
-                      {Array.from({ length: 16 }).map((_, i) => (
-                        <div key={i} className="border border-slate-300" />
-                      ))}
-                    </div>
-                    <div className="flex flex-col items-center text-center gap-xxs p-xs z-10">
-                      <MapPin size={22} className="text-brand-primary" />
-                      <span className="font-semibold text-[15px] text-text-primary mt-xxs">
-                        {property.neighborhood}
-                      </span>
-                      <span className="text-[12px] text-text-muted">
-                        Lat: {property.coordinates.lat.toFixed(4)} | Lng:{' '}
-                        {property.coordinates.lng.toFixed(4)}
-                      </span>
-                    </div>
+                  {/* Left: real interactive map with a single trust-outlined marker */}
+                  <div className="h-[220px] rounded-symmetric border border-border-subtle overflow-hidden">
+                    <PropertyMapLoader properties={[property]} selectedSlug={property.slug} />
                   </div>
 
                   {/* Right Side: Transit Distance details — plain list, no box */}
@@ -392,7 +378,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                       Write a Review
                     </Button>
                   </Link>
-                  <ActionButtons />
+                  <ActionButtons slug={property.slug} />
                 </div>
               </div>
             </div>
