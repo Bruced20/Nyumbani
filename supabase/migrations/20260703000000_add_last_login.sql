@@ -15,7 +15,7 @@ begin
     coalesce(new.raw_user_meta_data->>'avatar_url', ''),
     'Renter',
     timezone('utc'::text, now()),
-    new.app_metadata->>'provider'
+    new.raw_app_meta_data->>'provider'
   );
   return new;
 end;

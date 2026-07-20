@@ -28,14 +28,17 @@ export const PropertyService = {
       if (count === 0) {
         console.log('Database properties table is empty. Seeding 52 mock properties...')
 
-        // 1. Create a mock seeder profile
-        const seederUserId = '00000000-0000-0000-0000-000000000000'
-        await admin.from('profiles').upsert({
-          id: seederUserId,
-          email: 'seeder@nyumbani.co.ke',
-          full_name: 'Nyumbani Community',
-          role: 'Renter',
-        })
+        // 1. Seed review authors. One account per review role exists in auth.users
+        // (created by migration 20260721000000); its profile is auto-created by the
+        // on_auth_user_created trigger. reviews are unique(property_id, user_id), and
+        // every property carries exactly one review per role, so keying the author by
+        // role keeps all reviews insertable without weakening any constraint.
+        const SEED_USER_BY_ROLE: Record<string, string> = {
+          'Current Resident': '00000000-0000-0000-0000-000000000001',
+          'Former Resident': '00000000-0000-0000-0000-000000000002',
+          Neighbour: '00000000-0000-0000-0000-000000000003',
+          'Community Contributor': '00000000-0000-0000-0000-000000000004',
+        }
 
         // 2. Loop through all 52 mock properties and seed them
         for (const mock of MOCK_PROPERTIES) {
@@ -77,14 +80,18 @@ export const PropertyService = {
             property_id: propertyId,
             image_url: img,
           }))
-          await admin.from('property_images').insert(imagePayloads)
+          const imgRes = await admin.from('property_images').insert(imagePayloads)
+          if (imgRes.error)
+            console.error(`Seed images failed for ${mock.slug}:`, imgRes.error.message)
 
           // Insert associated amenities
           const amenityPayloads = mock.amenities.map((amenity) => ({
             property_id: propertyId,
             amenity_name: amenity,
           }))
-          await admin.from('property_amenities').insert(amenityPayloads)
+          const amRes = await admin.from('property_amenities').insert(amenityPayloads)
+          if (amRes.error)
+            console.error(`Seed amenities failed for ${mock.slug}:`, amRes.error.message)
 
           // Insert associated nearby places
           const nearbyPayloads = mock.nearbyPlaces.map((place) => ({
@@ -93,12 +100,14 @@ export const PropertyService = {
             type: place.type,
             distance: place.distance,
           }))
-          await admin.from('nearby_places').insert(nearbyPayloads)
+          const npRes = await admin.from('nearby_places').insert(nearbyPayloads)
+          if (npRes.error)
+            console.error(`Seed nearby failed for ${mock.slug}:`, npRes.error.message)
 
-          // Insert associated reviews
+          // Insert associated reviews, each authored by the seed account for its role.
           const reviewPayloads = mock.reviews.map((rev) => ({
             property_id: propertyId,
-            user_id: seederUserId,
+            user_id: SEED_USER_BY_ROLE[rev.role] ?? SEED_USER_BY_ROLE['Current Resident'],
             role_tag: rev.role,
             water_rating: rev.rating >= 4.5 ? 5 : rev.rating >= 3.5 ? 4 : 3,
             security_rating: rev.rating >= 4.5 ? 5 : rev.rating >= 3.5 ? 4 : 3,
@@ -107,7 +116,9 @@ export const PropertyService = {
             comment: rev.comment,
             is_moderated: false,
           }))
-          await admin.from('reviews').insert(reviewPayloads)
+          const revRes = await admin.from('reviews').insert(reviewPayloads)
+          if (revRes.error)
+            console.error(`Seed reviews failed for ${mock.slug}:`, revRes.error.message)
         }
         console.log('Successfully seeded 52 properties into PostgreSQL via Admin client!')
       }
