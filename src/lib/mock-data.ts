@@ -304,8 +304,11 @@ const generateMockProperties = (): PropertyMock[] => {
       isVerified: i % 3 === 0,
       updatedAt: date.toISOString(),
       coordinates: {
-        lat: neighborhoodObj.lat + (Math.random() - 0.5) * 0.015,
-        lng: neighborhoodObj.lng + (Math.random() - 0.5) * 0.015,
+        // Deterministic spread of roughly 100-700m around the neighbourhood
+        // centre, so properties look realistically placed and stay put between
+        // restarts (Math.random would move every pin on each seed).
+        lat: neighborhoodObj.lat + (((i * 37) % 13) - 6) * 0.0011,
+        lng: neighborhoodObj.lng + (((i * 53) % 13) - 6) * 0.0011,
       },
       // Added detailed mock fields
       deposit: `${Math.round(rentMin * 1.0).toLocaleString()} KES (1 Month)`,

@@ -54,7 +54,7 @@ export default function OwnersLandingPage() {
                 <H3>List New Property</H3>
                 <Body className="text-[14px] text-text-muted">
                   Create a new listing for your property, add specifications, upload layout images,
-                  and unlock verified badge status.
+                  and apply for a verified badge.
                 </Body>
               </Stack>
               <Link

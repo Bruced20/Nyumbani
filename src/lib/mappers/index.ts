@@ -1,4 +1,5 @@
 import { Database } from '@/types/database.types'
+import { jitteredCoords } from '@/lib/geo'
 
 // 1. Domain Interfaces representing the business structures
 export interface Profile {
@@ -222,11 +223,13 @@ export const mapProperty = (
       ? 'Reliable'
       : 'Occasional'
 
-  // Hardcode coordinates offsets based on properties id (deterministic simulation)
-  const latSeed = propRow.slug.length * 0.0001
-  const lngSeed = propRow.name.length * 0.0001
-  const baseLat = propRow.neighborhood.toLowerCase().includes('kilimani') ? -1.2908 : -1.2682
-  const baseLng = propRow.neighborhood.toLowerCase().includes('kilimani') ? 36.7828 : 36.8041
+  // Real coordinates from the row when present; legacy rows without them fall
+  // back to a deterministic point near their neighbourhood centroid. Never
+  // derived from text lengths.
+  const coords =
+    propRow.latitude != null && propRow.longitude != null
+      ? { lat: propRow.latitude, lng: propRow.longitude }
+      : jitteredCoords(propRow.neighborhood, propRow.slug)
 
   const reviews = reviewRows.map(mapReviewRow)
 
@@ -251,10 +254,7 @@ export const mapProperty = (
     vacancyStatus: true, // Default vacancy availability status
     isVerified: propRow.is_verified,
     updatedAt: propRow.updated_at,
-    coordinates: {
-      lat: baseLat + (latSeed % 0.01) - 0.005,
-      lng: baseLng + (lngSeed % 0.01) - 0.005,
-    },
+    coordinates: coords,
     deposit: propRow.deposit_conditions,
     distanceFromRoad: propRow.public_transport_dist,
     availableUnits: 3, // Default mock stock indicator

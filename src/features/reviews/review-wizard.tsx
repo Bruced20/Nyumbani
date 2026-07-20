@@ -230,7 +230,7 @@ export const ReviewWizard: React.FC<ReviewWizardProps> = ({ properties }) => {
                           className="px-sm py-xs hover:bg-bg-secondary cursor-pointer text-[13px] text-text-primary border-b border-border-subtle last:border-0"
                         >
                           <span className="font-semibold">{p.name}</span>
-                          <span className="text-text-muted"> — {p.neighborhood}</span>
+                          <span className="text-text-muted"> · {p.neighborhood}</span>
                         </li>
                       ))}
                     </ul>

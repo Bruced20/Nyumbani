@@ -72,8 +72,8 @@ function MarkerLayer({
         icon: L.divIcon({
           html: buildMarkerHtml(property, { selected: property.slug === selectedSlug }),
           className: 'nyumbani-marker',
-          iconSize: L.point(0, 0), // let content size itself
-          iconAnchor: [0, 0],
+          iconSize: undefined, // divIcon sizes to its content
+          iconAnchor: [30, 14], // roughly pill centre
         }),
       })
 
@@ -117,8 +117,8 @@ function MarkerLayer({
         L.divIcon({
           html: buildMarkerHtml(p, { selected: slug === selectedSlug }),
           className: 'nyumbani-marker',
-          iconSize: L.point(0, 0),
-          iconAnchor: [0, 0],
+          iconSize: undefined,
+          iconAnchor: [30, 14], // roughly pill centre
         })
       )
     })

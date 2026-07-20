@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Nyumbani — Kenya Rental Intelligence & Trust',
+  title: 'Nyumbani | Kenya Rental Intelligence & Trust',
   description:
     'Real reviews from real residents. Discover verified water reliability, security, and deposit refunds before signing a lease in Kenya.',
 }

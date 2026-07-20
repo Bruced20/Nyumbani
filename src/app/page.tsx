@@ -7,6 +7,7 @@ import { H1, H2, H4, Body, Small, Caption } from '@ui/typography'
 import { PropertyCard } from '@ui/card'
 import { VerifiedResidentBadge } from '@ui/badge'
 import { SearchBar } from '@/features/properties/search-bar'
+import { HeroCarousel, type HeroSlide } from '@/features/properties/hero-carousel'
 import { PropertyService } from '@/lib/services/properties'
 import { MapPin, ShieldCheck, Building2, MessagesSquare } from 'lucide-react'
 
@@ -36,6 +37,24 @@ export default async function Home() {
     .filter((x) => x.review.comment)
     .sort((a, b) => new Date(b.review.createdAt).getTime() - new Date(a.review.createdAt).getTime())
     .slice(0, 3)
+
+  // Top-rated homes for the hero carousel: highest health score first, only
+  // those with a photo, capped at five. Doubles as an ad-ready showcase.
+  const heroSlides: HeroSlide[] = [...featuredProperties]
+    .filter((p) => p.images.length > 0)
+    .sort((a, b) => b.healthScore - a.healthScore)
+    .slice(0, 5)
+    .map((p) => ({
+      slug: p.slug,
+      name: p.name,
+      neighborhood: p.neighborhood.split(',')[0].trim(),
+      houseType: p.houseType,
+      rentMin: p.rentMin,
+      rentMax: p.rentMax,
+      healthScore: p.healthScore,
+      isVerified: p.isVerified,
+      image: p.images[0],
+    }))
 
   // Trust metrics — only render values that are real and non-zero.
   const trustMetrics = [
@@ -69,10 +88,13 @@ export default async function Home() {
         {/* 1. Compact hero — its only job is to start a search */}
         <Section className="bg-bg-primary pt-lg pb-md md:pt-xl md:pb-lg border-b border-border-subtle">
           <Container className="flex flex-col gap-md">
+            {/* Top-rated showcase — ad-ready hero carousel */}
+            {heroSlides.length > 0 && <HeroCarousel slides={heroSlides} />}
+
             <div className="flex flex-col gap-xs max-w-2xl">
               <H1 className="leading-tight">Find a home you&apos;ll actually enjoy living in.</H1>
               <Body className="text-text-muted text-[16px] leading-relaxed">
-                Read honest tenant reviews — water, security, deposits — before you sign a lease.
+                Read honest tenant reviews on water, security, and deposits before you sign a lease.
               </Body>
             </div>
 

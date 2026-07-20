@@ -18,6 +18,13 @@ export const propertyCreateSchema = z
     parking_spaces: z.string().min(2, 'Specify the parking options.'),
     road_access: z.string().min(2, 'Describe the road access.'),
     public_transport_dist: z.string().min(2, 'Detail transport proximity.'),
+
+    // Real location from the map pin picker. Required: the map is only as good
+    // as its coordinates.
+    latitude: z.number().min(-5).max(5, 'Pin the property location on the map.'),
+    longitude: z.number().min(33).max(42, 'Pin the property location on the map.'),
+    estate: z.string().optional(),
+    street: z.string().optional(),
   })
   .refine((data) => data.rent_min <= data.rent_max, {
     message: 'Minimum rent cannot exceed maximum rent.',

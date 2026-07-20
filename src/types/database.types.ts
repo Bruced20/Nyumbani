@@ -60,6 +60,12 @@ export type Database = {
           is_verified: boolean
           verified_owner_id: string | null
           created_by: string | null
+          latitude: number | null
+          longitude: number | null
+          county: string | null
+          estate: string | null
+          street: string | null
+          building_name: string | null
           created_at: string
           updated_at: string
         }
@@ -83,6 +89,12 @@ export type Database = {
           is_verified?: boolean
           verified_owner_id?: string | null
           created_by?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          county?: string | null
+          estate?: string | null
+          street?: string | null
+          building_name?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -106,6 +118,12 @@ export type Database = {
           is_verified?: boolean
           verified_owner_id?: string | null
           created_by?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          county?: string | null
+          estate?: string | null
+          street?: string | null
+          building_name?: string | null
           created_at?: string
           updated_at?: string
         }

@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { Footer } from '@ui/navigation'
 import { Navbar } from '@/components/navbar-wrapper'
 import { Container } from '@ui/layout'
@@ -355,6 +356,23 @@ export function SearchPageContentClient({
                           </button>
                         ))}
                       </div>
+                    </div>
+
+                    {/* Missing-building entry point — invite the user to add it */}
+                    <div className="flex flex-col gap-xs border-t border-border-subtle pt-md">
+                      <h4 className="font-semibold text-[14px] text-text-primary">
+                        Know a place that isn&apos;t here?
+                      </h4>
+                      <p className="text-[13px] text-text-muted leading-relaxed">
+                        You can add a building yourself and leave the first review. It does not have
+                        to be yours to list.
+                      </p>
+                      <Link
+                        href="/properties/new"
+                        className="mt-xs inline-flex w-fit items-center px-sm py-xs bg-brand-primary text-white rounded-soft text-[13px] font-semibold hover:opacity-90 transition-opacity"
+                      >
+                        Add a property
+                      </Link>
                     </div>
                   </div>
                 ) : (

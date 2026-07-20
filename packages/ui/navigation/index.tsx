@@ -82,6 +82,9 @@ export const Navbar: React.FC<NavbarProps> = ({
           <Link href="/review/new" className="hover:text-text-primary transition-colors py-xxs">
             Write a Review
           </Link>
+          <Link href="/properties/new" className="hover:text-text-primary transition-colors py-xxs">
+            Add a Property
+          </Link>
           <Link href="/owners" className="hover:text-text-primary transition-colors py-xxs">
             Landlord Hub
           </Link>

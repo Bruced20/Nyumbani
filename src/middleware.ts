@@ -43,19 +43,27 @@ export async function middleware(request: NextRequest) {
 
   // Check if target path requires authentication
   const isReviewRoute = path.startsWith('/review/new')
+  const isNewPropertyRoute = path.startsWith('/properties/new')
   const isClaimRoute = path.startsWith('/owners/claim')
   const isOwnerDashboard = path.startsWith('/owners/dashboard')
   const isAdminRoute = path.startsWith('/admin')
   const isModeratorRoute = path.startsWith('/moderator')
 
-  if (isReviewRoute || isClaimRoute || isOwnerDashboard || isAdminRoute || isModeratorRoute) {
+  if (
+    isReviewRoute ||
+    isNewPropertyRoute ||
+    isClaimRoute ||
+    isOwnerDashboard ||
+    isAdminRoute ||
+    isModeratorRoute
+  ) {
     if (!user) {
       logger.info(
         `Middleware: Guest attempted to access protected route "${path}". Redirecting to authentication.`
       )
 
       // Determine redirection URL with auth=required context parameter
-      if (isReviewRoute) {
+      if (isReviewRoute || isNewPropertyRoute) {
         return NextResponse.redirect(
           new URL(`/?auth=required&next=${encodeURIComponent(path)}`, request.url)
         )
