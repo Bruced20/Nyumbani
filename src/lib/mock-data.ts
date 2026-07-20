@@ -186,6 +186,56 @@ const generateMockProperties = (): PropertyMock[] => {
   const roads: PropertyMock['roadType'][] = ['Tarmac', 'Murram', 'Seasonal']
   const garbages: PropertyMock['garbageReliability'][] = ['Reliable', 'Occasional', 'Poor']
 
+  // Type-specific photo pools. Each house type draws from images that match its
+  // scale (compact single rooms/bedsitters vs. spacious multi-bedroom flats), so
+  // listings no longer share one generic photo. A deterministic rotation per
+  // property index gives each building a distinct multi-photo gallery.
+  const uns = (id: string) => `https://images.unsplash.com/${id}?w=1200&auto=format&fit=crop&q=70`
+  const IMAGE_POOLS: Record<PropertyMock['houseType'], string[]> = {
+    'Single Room': [
+      uns('photo-1522771739844-6a9f6d5f14af'),
+      uns('photo-1560185007-cde436f6a4d0'),
+      uns('photo-1493809842364-78817add7ffb'),
+      uns('photo-1416339306562-f3d12fefd36f'),
+      uns('photo-1449844908441-8829872d2607'),
+    ],
+    Bedsitter: [
+      uns('photo-1502005229762-cf1b2da7c5d6'),
+      uns('photo-1484154218962-a197022b5858'),
+      uns('photo-1522708323590-d24dbb6b0267'),
+      uns('photo-1560448204-e02f11c3d0e2'),
+      uns('photo-1502005097973-6a7082348e28'),
+    ],
+    Studio: [
+      uns('photo-1512917774080-9991f1c4c750'),
+      uns('photo-1502672260266-1c1ef2d93688'),
+      uns('photo-1524758631624-e2822e304c36'),
+      uns('photo-1560184897-ae75f418493e'),
+      uns('photo-1567767292278-a4f21aa2d36e'),
+    ],
+    'One Bedroom': [
+      uns('photo-1545324418-cc1a3fa10c00'),
+      uns('photo-1568605114967-8130f3a36994'),
+      uns('photo-1600585154340-be6161a56a0c'),
+      uns('photo-1583608205776-bfd35f0d9f83'),
+      uns('photo-1502005229762-cf1b2da7c5d6'),
+    ],
+    'Two Bedroom': [
+      uns('photo-1600566753086-00f18fb6b3ea'),
+      uns('photo-1600607687939-ce8a6c25118c'),
+      uns('photo-1600585154526-990dced4db0d'),
+      uns('photo-1600047509807-ba8f99d2cdde'),
+      uns('photo-1568605114967-8130f3a36994'),
+    ],
+    'Three Bedroom': [
+      uns('photo-1600585154340-be6161a56a0c'),
+      uns('photo-1598928506311-c55ded91a20c'),
+      uns('photo-1600566753086-00f18fb6b3ea'),
+      uns('photo-1600607687939-ce8a6c25118c'),
+      uns('photo-1583608205776-bfd35f0d9f83'),
+    ],
+  }
+
   const properties: PropertyMock[] = []
 
   // Create exactly 52 properties (to satisfy the "at least 50" requirement)
@@ -243,12 +293,11 @@ const generateMockProperties = (): PropertyMock[] => {
     const date = new Date()
     date.setDate(date.getDate() - i * 3)
 
-    // Mock images
-    const images = [
-      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&auto=format&fit=crop&q=60',
-      'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&auto=format&fit=crop&q=60',
-      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&auto=format&fit=crop&q=60',
-    ]
+    // Type-specific gallery. Rotate a distinct 4-photo window through the type's
+    // pool so no two same-type buildings open with the same lead image.
+    const pool = IMAGE_POOLS[houseType]
+    const start = (i * 2) % pool.length
+    const images = Array.from({ length: 4 }, (_, k) => pool[(start + k) % pool.length])
 
     // Create 3 realistic review objects
     const roles: ReviewMock['role'][] = [
