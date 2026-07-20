@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local tooling / agent config
+.claude/
+
+# local dev scratch
+dev-seed.log
