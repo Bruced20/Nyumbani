@@ -193,8 +193,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }}
         title="Sign in to Nyumbani"
       >
-        <div className="flex flex-col gap-sm items-center py-xs text-center">
-          <p className="text-[13px] text-text-muted leading-relaxed max-w-sm mb-xs">
+        <div className="flex flex-col gap-sm py-xs">
+          <p className="text-[14px] text-text-muted leading-relaxed">
             Join Kenya&apos;s community-driven rental intelligence network to write reviews, report
             issues, and claim property ownership.
           </p>
@@ -202,10 +202,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           <Button
             onClick={signIn}
             variant="primary"
-            className="w-full flex items-center justify-center gap-xs"
+            className="w-full flex items-center justify-center gap-xs whitespace-nowrap"
           >
             {/* Premium Google Logo SVG */}
-            <svg className="h-4 w-4 mr-xxs" viewBox="0 0 24 24">
+            <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
               <path
                 fill="currentColor"
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"

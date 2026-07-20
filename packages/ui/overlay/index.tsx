@@ -66,18 +66,19 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }
             role="dialog"
             aria-modal="true"
             tabIndex={-1}
-            className="bg-bg-secondary border border-border-subtle rounded-symmetric w-full max-w-md p-sm relative shadow-xl z-10 outline-none"
+            className="relative z-10 shrink-0 w-full sm:w-[440px] max-w-[480px] max-h-[90vh] overflow-y-auto bg-bg-secondary border border-border-subtle rounded-symmetric p-[24px] sm:p-[32px] shadow-xl outline-none"
           >
-            <header className="flex justify-between items-center mb-xs">
+            <button
+              onClick={onClose}
+              aria-label="Close"
+              className="absolute top-[12px] right-[12px] text-text-muted hover:text-text-primary transition-colors cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center rounded-soft"
+            >
+              <X size={18} />
+            </button>
+            <header className="mb-sm pr-[40px]">
               <h3 className="font-semibold text-subtitle text-text-primary">{title}</h3>
-              <button
-                onClick={onClose}
-                className="text-text-muted hover:text-text-primary transition-colors cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center"
-              >
-                <X size={18} />
-              </button>
             </header>
-            <div className="text-[14px] text-text-muted leading-relaxed mt-xxs">{children}</div>
+            <div className="text-[14px] text-text-muted leading-relaxed">{children}</div>
           </motion.div>
         </div>
       )}
