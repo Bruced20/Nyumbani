@@ -24,7 +24,7 @@ const PARKING_OPTIONS = ['Available', 'Limited', 'None']
 const ROAD_OPTIONS = ['Tarmac', 'Murram', 'Seasonal']
 
 const selectClass =
-  'w-full h-11 px-sm text-[14px] bg-bg-primary border border-border-subtle rounded-soft focus:outline-none focus:border-brand-primary text-text-primary cursor-pointer'
+  'w-full h-11 px-sm text-[16px] sm:text-[14px] bg-bg-primary border border-border-subtle rounded-soft focus:outline-none focus:border-brand-primary text-text-primary cursor-pointer'
 
 const labelClass = 'text-[13px] font-semibold text-text-primary'
 
@@ -312,12 +312,12 @@ export function PropertyForm() {
 
       {errorMessage && <p className="text-[13px] font-medium text-status-error">{errorMessage}</p>}
 
-      <div className="flex items-center justify-between gap-sm border-t border-border-subtle pt-sm">
-        <p className="text-[12px] text-text-muted max-w-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-sm border-t border-border-subtle pt-sm">
+        <p className="text-[12px] text-text-muted sm:max-w-sm">
           New listings appear as community submitted. The owner can claim and verify the building
           later, and reviews always stay with the property.
         </p>
-        <Button type="submit" variant="primary" disabled={submitting}>
+        <Button type="submit" variant="primary" disabled={submitting} className="w-full sm:w-auto">
           {submitting ? 'Adding...' : 'Add property'}
         </Button>
       </div>
