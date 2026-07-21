@@ -49,18 +49,18 @@ describe('PropertyRepository', () => {
       }
       if (table === 'property_images') {
         return {
-          select: vi
-            .fn()
-            .mockReturnValue({ eq: vi.fn().mockResolvedValue({ data: mockImages, error: null }) }),
+          select: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              order: vi.fn().mockResolvedValue({ data: mockImages, error: null }),
+            }),
+          }),
         } as unknown as ReturnType<typeof client.from>
       }
       if (table === 'property_amenities') {
         return {
-          select: vi
-            .fn()
-            .mockReturnValue({
-              eq: vi.fn().mockResolvedValue({ data: mockAmenities, error: null }),
-            }),
+          select: vi.fn().mockReturnValue({
+            eq: vi.fn().mockResolvedValue({ data: mockAmenities, error: null }),
+          }),
         } as unknown as ReturnType<typeof client.from>
       }
       if (table === 'nearby_places') {
