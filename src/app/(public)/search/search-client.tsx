@@ -320,7 +320,7 @@ export function SearchPageContentClient({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
                     {Array.from({ length: 4 }).map((_, idx) => (
                       <div key={idx} className="flex flex-col gap-xs">
-                        <Skeleton className="w-full aspect-[16/10] rounded-symmetric" />
+                        <Skeleton className="w-full aspect-[4/3] rounded-symmetric" />
                         <Skeleton className="h-4 w-2/3 rounded-soft" />
                         <Skeleton className="h-3 w-1/2 rounded-soft" />
                       </div>

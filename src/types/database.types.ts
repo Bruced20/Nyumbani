@@ -278,18 +278,21 @@ export type Database = {
           id: string
           property_id: string
           image_url: string
+          sort_order: number
           created_at: string
         }
         Insert: {
           id?: string
           property_id: string
           image_url: string
+          sort_order?: number
           created_at?: string
         }
         Update: {
           id?: string
           property_id?: string
           image_url?: string
+          sort_order?: number
           created_at?: string
         }
         Relationships: []

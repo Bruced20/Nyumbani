@@ -36,7 +36,7 @@ export default function SearchLoading() {
                 key={i}
                 className="flex flex-col bg-bg-secondary border border-border-subtle rounded-symmetric overflow-hidden shadow-sm"
               >
-                <Skeleton className="w-full aspect-[16/10] rounded-none" />
+                <Skeleton className="w-full aspect-[4/3] rounded-none" />
                 <div className="p-sm flex flex-col gap-xs">
                   <Skeleton className="h-5 w-3/4" />
                   <Skeleton className="h-4 w-1/2" />

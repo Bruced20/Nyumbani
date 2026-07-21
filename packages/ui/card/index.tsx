@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 import { useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { ShieldCheck } from 'lucide-react'
@@ -55,12 +56,13 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
       {/* Image-first: rounded photo, no box/border/shadow — the card IS the image */}
       <div className="w-full aspect-[4/3] bg-bg-secondary relative overflow-hidden rounded-soft">
         {imageUrl ? (
-          /* eslint-disable-next-line @next/next/no-img-element */
-          <img
+          <Image
             src={imageUrl}
             alt={name}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             className={cn(
-              'w-full h-full object-cover transition-transform duration-500',
+              'object-cover transition-transform duration-500',
               shouldReduceMotion ? '' : 'group-hover:scale-105'
             )}
           />
@@ -76,7 +78,8 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
         </div>
       </div>
 
-      {/* Property Details — text hangs beneath the image, no footer box */}
+      {/* Property Details — fixed-height block so every card in a grid aligns,
+          regardless of whether optional rating vectors are present. */}
       <div className="pt-xs flex flex-col gap-[2px]">
         <div className="flex items-center justify-between gap-xxs">
           <h3 className="font-semibold text-[15px] text-text-primary leading-snug truncate">
@@ -95,9 +98,11 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
           {neighborhood} · {houseType}
         </p>
 
-        {vectors.length > 0 && (
-          <p className="text-[13px] text-text-muted truncate">{vectors.join('  ·  ')}</p>
-        )}
+        {/* Reserve a single line for vectors so cards with and without ratings
+            keep identical heights (no layout stretch across the grid). */}
+        <p className="text-[13px] text-text-muted truncate min-h-[18px]">
+          {vectors.length > 0 ? vectors.join('  ·  ') : ' '}
+        </p>
 
         <p className="text-[15px] font-semibold text-text-primary mt-[2px]">
           {rentMin.toLocaleString()} – {rentMax.toLocaleString()} KES{' '}

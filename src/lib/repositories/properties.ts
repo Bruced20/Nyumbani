@@ -37,7 +37,11 @@ export const PropertyRepository = {
 
     // 2. Fetch associated details concurrently
     const [imagesRes, amenitiesRes, nearbyRes] = await Promise.all([
-      supabase.from('property_images').select('*').eq('property_id', property.id),
+      supabase
+        .from('property_images')
+        .select('*')
+        .eq('property_id', property.id)
+        .order('sort_order', { ascending: true }),
       supabase.from('property_amenities').select('*').eq('property_id', property.id),
       supabase.from('nearby_places').select('*').eq('property_id', property.id),
     ])

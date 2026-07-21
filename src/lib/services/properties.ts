@@ -75,10 +75,11 @@ export const PropertyService = {
 
           const propertyId = propRow.id
 
-          // Insert associated images
-          const imagePayloads = mock.images.map((img) => ({
+          // Insert associated images (sort_order preserves gallery sequence)
+          const imagePayloads = mock.images.map((img, index) => ({
             property_id: propertyId,
             image_url: img,
+            sort_order: index,
           }))
           const imgRes = await admin.from('property_images').insert(imagePayloads)
           if (imgRes.error)

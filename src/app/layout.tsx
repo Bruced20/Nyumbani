@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Plus_Jakarta_Sans, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import '@/lib/config'
@@ -20,6 +20,18 @@ export const metadata: Metadata = {
   title: 'Nyumbani | Kenya Rental Intelligence & Trust',
   description:
     'Real reviews from real residents. Discover verified water reliability, security, and deposit refunds before signing a lease in Kenya.',
+  manifest: '/manifest.webmanifest',
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: '48x48', type: 'image/x-icon' },
+      { url: '/icon.png', type: 'image/png', sizes: '512x512' },
+    ],
+    apple: [{ url: '/icon.png' }],
+  },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#102e20',
 }
 
 export default function RootLayout({

@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { Search, PenSquare, Building2, ChevronRight, Menu, Sun, Moon } from 'lucide-react'
 import { Button } from '../button'
@@ -68,9 +69,14 @@ export const Navbar: React.FC<NavbarProps> = ({
           href="/"
           className="font-semibold text-[20px] tracking-tight text-text-primary flex items-center gap-xs"
         >
-          <span className="h-7 w-7 rounded-soft bg-brand-primary flex items-center justify-center text-white text-[13px] font-semibold shadow-sm">
-            N
-          </span>
+          <Image
+            src="/logo-mark.png"
+            alt="Nyumbani logo"
+            width={28}
+            height={28}
+            priority
+            className="h-7 w-7 rounded-soft shadow-sm"
+          />
           Nyumbani
         </Link>
 
@@ -266,9 +272,18 @@ export const Footer: React.FC = () => {
     <footer className="w-full bg-bg-secondary border-t border-border-subtle py-xl mt-auto">
       <div className="max-w-6xl mx-auto px-md grid grid-cols-1 md:grid-cols-4 gap-lg text-text-muted text-[14px]">
         <div className="flex flex-col gap-sm pr-md">
-          <span className="font-semibold text-[16px] text-text-primary tracking-tight">
-            Nyumbani
-          </span>
+          <Link href="/" className="flex items-center gap-xs">
+            <Image
+              src="/logo-mark.png"
+              alt="Nyumbani logo"
+              width={28}
+              height={28}
+              className="h-7 w-7 rounded-soft"
+            />
+            <span className="font-semibold text-[16px] text-text-primary tracking-tight">
+              Nyumbani
+            </span>
+          </Link>
           <p className="leading-relaxed">
             Kenya&apos;s rental intelligence platform, bringing trust and transparency to home
             hunting.

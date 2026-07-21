@@ -399,6 +399,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                     rentMax={prop.rentMax}
                     houseType={prop.houseType}
                     healthScore={prop.healthScore}
+                    imageUrl={prop.images?.[0]}
                     isVerified={prop.isVerified}
                     waterRating={
                       prop.waterRating === 'Excellent' ? 5 : prop.waterRating === 'Good' ? 4 : 3
