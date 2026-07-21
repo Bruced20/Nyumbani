@@ -140,7 +140,9 @@ export const PropertyService = {
 
       const fetchFeatured = unstable_cache(
         async () => {
-          const rows = await PropertyRepository.findFeatured()
+          // Pull a wider pool so the homepage hero (top 5) and the
+          // "Recently reviewed" grid show distinct listings, not the same few.
+          const rows = await PropertyRepository.findFeatured(9)
           const propertiesList: Property[] = []
 
           for (const row of rows) {

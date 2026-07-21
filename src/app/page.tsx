@@ -185,23 +185,28 @@ export default async function Home() {
             </div>
             <Grid cols={3} gap="md">
               {featuredProperties.map((prop) => (
-                <PropertyCard
-                  key={prop.id}
-                  name={prop.name}
-                  neighborhood={prop.neighborhood}
-                  rentMin={prop.rentMin}
-                  rentMax={prop.rentMax}
-                  houseType={prop.houseType}
-                  healthScore={prop.healthScore}
-                  isVerified={prop.isVerified}
-                  imageUrl={prop.images?.[0]}
-                  waterRating={
-                    prop.waterRating === 'Excellent' ? 5 : prop.waterRating === 'Good' ? 4 : 3
-                  }
-                  securityRating={
-                    prop.securityRating === 'Excellent' ? 5 : prop.securityRating === 'Good' ? 4 : 3
-                  }
-                />
+                <Link href={`/property/${prop.slug}`} key={prop.id} className="block group">
+                  <PropertyCard
+                    name={prop.name}
+                    neighborhood={prop.neighborhood}
+                    rentMin={prop.rentMin}
+                    rentMax={prop.rentMax}
+                    houseType={prop.houseType}
+                    healthScore={prop.healthScore}
+                    isVerified={prop.isVerified}
+                    imageUrl={prop.images?.[0]}
+                    waterRating={
+                      prop.waterRating === 'Excellent' ? 5 : prop.waterRating === 'Good' ? 4 : 3
+                    }
+                    securityRating={
+                      prop.securityRating === 'Excellent'
+                        ? 5
+                        : prop.securityRating === 'Good'
+                          ? 4
+                          : 3
+                    }
+                  />
+                </Link>
               ))}
             </Grid>
           </Container>

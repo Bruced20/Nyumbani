@@ -4,7 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
-import { Search, PenSquare, Building2, ChevronRight, Menu, Sun, Moon } from 'lucide-react'
+import { Home, Search, PenSquare, Building2, ChevronRight, Menu, Sun, Moon } from 'lucide-react'
 import { Button } from '../button'
 
 interface NavbarProps {
@@ -82,6 +82,9 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Desktop Navigation Links */}
         <nav className="hidden md:flex items-center gap-lg text-[15px] font-medium text-text-muted">
+          <Link href="/" className="hover:text-text-primary transition-colors py-xxs">
+            Home
+          </Link>
           <Link href="/search" className="hover:text-text-primary transition-colors py-xxs">
             Find Rentals
           </Link>
@@ -158,6 +161,17 @@ interface MobileBottomNavProps {
 export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ currentPath }) => {
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-bg-secondary/95 border-t border-border-subtle h-[64px] flex items-center justify-around pb-safe backdrop-blur-md">
+      <Link
+        href="/"
+        className={cn(
+          'flex flex-col items-center justify-center gap-[4px] text-[11px] font-medium text-text-muted select-none w-16 h-full transition-colors',
+          currentPath === '/' && 'text-brand-primary font-semibold'
+        )}
+      >
+        <Home size={18} className={currentPath === '/' ? 'stroke-[2px]' : ''} />
+        Home
+      </Link>
+
       <Link
         href="/search"
         className={cn(
