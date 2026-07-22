@@ -313,7 +313,7 @@ export function PropertyForm() {
       {errorMessage && <p className="text-[13px] font-medium text-status-error">{errorMessage}</p>}
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-sm border-t border-border-subtle pt-sm">
-        <p className="text-[12px] text-text-muted sm:max-w-sm">
+        <p className="text-[12px] text-text-muted sm:max-w-[24rem]">
           New listings appear as community submitted. The owner can claim and verify the building
           later, and reviews always stay with the property.
         </p>

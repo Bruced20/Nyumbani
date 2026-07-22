@@ -17,7 +17,7 @@ export default function NotFound() {
       <Navbar />
 
       <main className="flex-1 flex items-center justify-center py-xl">
-        <Container className="max-w-md">
+        <Container className="max-w-[28rem]">
           <Section className="p-lg bg-bg-secondary border border-border-subtle rounded-symmetric shadow-sm text-center">
             <Stack gap="sm" className="items-center">
               <div className="h-12 w-12 bg-brand-primary/10 text-brand-primary rounded-pill flex items-center justify-center mb-xxs">

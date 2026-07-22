@@ -4,8 +4,20 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
-import { Home, Search, PenSquare, Building2, ChevronRight, Menu, Sun, Moon } from 'lucide-react'
+import {
+  Home,
+  Search,
+  PenSquare,
+  Building2,
+  ChevronRight,
+  Menu,
+  X,
+  Sun,
+  Moon,
+  Info,
+} from 'lucide-react'
 import { Button } from '../button'
+import { Drawer } from '../overlay'
 
 interface NavbarProps {
   className?: string
@@ -56,6 +68,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   resolvedTheme,
   onToggleTheme,
 }) => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
+
   return (
     <header
       className={cn(
@@ -81,7 +95,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </Link>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-lg text-[15px] font-medium text-text-muted">
+        <nav className="hidden md:flex items-center gap-sm lg:gap-lg text-[15px] font-medium text-text-muted">
           <Link href="/" className="hover:text-text-primary transition-colors py-xxs">
             Home
           </Link>
@@ -142,11 +156,86 @@ export const Navbar: React.FC<NavbarProps> = ({
           )}
 
           {/* Mobile Menu Icon */}
-          <button className="md:hidden text-text-primary hover:text-text-muted cursor-pointer p-xxs">
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen(true)}
+            aria-label="Open menu"
+            aria-haspopup="dialog"
+            aria-expanded={isMobileMenuOpen}
+            className="md:hidden relative z-10 text-text-primary hover:text-text-muted cursor-pointer p-xxs"
+          >
             <Menu size={22} />
           </button>
         </div>
       </div>
+
+      {/* Mobile Navigation Drawer — surfaces links (Add a Property, Landlord
+          Hub, Our Method) that the bottom tab bar doesn't have room for. */}
+      <Drawer
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
+        title="Menu"
+        position="right"
+      >
+        <nav className="flex flex-col gap-xxs -mx-xs">
+          {[
+            { href: '/', label: 'Home', icon: <Home size={18} /> },
+            { href: '/search', label: 'Find Rentals', icon: <Search size={18} /> },
+            { href: '/review/new', label: 'Write a Review', icon: <PenSquare size={18} /> },
+            { href: '/properties/new', label: 'Add a Property', icon: <PenSquare size={18} /> },
+            { href: '/owners', label: 'Landlord Hub', icon: <Building2 size={18} /> },
+            { href: '/about', label: 'Our Method', icon: <Info size={18} /> },
+          ].map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex items-center gap-sm px-xs py-sm rounded-soft text-[15px] font-medium text-text-primary hover:bg-bg-primary transition-colors"
+            >
+              <span className="text-text-muted">{item.icon}</span>
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="border-t border-border-subtle mt-sm pt-sm flex flex-col gap-sm">
+          {resolvedTheme && onToggleTheme && (
+            <button
+              type="button"
+              onClick={onToggleTheme}
+              className="flex items-center gap-sm px-xs py-sm rounded-soft text-[15px] font-medium text-text-primary hover:bg-bg-primary transition-colors cursor-pointer"
+            >
+              {resolvedTheme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+              {resolvedTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            </button>
+          )}
+
+          {isAuthenticated ? (
+            <button
+              type="button"
+              onClick={() => {
+                setIsMobileMenuOpen(false)
+                onSignOut?.()
+              }}
+              className="flex items-center gap-sm px-xs py-sm rounded-soft text-[15px] font-medium text-status-error hover:bg-bg-primary transition-colors cursor-pointer"
+            >
+              <X size={18} />
+              Sign Out
+            </button>
+          ) : (
+            <Button
+              onClick={() => {
+                setIsMobileMenuOpen(false)
+                onSignOpen?.()
+              }}
+              variant="primary"
+              className="w-full"
+            >
+              Sign In
+            </Button>
+          )}
+        </div>
+      </Drawer>
     </header>
   )
 }

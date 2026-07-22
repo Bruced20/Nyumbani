@@ -248,7 +248,7 @@ export default async function Home() {
         {/* 5. How Nyumbani works — context, recessive */}
         <Section className="py-lg bg-bg-primary">
           <Container className="flex flex-col gap-md">
-            <div className="flex flex-col gap-xxs max-w-xl">
+            <div className="flex flex-col gap-xxs max-w-[36rem]">
               <H2>How Nyumbani works</H2>
               <Body className="text-text-muted text-[15px] leading-relaxed">
                 Built on transparency, anonymity, and manual verification to guarantee renter trust.

@@ -23,7 +23,7 @@ export default function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
 
   return (
     <div className="flex-1 flex items-center justify-center py-xl bg-bg-primary min-h-[500px]">
-      <Container className="max-w-md">
+      <Container className="max-w-[28rem]">
         <Section className="p-lg bg-bg-secondary border border-border-subtle rounded-symmetric shadow-sm text-center">
           <Stack gap="sm" className="items-center">
             <div className="h-12 w-12 bg-status-error/10 text-status-error rounded-pill flex items-center justify-center mb-xxs">

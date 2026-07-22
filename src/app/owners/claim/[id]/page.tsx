@@ -30,7 +30,7 @@ export default async function ClaimListingPage({ params }: ClaimListingPageProps
       <Navbar />
 
       <main className="flex-1 py-xl flex flex-col justify-center">
-        <Container className="max-w-xl">
+        <Container className="max-w-[36rem]">
           <div className="border border-border-subtle p-lg rounded-symmetric bg-bg-secondary shadow-md">
             <header className="mb-sm border-b border-border-subtle pb-xs">
               <h1 className="text-subtitle font-semibold">Claim Ownership</h1>

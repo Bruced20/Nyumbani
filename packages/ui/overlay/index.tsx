@@ -155,6 +155,9 @@ export const Drawer: React.FC<DrawerProps> = ({
             initial={shouldReduceMotion ? { opacity: 0 } : 'initial'}
             animate={shouldReduceMotion ? { opacity: 1 } : 'animate'}
             exit={shouldReduceMotion ? { opacity: 0 } : 'exit'}
+            role="dialog"
+            aria-modal="true"
+            aria-label={title}
             tabIndex={-1}
             className={cn(
               'bg-bg-secondary border-l border-border-subtle h-full w-80 max-w-full p-sm relative shadow-2xl z-10 flex flex-col outline-none',
@@ -165,6 +168,7 @@ export const Drawer: React.FC<DrawerProps> = ({
               <h3 className="font-semibold text-subtitle text-text-primary">{title}</h3>
               <button
                 onClick={onClose}
+                aria-label="Close"
                 className="text-text-muted hover:text-text-primary transition-colors cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center"
               >
                 <X size={18} />
@@ -224,7 +228,10 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({ isOpen, onClose, title
             initial={shouldReduceMotion ? { opacity: 0 } : 'initial'}
             animate={shouldReduceMotion ? { opacity: 1 } : 'animate'}
             exit={shouldReduceMotion ? { opacity: 0 } : 'exit'}
-            className="bg-bg-secondary border-t border-border-subtle rounded-t-symmetric w-full max-w-lg p-sm relative shadow-2xl z-10 pb-[calc(env(safe-area-inset-bottom)+16px)]"
+            role="dialog"
+            aria-modal="true"
+            aria-label={title}
+            className="bg-bg-secondary border-t border-border-subtle rounded-t-symmetric w-full max-w-[32rem] p-sm relative shadow-2xl z-10 pb-[calc(env(safe-area-inset-bottom)+16px)]"
           >
             {/* Grab Handle Bar */}
             <div className="w-12 h-1 bg-border-subtle rounded-pill mx-auto mb-sm" />
@@ -233,6 +240,7 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({ isOpen, onClose, title
               <h3 className="font-semibold text-subtitle text-text-primary">{title}</h3>
               <button
                 onClick={onClose}
+                aria-label="Close"
                 className="text-text-muted hover:text-text-primary transition-colors cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center"
               >
                 <X size={18} />

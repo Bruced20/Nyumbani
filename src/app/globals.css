@@ -68,7 +68,16 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
 
-  /* Spacing Grid (Refined for v2 spacing rhythm) */
+  /* Spacing Grid (Refined for v2 spacing rhythm)
+     WARNING: Tailwind v4 resolves ANY keyword-based sizing utility (max-w-*,
+     min-w-*, max-h-*, min-h-*, w-*, h-*) against this same --spacing-<name>
+     namespace before falling back to its built-in --container-<name> scale.
+     Because xs/sm/md/lg/xl are defined here for padding/gap rhythm, they also
+     silently shadow Tailwind's default max-w-xs..xl (320-576px) down to
+     these tiny values. Do NOT use max-w-{xs,sm,md,lg,xl} (or min-w-/max-h-/
+     min-h- with those keywords) anywhere in the app — use an explicit
+     max-w-[Nrem] value instead. See packages/ui/feedback, overlay, and the
+     error/not-found pages for the corrected pattern. */
   --spacing-xxs: 4px;
   --spacing-xs: 8px;
   --spacing-sm: 16px;

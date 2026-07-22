@@ -65,10 +65,10 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   icon,
 }) => {
   return (
-    <div className="flex flex-col items-center justify-center text-center p-lg border border-dashed border-border-subtle rounded-symmetric bg-bg-secondary max-w-md mx-auto">
+    <div className="flex flex-col items-center justify-center text-center p-lg border border-dashed border-border-subtle rounded-symmetric bg-bg-secondary max-w-[28rem] mx-auto">
       {icon && <div className="mb-sm text-text-muted">{icon}</div>}
       <h3 className="font-semibold text-[16px] mb-xxs text-text-primary">{title}</h3>
-      <p className="text-[14px] text-text-muted mb-sm max-w-xs">{description}</p>
+      <p className="text-[14px] text-text-muted mb-sm max-w-[20rem]">{description}</p>
       {actionLabel && onActionClick && (
         <button
           onClick={onActionClick}
@@ -91,7 +91,7 @@ interface ErrorStateProps {
  */
 export const ErrorState: React.FC<ErrorStateProps> = ({ message, onRetry }) => {
   return (
-    <div className="flex flex-col items-center justify-center text-center p-sm border border-status-error/20 rounded-symmetric bg-status-error/5 max-w-sm mx-auto">
+    <div className="flex flex-col items-center justify-center text-center p-sm border border-status-error/20 rounded-symmetric bg-status-error/5 max-w-[24rem] mx-auto">
       <AlertCircle className="text-status-error mb-xxs" size={24} />
       <h4 className="font-semibold text-[14px] text-status-error mb-xxs">System Exception</h4>
       <p className="text-[13px] text-text-muted mb-xs">{message}</p>
@@ -203,7 +203,7 @@ export const Toast: React.FC<ToastProps> = ({
           initial={shouldReduceMotion ? { opacity: 0 } : 'initial'}
           animate={shouldReduceMotion ? { opacity: 1 } : 'animate'}
           exit={shouldReduceMotion ? { opacity: 0 } : 'exit'}
-          className="fixed bottom-sm right-sm z-50 flex max-w-sm gap-xs p-sm bg-text-primary text-bg-primary rounded-symmetric shadow-lg border border-border-subtle"
+          className="fixed bottom-sm right-sm z-50 flex max-w-[24rem] gap-xs p-sm bg-text-primary text-bg-primary rounded-symmetric shadow-lg border border-border-subtle"
         >
           <ToastAccent variant={variant} />
           <div className="flex-1 flex flex-col gap-xxs">

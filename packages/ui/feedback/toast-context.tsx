@@ -76,7 +76,7 @@ const ToastViewport: React.FC<{ toasts: ToastItem[]; onDismiss: (id: number) => 
   const shouldReduceMotion = useReducedMotion()
 
   return (
-    <div className="fixed bottom-sm right-sm z-[60] flex flex-col gap-xs w-full max-w-sm px-sm sm:px-0 pointer-events-none">
+    <div className="fixed bottom-sm right-sm z-[60] flex flex-col gap-xs w-full max-w-[24rem] px-sm sm:px-0 pointer-events-none">
       <AnimatePresence initial={false}>
         {toasts.map((t) => (
           <ToastRow

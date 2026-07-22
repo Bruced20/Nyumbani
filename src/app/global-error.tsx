@@ -21,7 +21,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
   return (
     <html lang="en">
       <body className="bg-bg-primary min-h-screen flex items-center justify-center font-sans antialiased p-sm">
-        <div className="max-w-md w-full p-lg bg-bg-secondary border border-border-subtle rounded-symmetric shadow-sm text-center flex flex-col gap-sm items-center">
+        <div className="max-w-[28rem] w-full p-lg bg-bg-secondary border border-border-subtle rounded-symmetric shadow-sm text-center flex flex-col gap-sm items-center">
           <div className="h-12 w-12 bg-status-error/10 text-status-error rounded-pill flex items-center justify-center mb-xxs">
             <AlertOctagon size={24} />
           </div>

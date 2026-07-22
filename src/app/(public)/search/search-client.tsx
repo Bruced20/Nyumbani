@@ -244,7 +244,7 @@ export function SearchPageContentClient({
               </AnimatePresence>
 
               {/* Sorting bar — hairline separator, no icon (label carries intent) */}
-              <div className="flex justify-between items-center pb-xs border-b border-border-subtle">
+              <div className="flex flex-wrap justify-between items-center gap-xs pb-xs border-b border-border-subtle">
                 <span className="text-[14px] font-medium text-text-muted">
                   {isPending ? 'Searching...' : `${properties.length} homes`}
                 </span>
