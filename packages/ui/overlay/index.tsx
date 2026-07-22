@@ -92,6 +92,8 @@ interface DrawerProps {
   title: string
   children: React.ReactNode
   position?: 'left' | 'right'
+  /** Custom header content replacing the default title bar. */
+  header?: React.ReactNode
 }
 
 /**
@@ -104,6 +106,7 @@ export const Drawer: React.FC<DrawerProps> = ({
   title,
   children,
   position = 'right',
+  header,
 }) => {
   const drawerRef = React.useRef<HTMLDivElement>(null)
   const shouldReduceMotion = useReducedMotion()
@@ -155,6 +158,14 @@ export const Drawer: React.FC<DrawerProps> = ({
             initial={shouldReduceMotion ? { opacity: 0 } : 'initial'}
             animate={shouldReduceMotion ? { opacity: 1 } : 'animate'}
             exit={shouldReduceMotion ? { opacity: 0 } : 'exit'}
+            drag={position === 'right' ? 'x' : false}
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={{ left: 0, right: 0.4 }}
+            onDragEnd={(_, info) => {
+              if (info.offset.x > 80 || info.velocity.x > 400) {
+                onClose()
+              }
+            }}
             role="dialog"
             aria-modal="true"
             aria-label={title}
@@ -164,16 +175,18 @@ export const Drawer: React.FC<DrawerProps> = ({
               position === 'left' && 'left-0 right-auto border-r border-l-0'
             )}
           >
-            <header className="flex justify-between items-center mb-md border-b border-border-subtle pb-xs">
-              <h3 className="font-semibold text-subtitle text-text-primary">{title}</h3>
-              <button
-                onClick={onClose}
-                aria-label="Close"
-                className="text-text-muted hover:text-text-primary transition-colors cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center"
-              >
-                <X size={18} />
-              </button>
-            </header>
+            {header ?? (
+              <header className="flex justify-between items-center mb-md border-b border-border-subtle pb-xs">
+                <h3 className="font-semibold text-subtitle text-text-primary">{title}</h3>
+                <button
+                  onClick={onClose}
+                  aria-label="Close"
+                  className="text-text-muted hover:text-text-primary transition-colors cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center"
+                >
+                  <X size={18} />
+                </button>
+              </header>
+            )}
             <div className="flex-1 overflow-y-auto text-[14px] text-text-muted leading-relaxed">
               {children}
             </div>

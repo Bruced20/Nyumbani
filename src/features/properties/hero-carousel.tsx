@@ -71,11 +71,13 @@ export function HeroCarousel({ slides, interval = 6000 }: HeroCarouselProps) {
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
+      onTouchStart={() => setPaused(true)}
+      onTouchEnd={() => setPaused(false)}
       role="region"
       aria-roledescription="carousel"
       aria-label="Highly rated homes"
     >
-      <div className="relative aspect-[16/10] sm:aspect-[21/9] w-full">
+      <div className="relative aspect-[20/9] sm:aspect-[32/9] w-full">
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.div
             key={active.slug}

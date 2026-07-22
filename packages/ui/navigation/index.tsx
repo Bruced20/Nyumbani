@@ -16,9 +16,14 @@ import {
   X,
   Sun,
   Moon,
+  Laptop,
+  Map,
+  User,
 } from 'lucide-react'
 import { Button } from '../button'
-import { Drawer } from '../overlay'
+import { Drawer, Dropdown } from '../overlay'
+
+type ThemeChoice = 'light' | 'dark' | 'system'
 
 interface NavbarProps {
   className?: string
@@ -27,31 +32,49 @@ interface NavbarProps {
   avatarUrl?: string
   onSignOut?: () => void
   onSignOpen?: () => void
-  /** Currently applied theme; when provided, a theme toggle renders. */
-  resolvedTheme?: 'light' | 'dark'
-  onToggleTheme?: () => void
+  /** Stored preference; when provided alongside onSetTheme, an appearance control renders. */
+  theme?: ThemeChoice
+  onSetTheme?: (theme: ThemeChoice) => void
 }
 
 /**
- * Presentational theme toggle. Wiring lives in the app (navbar-wrapper).
+ * Presentational Light / Dark / System control. Wiring lives in the app (navbar-wrapper).
  */
-export const ThemeToggle: React.FC<{
-  resolvedTheme: 'light' | 'dark'
-  onToggle: () => void
+export const AppearanceControl: React.FC<{
+  theme: ThemeChoice
+  onSetTheme: (theme: ThemeChoice) => void
   className?: string
-}> = ({ resolvedTheme, onToggle, className }) => {
-  const isDark = resolvedTheme === 'dark'
+}> = ({ theme, onSetTheme, className }) => {
+  const options: { value: ThemeChoice; label: string; icon: React.ReactNode }[] = [
+    { value: 'light', label: 'Light', icon: <Sun size={16} /> },
+    { value: 'dark', label: 'Dark', icon: <Moon size={16} /> },
+    { value: 'system', label: 'System', icon: <Laptop size={16} /> },
+  ]
   return (
-    <button
-      onClick={onToggle}
-      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+    <div
       className={cn(
-        'h-9 w-9 rounded-pill flex items-center justify-center text-text-muted hover:text-text-primary hover:bg-bg-secondary border border-transparent hover:border-border-subtle transition-colors cursor-pointer',
+        'flex items-center gap-xxs p-[4px] bg-bg-primary rounded-soft border border-border-subtle',
         className
       )}
     >
-      {isDark ? <Sun size={18} /> : <Moon size={18} />}
-    </button>
+      {options.map((opt) => (
+        <button
+          key={opt.value}
+          type="button"
+          onClick={() => onSetTheme(opt.value)}
+          aria-pressed={theme === opt.value}
+          className={cn(
+            'flex-1 flex items-center justify-center gap-xxs px-xs py-[8px] rounded-soft text-[13px] font-medium transition-colors cursor-pointer',
+            theme === opt.value
+              ? 'bg-bg-secondary text-text-primary shadow-sm'
+              : 'text-text-muted hover:text-text-primary'
+          )}
+        >
+          {opt.icon}
+          {opt.label}
+        </button>
+      ))}
+    </div>
   )
 }
 
@@ -59,6 +82,61 @@ export const ThemeToggle: React.FC<{
  * Main Application Navigation Header.
  * Refactored for Sprint D2: logo scale, link weights, and standard Button components.
  */
+const MAIN_NAV_ITEMS = [
+  { href: '/', label: 'Home', subtitle: 'Back to the homepage', icon: <Home size={20} /> },
+  {
+    href: '/search',
+    label: 'Find Rentals',
+    subtitle: 'Browse homes across Kenya',
+    icon: <Search size={20} />,
+  },
+  {
+    href: '/saved',
+    label: 'Saved Homes',
+    subtitle: 'Homes you’ve bookmarked',
+    icon: <Heart size={20} />,
+  },
+  {
+    href: '/review/new',
+    label: 'Write a Review',
+    subtitle: 'Share your tenant experience',
+    icon: <PenSquare size={20} />,
+  },
+  {
+    href: '/properties/new',
+    label: 'Add a Property',
+    subtitle: 'List a home for rent',
+    icon: <Plus size={20} />,
+  },
+  {
+    href: '/owners',
+    label: 'Landlord Hub',
+    subtitle: 'Tools for property owners',
+    icon: <Building2 size={20} />,
+  },
+  {
+    href: '/about',
+    label: 'About',
+    subtitle: 'How Nyumbani works',
+    icon: <ChevronRight size={20} />,
+  },
+  {
+    href: '/search',
+    label: 'Map View',
+    subtitle: 'See listings on the map',
+    icon: <Map size={20} />,
+  },
+]
+
+const QUICK_ACTIONS = [
+  { href: '/search?recent=true', label: 'Recently Added' },
+  { href: '/search?sort=health', label: 'Top Rated' },
+  { href: '/search?verified=true', label: 'Verified' },
+  { href: '/search?sort=rent-low', label: 'Cheap Rent' },
+  { href: '/search?houseType=Bedsitter', label: 'Bedsitters' },
+  { href: '/search?houseType=Studio', label: 'Studios' },
+]
+
 export const Navbar: React.FC<NavbarProps> = ({
   className,
   isAuthenticated = false,
@@ -66,10 +144,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   avatarUrl,
   onSignOut,
   onSignOpen,
-  resolvedTheme,
-  onToggleTheme,
+  theme,
+  onSetTheme,
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = React.useState(false)
+
+  const closeMobileMenu = () => setIsMobileMenuOpen(false)
 
   return (
     <header
@@ -82,7 +163,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Brand Logo */}
         <Link
           href="/"
-          className="font-semibold text-[20px] tracking-tight text-text-primary flex items-center gap-xs"
+          className="font-semibold text-[20px] tracking-tight text-text-primary flex items-center gap-[14px]"
         >
           <Image
             src="/logo-mark.png"
@@ -97,64 +178,117 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Desktop Navigation Links */}
         <nav className="hidden md:flex items-center gap-sm lg:gap-lg text-[15px] font-medium text-text-muted">
-          <Link href="/" className="hover:text-text-primary transition-colors py-xxs">
-            Home
-          </Link>
           <Link href="/search" className="hover:text-text-primary transition-colors py-xxs">
             Find Rentals
           </Link>
           <Link href="/review/new" className="hover:text-text-primary transition-colors py-xxs">
             Write a Review
           </Link>
-          <Link href="/properties/new" className="hover:text-text-primary transition-colors py-xxs">
-            Add a Property
-          </Link>
           <Link href="/owners" className="hover:text-text-primary transition-colors py-xxs">
             Landlord Hub
           </Link>
           <Link href="/about" className="hover:text-text-primary transition-colors py-xxs">
-            Our Method
+            About
           </Link>
         </nav>
 
         {/* User Session CTA */}
         <div className="flex items-center gap-sm">
-          {resolvedTheme && onToggleTheme && (
-            <ThemeToggle resolvedTheme={resolvedTheme} onToggle={onToggleTheme} />
-          )}
-          {isAuthenticated ? (
-            <div className="flex items-center gap-sm">
-              <span className="hidden sm:inline-block text-[14px] text-text-muted font-medium">
-                Hello, {userName}
-              </span>
-              {avatarUrl ? (
-                /* eslint-disable-next-line @next/next/no-img-element */
-                <img
-                  src={avatarUrl}
-                  alt="user avatar"
-                  className="h-9 w-9 rounded-pill object-cover border border-border-subtle"
-                />
-              ) : (
-                <div className="h-9 w-9 rounded-pill bg-bg-secondary border border-border-subtle flex items-center justify-center font-semibold text-[13px] text-brand-primary">
-                  {userName?.[0]}
-                </div>
-              )}
-              <button
-                onClick={onSignOut}
-                className="text-[14px] font-medium text-text-muted hover:text-text-primary cursor-pointer transition-colors"
-              >
-                Sign Out
-              </button>
-            </div>
-          ) : (
-            <Button
-              onClick={onSignOpen}
-              variant="primary"
-              className="h-9 px-sm text-[14px] font-semibold rounded-soft py-[8px]"
+          <div className="hidden md:block">
+            <Dropdown
+              isOpen={isProfileMenuOpen}
+              setIsOpen={setIsProfileMenuOpen}
+              align="right"
+              trigger={
+                <button
+                  type="button"
+                  aria-label="Open account menu"
+                  className="h-9 w-9 rounded-pill bg-bg-secondary border border-border-subtle flex items-center justify-center text-text-muted hover:text-text-primary transition-colors cursor-pointer overflow-hidden"
+                >
+                  {isAuthenticated ? (
+                    avatarUrl ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img
+                        src={avatarUrl}
+                        alt="user avatar"
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <span className="font-semibold text-[13px] text-brand-primary">
+                        {userName?.[0]}
+                      </span>
+                    )
+                  ) : (
+                    <User size={18} />
+                  )}
+                </button>
+              }
             >
-              Sign In
-            </Button>
-          )}
+              <div className="w-[240px] p-xs flex flex-col gap-xxs">
+                {isAuthenticated && (
+                  <div className="px-xs py-xxs text-[13px] font-medium text-text-primary truncate">
+                    Hello, {userName}
+                  </div>
+                )}
+                <Link
+                  href="/"
+                  onClick={() => setIsProfileMenuOpen(false)}
+                  className="flex items-center gap-sm px-xs py-[10px] rounded-soft text-[14px] font-medium text-text-primary hover:bg-bg-primary transition-colors"
+                >
+                  <Home size={16} className="text-text-muted" />
+                  Home
+                </Link>
+                <Link
+                  href="/saved"
+                  onClick={() => setIsProfileMenuOpen(false)}
+                  className="flex items-center gap-sm px-xs py-[10px] rounded-soft text-[14px] font-medium text-text-primary hover:bg-bg-primary transition-colors"
+                >
+                  <Heart size={16} className="text-text-muted" />
+                  Saved Homes
+                </Link>
+                <Link
+                  href="/properties/new"
+                  onClick={() => setIsProfileMenuOpen(false)}
+                  className="flex items-center gap-sm px-xs py-[10px] rounded-soft text-[14px] font-medium text-text-primary hover:bg-bg-primary transition-colors"
+                >
+                  <Plus size={16} className="text-text-muted" />
+                  Add a Property
+                </Link>
+
+                {theme && onSetTheme && (
+                  <div className="pt-xxs">
+                    <AppearanceControl theme={theme} onSetTheme={onSetTheme} />
+                  </div>
+                )}
+
+                <div className="border-t border-border-subtle mt-xxs pt-xxs">
+                  {isAuthenticated ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsProfileMenuOpen(false)
+                        onSignOut?.()
+                      }}
+                      className="w-full flex items-center gap-sm px-xs py-[10px] rounded-soft text-[14px] font-medium text-status-error hover:bg-bg-primary transition-colors cursor-pointer"
+                    >
+                      Sign Out
+                    </button>
+                  ) : (
+                    <Button
+                      onClick={() => {
+                        setIsProfileMenuOpen(false)
+                        onSignOpen?.()
+                      }}
+                      variant="primary"
+                      className="w-full"
+                    >
+                      Sign In
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </Dropdown>
+          </div>
 
           {/* Mobile Menu Icon */}
           <button
@@ -170,81 +304,132 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      {/* Mobile Navigation Drawer — surfaces links (Add a Property, Landlord
-          Hub, Our Method) that the bottom tab bar doesn't have room for. */}
+      {/* Mobile Navigation Drawer — full product nav: header, sectioned links
+          with subtitles, quick-action filter chips, account, appearance, footer. */}
       <Drawer
         isOpen={isMobileMenuOpen}
-        onClose={() => setIsMobileMenuOpen(false)}
+        onClose={closeMobileMenu}
         title="Menu"
         position="right"
-      >
-        <nav className="flex flex-col gap-xxs -mx-xs">
-          {[
-            { href: '/', label: 'Home', icon: <Home size={18} /> },
-            { href: '/search', label: 'Find Rentals', icon: <Search size={18} /> },
-            { href: '/saved', label: 'Saved', icon: <Heart size={18} /> },
-            { href: '/review/new', label: 'Write a Review', icon: <PenSquare size={18} /> },
-            { href: '/properties/new', label: 'Add a Property', icon: <Plus size={18} /> },
-            { href: '/owners', label: 'Landlord Hub', icon: <Building2 size={18} /> },
-          ].map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center gap-sm px-xs py-[14px] rounded-soft text-[15px] font-medium text-text-primary hover:bg-bg-primary active:bg-bg-primary transition-colors"
+        header={
+          <header className="flex items-start justify-between mb-sm border-b border-border-subtle pb-sm">
+            <Link href="/" onClick={closeMobileMenu} className="flex items-center gap-[14px]">
+              <Image
+                src="/logo-mark.png"
+                alt="Nyumbani logo"
+                width={32}
+                height={32}
+                className="h-8 w-8 rounded-soft shadow-sm"
+              />
+              <span className="flex flex-col leading-tight">
+                <span className="font-semibold text-[18px] tracking-tight text-text-primary">
+                  Nyumbani
+                </span>
+                <span className="text-[12px] text-text-muted">Trusted Home Discovery</span>
+              </span>
+            </Link>
+            <button
+              onClick={closeMobileMenu}
+              aria-label="Close"
+              className="text-text-muted hover:text-text-primary transition-colors cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center -mr-xs -mt-xxs"
             >
-              <span className="text-text-muted">{item.icon}</span>
-              {item.label}
+              <X size={20} />
+            </button>
+          </header>
+        }
+      >
+        <nav className="flex flex-col -mx-xs">
+          {MAIN_NAV_ITEMS.map((item, idx) => (
+            <Link
+              key={`${item.href}-${idx}`}
+              href={item.href}
+              onClick={closeMobileMenu}
+              className="flex items-center gap-sm px-xs min-h-[52px] py-xxs rounded-soft text-[15px] font-medium text-text-primary hover:bg-bg-primary active:bg-bg-primary transition-colors"
+            >
+              <span className="text-text-muted shrink-0">{item.icon}</span>
+              <span className="flex flex-col leading-tight">
+                {item.label}
+                <span className="text-[12px] font-normal text-text-muted">{item.subtitle}</span>
+              </span>
             </Link>
           ))}
         </nav>
 
-        <div className="border-t border-border-subtle mt-sm pt-sm flex flex-col gap-xxs">
-          {resolvedTheme && onToggleTheme && (
-            <button
-              type="button"
-              onClick={onToggleTheme}
-              className="flex items-center gap-sm px-xs py-[14px] rounded-soft text-[15px] font-medium text-text-primary hover:bg-bg-primary transition-colors cursor-pointer"
-            >
-              {resolvedTheme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-              {resolvedTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-            </button>
-          )}
+        <div className="border-t border-border-subtle mt-sm pt-sm">
+          <p className="px-xs pb-xs text-[12px] font-semibold text-text-muted uppercase tracking-wide">
+            Quick Actions
+          </p>
+          <div className="flex flex-wrap gap-xs px-xs">
+            {QUICK_ACTIONS.map((chip) => (
+              <Link
+                key={chip.href}
+                href={chip.href}
+                onClick={closeMobileMenu}
+                className="px-sm py-xxs border border-border-subtle rounded-pill text-[13px] font-medium text-text-primary hover:border-brand-primary hover:text-brand-primary transition-colors"
+              >
+                {chip.label}
+              </Link>
+            ))}
+          </div>
+        </div>
 
+        <div className="border-t border-border-subtle mt-sm pt-sm flex flex-col gap-xxs">
           {isAuthenticated ? (
-            <button
-              type="button"
-              onClick={() => {
-                setIsMobileMenuOpen(false)
-                onSignOut?.()
-              }}
-              className="flex items-center gap-sm px-xs py-[14px] rounded-soft text-[15px] font-medium text-status-error hover:bg-bg-primary transition-colors cursor-pointer"
-            >
-              <X size={18} />
-              Sign Out
-            </button>
+            <>
+              <Link
+                href="/saved"
+                onClick={closeMobileMenu}
+                className="flex items-center gap-sm px-xs min-h-[52px] rounded-soft text-[15px] font-medium text-text-primary hover:bg-bg-primary transition-colors"
+              >
+                <Heart size={18} className="text-text-muted" />
+                Saved Homes
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  closeMobileMenu()
+                  onSignOut?.()
+                }}
+                className="flex items-center gap-sm px-xs min-h-[52px] rounded-soft text-[15px] font-medium text-status-error hover:bg-bg-primary transition-colors cursor-pointer"
+              >
+                <X size={18} />
+                Sign Out
+              </button>
+            </>
           ) : (
             <Button
               onClick={() => {
-                setIsMobileMenuOpen(false)
+                closeMobileMenu()
                 onSignOpen?.()
               }}
               variant="primary"
               className="w-full mt-xxs"
             >
-              Sign In
+              Continue with Google
             </Button>
           )}
         </div>
 
-        <div className="border-t border-border-subtle mt-sm pt-sm">
+        {theme && onSetTheme && (
+          <div className="border-t border-border-subtle mt-sm pt-sm">
+            <p className="px-xs pb-xs text-[12px] font-semibold text-text-muted uppercase tracking-wide">
+              Appearance
+            </p>
+            <div className="px-xs">
+              <AppearanceControl theme={theme} onSetTheme={onSetTheme} />
+            </div>
+          </div>
+        )}
+
+        <div className="border-t border-border-subtle mt-sm pt-sm flex items-center justify-between">
           <Link
             href="/about"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="block px-xs py-xs text-[13px] font-medium text-text-muted hover:text-text-primary transition-colors"
+            onClick={closeMobileMenu}
+            className="px-xs py-xs text-[13px] font-medium text-text-muted hover:text-text-primary transition-colors"
           >
             About Nyumbani
           </Link>
+          <span className="px-xs py-xs text-[12px] text-text-muted">v1.0</span>
         </div>
       </Drawer>
     </header>

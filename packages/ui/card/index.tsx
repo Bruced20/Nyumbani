@@ -4,7 +4,7 @@ import React from 'react'
 import Image from 'next/image'
 import { useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { ShieldCheck, Droplet, Lock } from 'lucide-react'
+import { ShieldCheck, Droplet, Lock, Star } from 'lucide-react'
 import { HealthScore, VerifiedResidentBadge } from '../badge'
 
 interface PropertyCardProps {
@@ -104,6 +104,10 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
         {/* Reserve a single line for vectors so cards with and without ratings
             keep identical heights (no layout stretch across the grid). */}
         <div className="flex items-center gap-sm text-[12px] text-text-muted min-h-[18px]">
+          <span className="flex items-center gap-[3px] shrink-0 font-medium text-text-primary">
+            <Star size={12} className="fill-brand-primary text-brand-primary" />
+            {healthScore.toFixed(1)}
+          </span>
           {vectors.map((v, idx) => (
             <span key={idx} className="flex items-center gap-[3px] shrink-0">
               {v.icon}
