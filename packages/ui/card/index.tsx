@@ -4,7 +4,7 @@ import React from 'react'
 import Image from 'next/image'
 import { useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { ShieldCheck } from 'lucide-react'
+import { ShieldCheck, Droplet, Lock } from 'lucide-react'
 import { HealthScore, VerifiedResidentBadge } from '../badge'
 
 interface PropertyCardProps {
@@ -46,10 +46,13 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
   // Only show vectors the caller actually has data for — never default a
   // rating into existence on a trust platform.
   const vectors = [
-    waterRating !== undefined && `Water ${waterRating}/5`,
-    securityRating !== undefined && `Security ${securityRating}/5`,
-    caretakerRating !== undefined && `Caretaker ${caretakerRating}/5`,
-  ].filter(Boolean) as string[]
+    waterRating !== undefined && { icon: <Droplet size={12} />, value: `${waterRating}/5` },
+    securityRating !== undefined && { icon: <Lock size={12} />, value: `${securityRating}/5` },
+    caretakerRating !== undefined && {
+      icon: <ShieldCheck size={12} />,
+      value: `${caretakerRating}/5`,
+    },
+  ].filter(Boolean) as { icon: React.ReactNode; value: string }[]
 
   return (
     <div onClick={onClick} className="group flex flex-col cursor-pointer select-none">
@@ -100,9 +103,14 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
 
         {/* Reserve a single line for vectors so cards with and without ratings
             keep identical heights (no layout stretch across the grid). */}
-        <p className="text-[13px] text-text-muted truncate min-h-[18px]">
-          {vectors.length > 0 ? vectors.join('  ·  ') : ' '}
-        </p>
+        <div className="flex items-center gap-sm text-[12px] text-text-muted min-h-[18px]">
+          {vectors.map((v, idx) => (
+            <span key={idx} className="flex items-center gap-[3px] shrink-0">
+              {v.icon}
+              {v.value}
+            </span>
+          ))}
+        </div>
 
         <p className="text-[15px] font-semibold text-text-primary mt-[2px]">
           {rentMin.toLocaleString()} – {rentMax.toLocaleString()} KES{' '}

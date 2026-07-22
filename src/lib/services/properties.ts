@@ -244,6 +244,22 @@ export const PropertyService = {
   },
 
   /**
+   * Batch-resolve full property details for a set of slugs (e.g. localStorage
+   * saved-properties list). Missing/unknown slugs are silently skipped.
+   */
+  async getBySlugs(slugs: string[]): Promise<Property[]> {
+    const results: Property[] = []
+    for (const slug of slugs) {
+      try {
+        results.push(await this.getPropertyBySlug(slug))
+      } catch {
+        // slug no longer exists — skip it
+      }
+    }
+    return results
+  },
+
+  /**
    * Fetch lightweight listing entries to optimize search/autocomplete dropdowns.
    */
   async getAllPropertiesBrief(): Promise<

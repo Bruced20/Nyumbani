@@ -8,13 +8,14 @@ import {
   Home,
   Search,
   PenSquare,
+  Plus,
+  Heart,
   Building2,
   ChevronRight,
   Menu,
   X,
   Sun,
   Moon,
-  Info,
 } from 'lucide-react'
 import { Button } from '../button'
 import { Drawer } from '../overlay'
@@ -181,16 +182,16 @@ export const Navbar: React.FC<NavbarProps> = ({
           {[
             { href: '/', label: 'Home', icon: <Home size={18} /> },
             { href: '/search', label: 'Find Rentals', icon: <Search size={18} /> },
+            { href: '/saved', label: 'Saved', icon: <Heart size={18} /> },
             { href: '/review/new', label: 'Write a Review', icon: <PenSquare size={18} /> },
-            { href: '/properties/new', label: 'Add a Property', icon: <PenSquare size={18} /> },
+            { href: '/properties/new', label: 'Add a Property', icon: <Plus size={18} /> },
             { href: '/owners', label: 'Landlord Hub', icon: <Building2 size={18} /> },
-            { href: '/about', label: 'Our Method', icon: <Info size={18} /> },
           ].map((item) => (
             <Link
               key={item.href}
               href={item.href}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center gap-sm px-xs py-sm rounded-soft text-[15px] font-medium text-text-primary hover:bg-bg-primary transition-colors"
+              className="flex items-center gap-sm px-xs py-[14px] rounded-soft text-[15px] font-medium text-text-primary hover:bg-bg-primary active:bg-bg-primary transition-colors"
             >
               <span className="text-text-muted">{item.icon}</span>
               {item.label}
@@ -198,12 +199,12 @@ export const Navbar: React.FC<NavbarProps> = ({
           ))}
         </nav>
 
-        <div className="border-t border-border-subtle mt-sm pt-sm flex flex-col gap-sm">
+        <div className="border-t border-border-subtle mt-sm pt-sm flex flex-col gap-xxs">
           {resolvedTheme && onToggleTheme && (
             <button
               type="button"
               onClick={onToggleTheme}
-              className="flex items-center gap-sm px-xs py-sm rounded-soft text-[15px] font-medium text-text-primary hover:bg-bg-primary transition-colors cursor-pointer"
+              className="flex items-center gap-sm px-xs py-[14px] rounded-soft text-[15px] font-medium text-text-primary hover:bg-bg-primary transition-colors cursor-pointer"
             >
               {resolvedTheme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
               {resolvedTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
@@ -217,7 +218,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 setIsMobileMenuOpen(false)
                 onSignOut?.()
               }}
-              className="flex items-center gap-sm px-xs py-sm rounded-soft text-[15px] font-medium text-status-error hover:bg-bg-primary transition-colors cursor-pointer"
+              className="flex items-center gap-sm px-xs py-[14px] rounded-soft text-[15px] font-medium text-status-error hover:bg-bg-primary transition-colors cursor-pointer"
             >
               <X size={18} />
               Sign Out
@@ -229,11 +230,21 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onSignOpen?.()
               }}
               variant="primary"
-              className="w-full"
+              className="w-full mt-xxs"
             >
               Sign In
             </Button>
           )}
+        </div>
+
+        <div className="border-t border-border-subtle mt-sm pt-sm">
+          <Link
+            href="/about"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="block px-xs py-xs text-[13px] font-medium text-text-muted hover:text-text-primary transition-colors"
+          >
+            About Nyumbani
+          </Link>
         </div>
       </Drawer>
     </header>

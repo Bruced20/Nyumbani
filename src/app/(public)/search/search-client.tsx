@@ -317,7 +317,7 @@ export function SearchPageContentClient({
                   />
                 ) : isPending ? (
                   // Loading skeletons — clean, no one-off borders
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
+                  <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-md">
                     {Array.from({ length: 4 }).map((_, idx) => (
                       <div key={idx} className="flex flex-col gap-xs">
                         <Skeleton className="w-full aspect-[4/3] rounded-symmetric" />
@@ -384,7 +384,7 @@ export function SearchPageContentClient({
                       variants={listContainerVariants}
                       initial="initial"
                       animate="animate"
-                      className="grid grid-cols-1 md:grid-cols-2 gap-md"
+                      className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-md"
                     >
                       {visible.map((prop) => (
                         <motion.div

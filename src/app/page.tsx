@@ -183,7 +183,7 @@ export default async function Home() {
                 View all →
               </Link>
             </div>
-            <Grid cols={3} gap="md">
+            <Grid cols={5} gap="md">
               {featuredProperties.map((prop) => (
                 <Link href={`/property/${prop.slug}`} key={prop.id} className="block group">
                   <PropertyCard
