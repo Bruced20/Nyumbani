@@ -8,9 +8,10 @@ import { Button } from '@ui/button'
 import { Modal } from '@ui/overlay'
 import { useToast } from '@ui/feedback/toast-context'
 import { PinPicker } from './pin-picker'
+import type { LocateRequest } from './pin-picker-inner'
 import { createProperty, type PossibleDuplicate } from './actions'
 import { KENYAN_LOCATIONS } from '@/lib/mock-data'
-import { MapPin } from 'lucide-react'
+import { MapPin, Locate } from 'lucide-react'
 
 const HOUSE_TYPES = [
   'Single Room',
@@ -54,10 +55,40 @@ export function PropertyForm() {
   const [road, setRoad] = useState('')
   const [transport, setTransport] = useState('')
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null)
+  const [locateRequest, setLocateRequest] = useState<LocateRequest | null>(null)
+  const [locating, setLocating] = useState(false)
+  const [locateError, setLocateError] = useState<string | null>(null)
+  const [confirmOccupant, setConfirmOccupant] = useState(false)
 
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [duplicates, setDuplicates] = useState<PossibleDuplicate[]>([])
+
+  const useMyLocation = () => {
+    if (!('geolocation' in navigator)) {
+      setLocateError('Location is not available on this device.')
+      return
+    }
+    setLocateError(null)
+    setLocating(true)
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocating(false)
+        setLocateRequest({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+          ts: Date.now(),
+        })
+      },
+      () => {
+        setLocating(false)
+        setLocateError(
+          'Could not access your location. Please allow location access and try again.'
+        )
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    )
+  }
 
   const buildPayload = () => ({
     name: name.trim(),
@@ -97,6 +128,8 @@ export function PropertyForm() {
     if (!road) return 'Choose the road access.'
     if (transport.trim().length < 2) return 'How far is public transport?'
     if (!coords) return 'Drop a pin on the map to mark the exact location.'
+    if (!confirmOccupant)
+      return 'Please confirm you live at or are authorized to list this property.'
     return null
   }
 
@@ -219,15 +252,34 @@ export function PropertyForm() {
 
       {/* Location pin */}
       <section className="flex flex-col gap-sm">
-        <div className="flex flex-col gap-xxs">
-          <h2 className="text-[16px] font-semibold text-text-primary">Exact location</h2>
-          <p className="text-[13px] text-text-muted">
-            Tap the map to drop a pin, then drag it onto the building. Choosing a neighbourhood
-            above centres the map for you.
-          </p>
+        <div className="flex items-start justify-between gap-sm">
+          <div className="flex flex-col gap-xxs">
+            <h2 className="text-[16px] font-semibold text-text-primary">Exact location</h2>
+            <p className="text-[13px] text-text-muted">
+              Tap the 3D map to drop a pin, then drag it onto the building — tilt or rotate the view
+              for a clearer angle. Choosing a neighbourhood above centres the map for you, or use
+              your current location to narrow it down automatically.
+            </p>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={useMyLocation}
+            disabled={locating}
+            className="shrink-0 whitespace-nowrap"
+          >
+            <Locate size={14} className={locating ? 'animate-pulse' : ''} />
+            {locating ? 'Locating...' : 'Use my location'}
+          </Button>
         </div>
+        {locateError && <p className="text-[12px] font-medium text-status-error">{locateError}</p>}
         <div className="h-[300px] rounded-soft overflow-hidden border border-border-subtle">
-          <PinPicker neighborhood={neighborhood} value={coords} onChange={setCoords} />
+          <PinPicker
+            neighborhood={neighborhood}
+            value={coords}
+            onChange={setCoords}
+            locateRequest={locateRequest}
+          />
         </div>
         {coords && (
           <p className="text-[12px] text-text-muted inline-flex items-center gap-[4px]">
@@ -309,6 +361,16 @@ export function PropertyForm() {
           </div>
         </div>
       </section>
+
+      <label className="flex items-start gap-sm text-[13px] text-text-primary cursor-pointer">
+        <input
+          type="checkbox"
+          checked={confirmOccupant}
+          onChange={(e) => setConfirmOccupant(e.target.checked)}
+          className="mt-[3px] h-4 w-4 shrink-0 accent-brand-primary cursor-pointer"
+        />
+        I confirm I currently live at, or am authorized to list, this property.
+      </label>
 
       {errorMessage && <p className="text-[13px] font-medium text-status-error">{errorMessage}</p>}
 

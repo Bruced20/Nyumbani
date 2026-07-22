@@ -86,8 +86,8 @@ export default async function Home() {
 
       <main className="flex-1">
         {/* 1. Compact hero — its only job is to start a search */}
-        <Section className="bg-bg-primary pt-lg pb-md md:pt-xl md:pb-lg border-b border-border-subtle">
-          <Container className="flex flex-col gap-md">
+        <Section className="bg-bg-primary pt-sm pb-md md:pt-md md:pb-lg border-b border-border-subtle">
+          <Container className="flex flex-col gap-sm">
             {/* Top-rated showcase — ad-ready hero carousel */}
             {heroSlides.length > 0 && <HeroCarousel slides={heroSlides} />}
 

@@ -66,7 +66,7 @@ export function HeroCarousel({ slides, interval = 6000 }: HeroCarouselProps) {
 
   return (
     <div
-      className="relative w-full overflow-hidden rounded-symmetric bg-bg-secondary"
+      className="relative w-full overflow-hidden rounded-symmetric bg-bg-secondary shadow-md"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}

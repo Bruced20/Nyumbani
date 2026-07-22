@@ -254,6 +254,32 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <Plus size={16} className="text-text-muted" />
                   Add a Property
                 </Link>
+                <Link
+                  href="/search"
+                  onClick={() => setIsProfileMenuOpen(false)}
+                  className="flex items-center gap-sm px-xs py-[10px] rounded-soft text-[14px] font-medium text-text-primary hover:bg-bg-primary transition-colors"
+                >
+                  <Map size={16} className="text-text-muted" />
+                  Map View
+                </Link>
+
+                <div className="pt-xxs">
+                  <p className="px-xs pb-xxs text-[11px] font-semibold text-text-muted uppercase tracking-wide">
+                    Quick Actions
+                  </p>
+                  <div className="flex flex-wrap gap-xxs px-xs">
+                    {QUICK_ACTIONS.map((chip) => (
+                      <Link
+                        key={chip.href}
+                        href={chip.href}
+                        onClick={() => setIsProfileMenuOpen(false)}
+                        className="px-xs py-[3px] border border-border-subtle rounded-pill text-[12px] font-medium text-text-primary hover:border-brand-primary hover:text-brand-primary transition-colors"
+                      >
+                        {chip.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
 
                 {theme && onSetTheme && (
                   <div className="pt-xxs">
