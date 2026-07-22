@@ -14,6 +14,7 @@ import { ActionButtons } from '@/features/properties/action-buttons'
 import { HealthBars } from '@/features/properties/health-bars'
 import { ReviewCardActions } from '@/features/reviews/review-card-actions'
 import { PropertyMapLoader } from '@/features/properties/map-loader'
+import { DistanceDirections } from '@/features/properties/distance-directions'
 import { PropertyService } from '@/lib/services/properties'
 import { MapPin } from 'lucide-react'
 
@@ -274,6 +275,8 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                     </div>
                   </div>
                 </div>
+
+                <DistanceDirections propertyCoords={property.coordinates} />
               </div>
 
               {/* Reviews — a divided list rather than boxed cards, so it reads

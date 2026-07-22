@@ -17,6 +17,9 @@ interface PropertyCardProps {
   imageUrl?: string
   isVerified?: boolean
   onClick?: () => void
+  // Distance from the visitor's current location, in kilometers — only set
+  // when the caller has geolocation permission (e.g. "Near Me" search).
+  distanceKm?: number
   // Quick ratings
   waterRating?: number
   securityRating?: number
@@ -37,6 +40,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
   imageUrl,
   isVerified = false,
   onClick,
+  distanceKm,
   waterRating,
   securityRating,
   caretakerRating,
@@ -99,6 +103,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
 
         <p className="text-[14px] text-text-muted truncate">
           {neighborhood} · {houseType}
+          {distanceKm !== undefined && ` · ${distanceKm.toFixed(1)} km away`}
         </p>
 
         {/* Reserve a single line for vectors so cards with and without ratings

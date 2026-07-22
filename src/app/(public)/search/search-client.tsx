@@ -13,12 +13,14 @@ import { SearchFilters, FilterState } from '@/features/properties/search-filters
 import { PropertyMapLoader } from '@/features/properties/map-loader'
 import { useInfiniteList } from '@/features/properties/use-infinite-list'
 import { useSavedSearches } from '@/features/properties/use-saved-searches'
+import { useUserLocation } from '@/features/properties/use-user-location'
 import { hasActiveFilters } from '@/features/properties/saved-search-utils'
 import { useToast } from '@ui/feedback/toast-context'
 import { LoadingSpinner } from '@ui/feedback'
 import { Property } from '@/lib/mappers'
+import { distanceMeters } from '@/lib/geo'
 import { NEARBY_NEIGHBORHOODS } from '@/lib/mock-data'
-import { AlertOctagon, X, Bookmark, BookmarkCheck } from 'lucide-react'
+import { AlertOctagon, X, Bookmark, BookmarkCheck, LocateFixed } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { listContainerVariants, listItemVariants, SPRING_SUBTLE } from '@ui/animations'
 
@@ -45,8 +47,28 @@ export function SearchPageContentClient({
   // card highlights + centers its marker, and tapping a marker highlights here.
   const [selectedSlug, setSelectedSlug] = React.useState<string | null>(null)
 
+  // "Near Me" — off by default; geolocation is only requested on tap.
+  const [nearMeActive, setNearMeActive] = React.useState(false)
+  const { status: locationStatus, coords: userCoords, request: requestLocation } = useUserLocation()
+
+  const toggleNearMe = () => {
+    if (nearMeActive) {
+      setNearMeActive(false)
+      return
+    }
+    setNearMeActive(true)
+    if (locationStatus === 'idle') requestLocation()
+  }
+
+  const propertiesWithDistance = React.useMemo((): (Property & { distanceKm?: number })[] => {
+    if (!nearMeActive || locationStatus !== 'granted' || !userCoords) return properties
+    return [...properties]
+      .map((p) => ({ ...p, distanceKm: distanceMeters(userCoords, p.coordinates) / 1000 }))
+      .sort((a, b) => a.distanceKm - b.distanceKm)
+  }, [nearMeActive, locationStatus, userCoords, properties])
+
   // Infinite scroll: window the rendered list (data is already fully loaded).
-  const { visible, hasMore, sentinelRef } = useInfiniteList(properties, 12)
+  const { visible, hasMore, sentinelRef } = useInfiniteList(propertiesWithDistance, 12)
 
   // Saved searches (localStorage) + toast feedback.
   const { searches: savedSearches, save: saveSearch, remove: removeSearch } = useSavedSearches()
@@ -250,6 +272,19 @@ export function SearchPageContentClient({
                 </span>
 
                 <div className="flex items-center gap-sm text-[14px] text-text-primary">
+                  <button
+                    onClick={toggleNearMe}
+                    disabled={locationStatus === 'locating'}
+                    aria-pressed={nearMeActive}
+                    className={
+                      nearMeActive
+                        ? 'inline-flex items-center gap-[4px] text-[13px] font-semibold text-brand-primary cursor-pointer disabled:cursor-wait'
+                        : 'inline-flex items-center gap-[4px] text-[13px] font-semibold text-text-muted hover:text-brand-primary transition-colors cursor-pointer disabled:cursor-wait'
+                    }
+                  >
+                    <LocateFixed size={14} />
+                    {locationStatus === 'locating' ? 'Locating...' : 'Near me'}
+                  </button>
                   {filtersActive && (
                     <button
                       onClick={handleSaveSearch}
@@ -277,6 +312,12 @@ export function SearchPageContentClient({
                   </div>
                 </div>
               </div>
+
+              {nearMeActive && locationStatus === 'denied' && (
+                <p className="text-[12px] text-status-error -mt-xs">
+                  Location access denied — enable it in your browser settings to use Near Me.
+                </p>
+              )}
 
               {/* Saved searches — restore or remove */}
               {savedSearches.length > 0 && (
@@ -406,6 +447,7 @@ export function SearchPageContentClient({
                             healthScore={prop.healthScore}
                             isVerified={prop.isVerified}
                             imageUrl={prop.images?.[0]}
+                            distanceKm={prop.distanceKm}
                             waterRating={
                               prop.waterRating === 'Excellent'
                                 ? 5
