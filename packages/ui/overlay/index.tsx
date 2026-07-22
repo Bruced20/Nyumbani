@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence, Variants, useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { X } from 'lucide-react'
@@ -110,6 +111,13 @@ export const Drawer: React.FC<DrawerProps> = ({
 }) => {
   const drawerRef = React.useRef<HTMLDivElement>(null)
   const shouldReduceMotion = useReducedMotion()
+  // document.body doesn't exist during SSR; useSyncExternalStore's snapshot
+  // naturally differs between server and client without a setState-in-effect.
+  const mounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  )
 
   React.useEffect(() => {
     if (isOpen) {
@@ -137,7 +145,7 @@ export const Drawer: React.FC<DrawerProps> = ({
           exit: { x: -300, opacity: 0, transition: { duration: 0.15 } },
         }
 
-  return (
+  const drawer = (
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-50 flex justify-end">
@@ -195,6 +203,14 @@ export const Drawer: React.FC<DrawerProps> = ({
       )}
     </AnimatePresence>
   )
+
+  // Rendered via a portal to document.body: the Drawer is mounted inside the
+  // sticky app header, which applies backdrop-blur — a CSS filter becomes the
+  // containing block for `position: fixed` descendants, so without a portal
+  // this "fixed inset-0" panel is clipped to the header's own height instead
+  // of the viewport.
+  if (!mounted) return null
+  return createPortal(drawer, document.body)
 }
 
 interface BottomSheetProps {
@@ -306,7 +322,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
               animate={shouldReduceMotion ? { opacity: 1, scale: 1 } : 'animate'}
               exit={shouldReduceMotion ? { opacity: 0, scale: 1 } : 'exit'}
               className={cn(
-                'absolute mt-xxs w-48 rounded-soft bg-bg-secondary border border-border-subtle shadow-lg z-20 overflow-hidden py-xxs',
+                'absolute mt-xxs w-max min-w-[192px] rounded-soft bg-bg-secondary border border-border-subtle shadow-lg z-20 overflow-hidden py-xxs',
                 align === 'right' ? 'right-0' : 'left-0'
               )}
             >

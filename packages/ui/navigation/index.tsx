@@ -224,7 +224,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </button>
               }
             >
-              <div className="w-[240px] p-xs flex flex-col gap-xxs">
+              <div className="w-[272px] p-xs flex flex-col gap-xxs">
                 {isAuthenticated && (
                   <div className="px-xs py-xxs text-[13px] font-medium text-text-primary truncate">
                     Hello, {userName}

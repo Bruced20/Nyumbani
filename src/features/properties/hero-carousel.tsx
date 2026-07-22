@@ -77,7 +77,7 @@ export function HeroCarousel({ slides, interval = 6000 }: HeroCarouselProps) {
       aria-roledescription="carousel"
       aria-label="Highly rated homes"
     >
-      <div className="relative aspect-[20/9] sm:aspect-[32/9] w-full">
+      <div className="relative aspect-[4/3] sm:aspect-[21/9] w-full">
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.div
             key={active.slug}
@@ -91,13 +91,35 @@ export function HeroCarousel({ slides, interval = 6000 }: HeroCarouselProps) {
             <img
               src={active.image}
               alt={active.name}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover object-bottom"
               loading={index === 0 ? 'eager' : 'lazy'}
             />
             {/* Scrim keeps the caption legible over any photo */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/5" />
           </motion.div>
         </AnimatePresence>
+
+        {/* Prev / Next — pinned to the top corners so they never collide with
+            the caption block anchored to the bottom. Hidden on mobile, where
+            there isn't room for them alongside the caption; swipe/dots cover it. */}
+        {count > 1 && (
+          <>
+            <button
+              onClick={() => go(index - 1)}
+              aria-label="Previous home"
+              className="hidden sm:flex absolute left-sm top-sm h-9 w-9 rounded-pill bg-white/85 text-[#222222] items-center justify-center hover:bg-white transition-colors cursor-pointer shadow-sm"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button
+              onClick={() => go(index + 1)}
+              aria-label="Next home"
+              className="hidden sm:flex absolute right-sm top-sm h-9 w-9 rounded-pill bg-white/85 text-[#222222] items-center justify-center hover:bg-white transition-colors cursor-pointer shadow-sm"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </>
+        )}
 
         {/* Caption */}
         <div className="absolute inset-x-0 bottom-0 p-md sm:p-lg">
@@ -116,22 +138,25 @@ export function HeroCarousel({ slides, interval = 6000 }: HeroCarouselProps) {
             </div>
 
             <Link href={`/property/${active.slug}`} className="group/title w-fit">
-              <h2 className="text-[24px] sm:text-[30px] font-bold leading-tight text-white group-hover/title:underline underline-offset-4">
+              <h2 className="text-[20px] sm:text-[30px] font-bold leading-tight text-white group-hover/title:underline underline-offset-4">
                 {active.name}
               </h2>
             </Link>
 
-            <div className="flex items-center gap-xs text-white/85 text-[14px]">
+            <div className="flex items-center gap-xs text-white/85 text-[13px] sm:text-[14px]">
               <MapPin size={14} className="shrink-0" />
               <span>
                 {active.neighborhood} · {active.houseType}
               </span>
             </div>
 
-            <div className="flex items-center gap-sm pt-xxs">
-              <span className="text-[16px] font-semibold text-white">
+            <div className="flex flex-wrap items-center gap-xs sm:gap-sm pt-xxs">
+              <span className="text-[15px] sm:text-[16px] font-semibold text-white">
                 {formatRent(active.rentMin, active.rentMax)}
-                <span className="text-white/70 font-normal text-[13px]"> / month</span>
+                <span className="text-white/70 font-normal text-[12px] sm:text-[13px]">
+                  {' '}
+                  / month
+                </span>
               </span>
               <Link
                 href={`/property/${active.slug}`}
@@ -142,26 +167,6 @@ export function HeroCarousel({ slides, interval = 6000 }: HeroCarouselProps) {
             </div>
           </div>
         </div>
-
-        {/* Prev / Next — only when there is more than one slide */}
-        {count > 1 && (
-          <>
-            <button
-              onClick={() => go(index - 1)}
-              aria-label="Previous home"
-              className="absolute left-sm top-1/2 -translate-y-1/2 h-9 w-9 rounded-pill bg-white/85 text-[#222222] flex items-center justify-center hover:bg-white transition-colors cursor-pointer shadow-sm"
-            >
-              <ChevronLeft size={18} />
-            </button>
-            <button
-              onClick={() => go(index + 1)}
-              aria-label="Next home"
-              className="absolute right-sm top-1/2 -translate-y-1/2 h-9 w-9 rounded-pill bg-white/85 text-[#222222] flex items-center justify-center hover:bg-white transition-colors cursor-pointer shadow-sm"
-            >
-              <ChevronRight size={18} />
-            </button>
-          </>
-        )}
       </div>
 
       {/* Dots */}
